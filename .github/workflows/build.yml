@@ -1,0 +1,94 @@
+# Copyright (c) 2026 the Barq authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Compiles the barq-core engine (the native library the SDK links against),
+  # proving the vendored submodule builds from source on CI.
+  engine:
+    name: barq-core engine (Linux)
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout (with barq-core submodule)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends cmake ninja-build libssl-dev zlib1g-dev
+
+      - name: Configure barq-core (library only)
+        run: |
+          cmake -S packages/barq/bindgen/vendor/barq-core -B core-build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBARQ_BUILD_LIB_ONLY=ON \
+            -DBARQ_NO_TESTS=ON \
+            -DBARQ_USE_SYSTEM_OPENSSL=ON
+
+      - name: Build the Storage library
+        run: cmake --build core-build --target Storage --parallel
+
+      - name: Show the built artifact
+        run: |
+          echo "Built barq-core static library:"
+          find core-build -name 'libStorage*' -o -name 'Storage.lib' | head
+          find core-build -name 'libStorage*' -exec ls -lh {} \;
+
+  # Type-checks and runs the Barq value types (our own ObjectId / UUID /
+  # Decimal128 / Binary / EJSON that replace the bson dependency).
+  datatypes:
+    name: Barq value types
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Type-check value types (strict)
+        run: >
+          npx --yes --package typescript@5.5 tsc --noEmit --strict --target es2020
+          --moduleResolution node --skipLibCheck --lib es2020
+          packages/barq/src/types/random.ts
+          packages/barq/src/types/Binary.ts
+          packages/barq/src/types/ObjectId.ts
+          packages/barq/src/types/UUID.ts
+          packages/barq/src/types/Decimal128.ts
+          packages/barq/src/types/EJSON.ts
+          packages/barq/src/types/index.ts
+
+      - name: Run value-type round-trip tests
+        run: npx --yes tsx packages/barq/src/types/__ci_test.ts
