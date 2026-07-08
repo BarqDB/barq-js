@@ -58,7 +58,8 @@
     "react-native.config.js",
     "BarqJS.podspec",
     "PrivacyInfo.xcprivacy",
-    "binding.gyp"
+    "binding.gyp",
+    "prebuilds/node"
   ],
   "scripts": {
     "test": "wireit",
@@ -263,9 +264,10 @@
   "binary": {
     "module_name": "barq",
     "module_path": "prebuilds/node",
-    "remote_path": "barq-js-prebuilds/{version}",
+    "remote_path": "v{version}",
     "napi_versions": [
       6
-    ]
+    ],
+    "host": "https://github.com/BarqDB/barq-js/releases/download"
   }
 }
