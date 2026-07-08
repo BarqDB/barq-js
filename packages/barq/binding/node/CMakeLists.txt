@@ -8,7 +8,7 @@ set(BINDGEN_DIR ${SDK_DIR}/bindgen)
 set(BINDING_DIR ${SDK_DIR}/binding)
 
 if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
-    set(CMAKE_SYSTEM_VERSION 8.1)
+    # Don't pin the ancient Windows 8.1 SDK — use whichever SDK the host/runner has.
     if(CMAKE_GENERATOR_PLATFORM MATCHES "^[Ww][Ii][Nn]32$")
         set(VCPKG_TARGET_TRIPLET "x86-windows-static" CACHE STRING "")
     elseif(CMAKE_GENERATOR_PLATFORM MATCHES "^[Xx]64$")

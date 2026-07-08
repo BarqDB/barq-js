@@ -51,6 +51,7 @@ jobs:
           - { os: ubuntu-latest, name: linux-x64 }
           - { os: macos-13, name: darwin-x64 }
           - { os: macos-14, name: darwin-arm64 }
+          - { os: windows-latest, name: win32-x64 }
     steps:
       - name: Checkout (with barq-core submodule)
         uses: actions/checkout@v4
@@ -80,13 +81,26 @@ jobs:
           npm run bindgen:wrapper --workspace @barqdb/barq
           npm run bindgen:jsi --workspace @barqdb/barq
 
-      - name: Build and upload the native prebuild
+      - name: Build and upload the native prebuild (Unix)
+        if: runner.os != 'Windows'
         working-directory: packages/barq
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npx prebuild --runtime napi --target 6 --backend cmake-js -u "$GITHUB_TOKEN" \
             -- --directory binding/node --CDBARQ_USE_SYSTEM_OPENSSL=ON
+
+      # Windows uses pwsh and the barq-core dependency prebuilts for OpenSSL/zlib
+      # (no system-openssl flag), matching the proven build.yml Windows job.
+      - name: Build and upload the native prebuild (Windows)
+        if: runner.os == 'Windows'
+        working-directory: packages/barq
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >
+          npx prebuild --runtime napi --target 6 --backend cmake-js -u $env:GITHUB_TOKEN
+          -- --directory binding/node
 
   publish:
     name: Publish to npm

@@ -139,3 +139,44 @@ jobs:
           test -n "$node_file"
           ls -lh "$node_file"
           echo "Built native addon: $node_file"
+
+  # Builds the native @barqdb/barq addon on Windows x64. OpenSSL + zlib come from
+  # the barq-core `dependencies` release (windows-static prebuilts), fetched by the
+  # default barq_acquire_dependency path — same mechanism as Android. Mirrors the
+  # release prebuild command (minus the -u upload).
+  napi-windows:
+    name: Native addon (Windows x64)
+    runs-on: windows-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout (with barq-core submodule)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install npm dependencies
+        run: npm install --legacy-peer-deps --ignore-scripts --no-audit --no-fund
+
+      - name: Generate the binding (wrapper + jsi)
+        run: |
+          npm run bindgen:wrapper --workspace @barqdb/barq
+          npm run bindgen:jsi --workspace @barqdb/barq
+
+      - name: Build the native addon (prebuild + cmake-js; OpenSSL/zlib from barq-core deps)
+        shell: pwsh
+        working-directory: packages/barq
+        run: >
+          npx prebuild --runtime napi --target 6 --backend cmake-js --
+          --directory binding/node
+
+      - name: Verify barq.node was produced
+        shell: pwsh
+        run: |
+          $f = Get-ChildItem -Recurse -Path packages/barq -Filter barq.node -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $f) { throw "barq.node not found" }
+          "Built: $($f.FullName) ($([math]::Round($f.Length/1MB,1)) MB)"
