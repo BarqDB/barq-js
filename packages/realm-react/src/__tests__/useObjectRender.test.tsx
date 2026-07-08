@@ -25,7 +25,7 @@ import { createUseObject } from "../useObject";
 import { randomBarqPath } from "./helpers";
 
 export class ListItem extends Barq.Object {
-  id!: Barq.BSON.ObjectId;
+  id!: Barq.Types.ObjectId;
   name!: string;
   lists!: Barq.List<List>;
 
@@ -45,7 +45,7 @@ export class ListItem extends Barq.Object {
 }
 
 export class List extends Barq.Object {
-  id!: Barq.BSON.ObjectId;
+  id!: Barq.Types.ObjectId;
   title!: string;
   items!: Barq.List<ListItem>;
   favoriteItem?: ListItem;
@@ -86,7 +86,7 @@ const listChangeCounter = jest.fn();
 const testBarq: Barq = new Barq(configuration);
 
 const testCollection = [...new Array(100)].map(() => {
-  const id = new Barq.BSON.ObjectId();
+  const id = new Barq.Types.ObjectId();
   return { id, name: id.toHexString() };
 });
 
@@ -107,7 +107,7 @@ const App = ({ renderItems = true, targetPrimaryKey = parentObjectId }) => {
   );
 };
 
-const parentObjectId = new Barq.BSON.ObjectId();
+const parentObjectId = new Barq.Types.ObjectId();
 
 const SetupComponent = ({ children }: { children: JSX.Element }): JSX.Element | null => {
   const realm = useBarq();
@@ -196,7 +196,7 @@ const ItemList: React.FC<{ list: Barq.List<ListItem> }> = React.memo(({ list }) 
   );
 });
 
-const TestComponent: React.FC<{ testID?: string; renderItems?: boolean; targetPrimaryKey: Barq.BSON.ObjectId }> = ({
+const TestComponent: React.FC<{ testID?: string; renderItems?: boolean; targetPrimaryKey: Barq.Types.ObjectId }> = ({
   testID,
   renderItems,
   targetPrimaryKey,
@@ -394,7 +394,7 @@ describe("useObject: rendering objects with a Barq.List property", () => {
     it("renders a different list if the target primary key changes", async () => {
       const { rerender, getByTestId } = await setupTest();
 
-      const secondListId = new Barq.BSON.ObjectId();
+      const secondListId = new Barq.Types.ObjectId();
 
       testBarq.write(() => {
         testBarq.create(List, { id: secondListId, title: "Second List", items: [] });
@@ -405,7 +405,7 @@ describe("useObject: rendering objects with a Barq.List property", () => {
       let titleElement = getByTestId(`listTitle${secondListId.toHexString()}`);
       expect(titleElement).toHaveTextContent("Second List");
 
-      const thirdListId = new Barq.BSON.ObjectId();
+      const thirdListId = new Barq.Types.ObjectId();
 
       testBarq.write(() => {
         testBarq.create(List, { id: thirdListId, title: "Third List", items: [] });
@@ -537,7 +537,7 @@ describe("useObject: rendering objects with a Barq.List property", () => {
     it("only renders the new item when a list item is added", async () => {
       const { collection } = await setupTest();
       testBarq.write(() => {
-        collection.unshift(testBarq.create(ListItem, { id: new Barq.BSON.ObjectId(), name: "apple" }));
+        collection.unshift(testBarq.create(ListItem, { id: new Barq.Types.ObjectId(), name: "apple" }));
       });
 
       // Force Barq listeners to fire rather than waiting for the text "apple"

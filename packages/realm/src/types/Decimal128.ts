@@ -18,7 +18,7 @@
 
 // A 128-bit decimal floating-point value (IEEE 754-2008 decimal128) using the
 // BID (Binary Integer Decimal) interchange encoding, stored as 16 little-endian
-// bytes. This is Barq's own implementation — it replaces the third-party BSON
+// bytes. This is Barq's own implementation — it replaces the third-party value-type
 // codec while remaining byte-compatible with what the native engine stores.
 //
 // Layout (finite, "small significand" form, which covers every value with <= 34

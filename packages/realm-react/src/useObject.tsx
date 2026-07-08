@@ -217,10 +217,10 @@ function arePrimaryKeysIdentical(a: unknown, b: unknown): boolean {
   if (typeof a === "string" || typeof a === "number") {
     return a === b;
   }
-  if (a instanceof Barq.BSON.ObjectId && b instanceof Barq.BSON.ObjectId) {
+  if (a instanceof Barq.Types.ObjectId && b instanceof Barq.Types.ObjectId) {
     return a.toHexString() === b.toHexString();
   }
-  if (a instanceof Barq.BSON.UUID && b instanceof Barq.BSON.UUID) {
+  if (a instanceof Barq.Types.UUID && b instanceof Barq.Types.UUID) {
     return a.toHexString() === b.toHexString();
   }
   return false;

@@ -76,7 +76,7 @@ inject({
       frameworkName: "react-native",
       frameworkVersion: getReactNativeVersion(),
 
-      bundleId: config?.anonymizedBundleId || "unknown",
+      bundleId: "unknown",
     };
   },
 });

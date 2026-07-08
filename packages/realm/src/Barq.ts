@@ -1369,7 +1369,7 @@ export namespace Barq {
   export import PropertyType = ns.PropertyTypeName;
   /** @deprecated Use another {@link ns.ClientResetMode | ClientResetMode} than {@link ns.ClientResetMode.Manual | ClientResetMode.Manual}. */
   export import ClientResetError = ns.ClientResetError;
-  /** @deprecated See https://www.mongodb.com/docs/atlas/sync/reference/push-notifications/ */
+  /** @deprecated See https://github.com/BarqDB/barq-js */
 }
 
 // Set default logger and log level.

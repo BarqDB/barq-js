@@ -38,7 +38,7 @@ import type { SetAccessor } from "./collection-accessors/Set";
  * If values in a Set are required to have some order, it must be implemented
  * by the developer by, for example, wrapping values in an object that holds
  * a user-supplied insertion order.
- * @see https://www.mongodb.com/docs/realm/sdk/react-native/model-data/data-types/sets/
+ * @see https://github.com/BarqDB/barq-js
  */
 export class BarqSet<T = unknown> extends OrderedCollection<
   T,

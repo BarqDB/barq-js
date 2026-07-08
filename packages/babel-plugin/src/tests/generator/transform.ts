@@ -26,7 +26,7 @@ import { transform } from "../transform";
 
 export function transformProperty(propertyCode: string): babel.BabelFileResult {
   const source = `
-    import Barq, { Types, BSON, List, Set, Dictionary, Mixed, index, mapTo } from "@barq/barq";
+    import Barq, { Types, List, Set, Dictionary, Mixed, index, mapTo } from "@barq/barq";
 
     export class Person extends Barq.Object { ${propertyCode} }
   `;

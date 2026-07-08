@@ -16,7 +16,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-// Barq's own value types. These replace the third-party BSON package entirely
+// Barq's own value types. These replace the third-party value-type package entirely
 // while remaining byte- and API-compatible with what the native engine stores,
 // so schemas can keep using ObjectId, UUID, Decimal128 and Binary as before.
 

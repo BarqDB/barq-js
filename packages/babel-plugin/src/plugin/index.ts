@@ -32,7 +32,6 @@ type BarqType = {
 const DEFAULT_NUMERIC_TYPE = "double";
 const REALM_NAMED_EXPORT = "Barq";
 const TYPES_NAMED_EXPORT = "Types";
-const BSON_NAMED_EXPORT = "BSON";
 
 function isBarqTypeAlias(
   path: NodePath<types.TSEntityName | types.TSTypeReference>,
@@ -91,11 +90,11 @@ function getBarqTypeForTSTypeReference(path: NodePath<types.TSTypeReference>): B
     return { type: "float" };
   } else if (isBarqTypeAlias(path, "Double")) {
     return { type: "double" };
-  } else if (isBarqTypeAlias(path, "Decimal128") || isBarqTypeAlias(path, "Decimal128", BSON_NAMED_EXPORT)) {
+  } else if (isBarqTypeAlias(path, "Decimal128")) {
     return { type: "decimal128" };
-  } else if (isBarqTypeAlias(path, "ObjectId") || isBarqTypeAlias(path, "ObjectId", BSON_NAMED_EXPORT)) {
+  } else if (isBarqTypeAlias(path, "ObjectId")) {
     return { type: "objectId" };
-  } else if (isBarqTypeAlias(path, "UUID") || isBarqTypeAlias(path, "UUID", BSON_NAMED_EXPORT)) {
+  } else if (isBarqTypeAlias(path, "UUID")) {
     return { type: "uuid" };
   } else if (isBarqTypeAlias(path, "Date") || typeName.isIdentifier({ name: "Date" })) {
     return { type: "date" };

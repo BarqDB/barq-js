@@ -36,7 +36,7 @@ import type { ResultsAccessor } from "./collection-accessors/Results";
  * snapshot()}, however, will **not** live update
  * (and listener callbacks added through addListener()
  * will thus never be called).
- * @see https://www.mongodb.com/docs/realm/sdk/react-native/model-data/data-types/collections/
+ * @see https://github.com/BarqDB/barq-js
  */
 export class Results<T = unknown> extends OrderedCollection<
   T,

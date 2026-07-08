@@ -159,7 +159,7 @@ describe("Babel plugin", () => {
         { source: "new Barq.Types.Decimal128()" },
         { source: "new Types.Decimal128()" },
         { source: "new Barq.Types.Decimal128()" },
-        { source: "new BSON.Decimal128()" },
+        { source: "new Types.Decimal128()" },
       ],
     });
 
@@ -170,7 +170,7 @@ describe("Babel plugin", () => {
         { source: "new Barq.Types.ObjectId()" },
         { source: "new Types.ObjectId()" },
         { source: "new Barq.Types.ObjectId()" },
-        { source: "new BSON.ObjectId()" },
+        { source: "new Types.ObjectId()" },
       ],
     });
 
@@ -181,7 +181,7 @@ describe("Babel plugin", () => {
         { source: "new Barq.Types.UUID()" },
         { source: "new Types.UUID()" },
         { source: "new Barq.Types.UUID()" },
-        { source: "new BSON.UUID()" },
+        { source: "new Types.UUID()" },
       ],
     });
 
@@ -366,7 +366,7 @@ describe("Babel plugin", () => {
 
     it("handles `@index` decorators from the Barq import", () => {
       const transformCode = transform({
-        source: `import Barq, { Types, BSON, List, Set, Dictionary, Mixed } from "@barq/barq";
+        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barq/barq";
         export class Person extends Barq.Object { @Barq.index name: Barq.Types.String; }`,
       });
       const parsedSchema = extractSchema(transformCode);
@@ -376,7 +376,7 @@ describe("Babel plugin", () => {
 
     it("ignores `@index` decorators not imported from `realm`", () => {
       const transformCode = transform({
-        source: `import Barq, { Types, BSON, List, Set, Dictionary, Mixed } from "@barq/barq";
+        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barq/barq";
         export class Person extends Barq.Object { @index name: Barq.Types.String; }`,
       });
       const parsedSchema = extractSchema(transformCode);
@@ -399,7 +399,7 @@ describe("Babel plugin", () => {
 
     it('handles `@index("full-text")` decorators from the Barq import', () => {
       const transformCode = transform({
-        source: `import Barq, { Types, BSON, List, Set, Dictionary, Mixed } from "@barq/barq";
+        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barq/barq";
         export class Person extends Barq.Object { @Barq.index("full-text") name: Barq.Types.String; }`,
       });
       const parsedSchema = extractSchema(transformCode);
@@ -409,7 +409,7 @@ describe("Babel plugin", () => {
 
     it('ignores `@index("full-text")` decorators not imported from `realm`', () => {
       const transformCode = transform({
-        source: `import Barq, { Types, BSON, List, Set, Dictionary, Mixed } from "@barq/barq";
+        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barq/barq";
         export class Person extends Barq.Object { @index("full-text") name: Barq.Types.String; }`,
       });
       const parsedSchema = extractSchema(transformCode);
@@ -432,7 +432,7 @@ describe("Babel plugin", () => {
 
     it("handles `@mapTo` decorators from the Barq import", () => {
       const transformCode = transform({
-        source: `import Barq, { Types, BSON, List, Set, Dictionary, Mixed } from "@barq/barq";
+        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barq/barq";
         export class Person extends Barq.Object { @Barq.mapTo('rename') name: Barq.Types.String; }`,
       });
       const parsedSchema = extractSchema(transformCode);
@@ -442,7 +442,7 @@ describe("Babel plugin", () => {
 
     it("handles `@mapTo` decorators on Barq.List", () => {
       const transformCode = transform({
-        source: `import Barq, { Types, BSON, List, Set, Dictionary, Mixed } from "@barq/barq";
+        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barq/barq";
         export class Person extends Barq.Object { @Barq.mapTo('rename') name: Barq.Types.List<Person>; }`,
       });
       const parsedSchema = extractSchema(transformCode);
@@ -452,7 +452,7 @@ describe("Babel plugin", () => {
 
     it("ignores `@mapTo` decorators not imported from `realm`", () => {
       const transformCode = transform({
-        source: `import Barq, { Types, BSON, List, Set, Dictionary, Mixed } from "@barq/barq";
+        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barq/barq";
         export class Person extends Barq.Object { @mapTo("rename") name: Barq.Types.String; }`,
       });
       const parsedSchema = extractSchema(transformCode);
@@ -520,7 +520,7 @@ describe("Babel plugin", () => {
     it("outputs an error and does not transform if a non-Typescript source file contains a class extending Barq.Object", () => {
       transform({
         source: `
-import Barq, { Types, BSON, List, Set, Dictionary, Mixed } from "@barq/barq";
+import Barq, { Types, List, Set, Dictionary, Mixed } from "@barq/barq";
 
 class Test extends Barq.Object {
   static schema = {

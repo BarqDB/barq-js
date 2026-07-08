@@ -51,7 +51,7 @@ try {
     throw new BarqInExpoGoError();
   } else {
     throw new Error(
-      "Could not find the Barq binary. Please consult our troubleshooting guide: https://www.mongodb.com/docs/realm-sdks/js/latest/#md:troubleshooting-missing-binary",
+      "Could not find the Barq binary. Please consult our troubleshooting guide: https://github.com/BarqDB/barq-js",
     );
   }
 }

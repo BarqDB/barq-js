@@ -40,7 +40,7 @@ inject({
       frameworkName: typeof process.versions.electron === "string" ? "Electron" : "Node.js",
       frameworkVersion: process.versions.electron || process.version,
 
-      bundleId: config?.anonymizedBundleId || "unknown",
+      bundleId: "unknown",
     };
   },
 });

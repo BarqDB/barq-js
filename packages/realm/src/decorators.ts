@@ -34,7 +34,7 @@ export type IndexDecorator = (target: unknown, memberName: string) => void;
 
 /**
  * Specify that the decorated field should be indexed by Barq.
- * See: [documentation](https://www.mongodb.com/docs/realm/sdk/react-native/examples/define-a-realm-object-model/#index-a-property)
+ * See: [documentation](https://github.com/BarqDB/barq-js)
  */
 export const index: IndexDecorator = () => {
   throw new DecoratorError("index");
@@ -44,7 +44,7 @@ export type MapToDecorator = (propertyName: string) => (target: unknown, memberN
 
 /**
  * Specify that the decorated field should be remapped to a different property name in the Barq database.
- * See: [documentation](https://www.mongodb.com/docs/realm/sdk/react-native/examples/define-a-realm-object-model/#remap-a-property)
+ * See: [documentation](https://github.com/BarqDB/barq-js)
  * @param propertyName The name of the property in the Barq database
  */
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars -- We don't read this at runtime */
