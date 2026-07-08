@@ -17,7 +17,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-import { EstimateProgressNotificationCallback, ProgressDirection, ProgressMode } from "@barq/barq";
+import { EstimateProgressNotificationCallback, ProgressDirection, ProgressMode } from "@barqdb/barq";
 import { useEffect, useState } from "react";
 import { UseBarqHook } from "./useBarq";
 

@@ -17,7 +17,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-import type { Response } from "@barq/fetch";
+import type { Response } from "@barqdb/fetch";
 
 // Falling back on a known string used in code transpiled by Babel
 const asyncIteratorSymbol: typeof Symbol.asyncIterator = Symbol.asyncIterator || "@@asyncIterator";

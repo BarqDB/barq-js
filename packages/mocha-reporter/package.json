@@ -1,5 +1,5 @@
 {
-  "name": "@barq/mocha-reporter",
+  "name": "@barqdb/mocha-reporter",
   "version": "1.0.1",
   "description": "A custom reporter for mocha",
   "main": "./dist/index.js",

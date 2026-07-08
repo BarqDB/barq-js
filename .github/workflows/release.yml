@@ -14,7 +14,7 @@
 
 name: Release
 
-# Publishes the @barq/* packages to npm whenever a version tag is pushed.
+# Publishes the @barqdb/* packages to npm whenever a version tag is pushed.
 # Each package is published at whatever version is in its package.json; versions
 # already present on the registry are skipped, so a single `v*` tag can release
 # whichever packages actually changed.
@@ -39,7 +39,7 @@ concurrency:
 
 jobs:
   # Build the native barq.node prebuild per platform and upload it to the release
-  # so `prebuild-install` fetches it on `npm install @barq/barq`.
+  # so `prebuild-install` fetches it on `npm install @barqdb/barq`.
   prebuild:
     name: Prebuild (${{ matrix.name }})
     runs-on: ${{ matrix.os }}
@@ -77,8 +77,8 @@ jobs:
 
       - name: Generate the binding
         run: |
-          npm run bindgen:wrapper --workspace @barq/barq
-          npm run bindgen:jsi --workspace @barq/barq
+          npm run bindgen:wrapper --workspace @barqdb/barq
+          npm run bindgen:jsi --workspace @barqdb/barq
 
       - name: Build and upload the native prebuild
         working-directory: packages/barq
@@ -118,7 +118,7 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps --ignore-scripts --no-audit --no-fund
 
-      - name: Install build tools for @barq/barq
+      - name: Install build tools for @barqdb/barq
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends cmake ninja-build libssl-dev zlib1g-dev build-essential
@@ -126,12 +126,12 @@ jobs:
       - name: Build packages
         run: |
           set -euo pipefail
-          # Native @barq/barq: generate the binding and build the TypeScript layer.
+          # Native @barqdb/barq: generate the binding and build the TypeScript layer.
           # (Native prebuilds are built/uploaded by the `prebuild` matrix and are
           # fetched by prebuild-install at consumer install time.)
-          npm run bindgen:wrapper --workspace @barq/barq
-          npm run bindgen:jsi --workspace @barq/barq
-          npm run build:ts --workspace @barq/barq
+          npm run bindgen:wrapper --workspace @barqdb/barq
+          npm run bindgen:jsi --workspace @barqdb/barq
+          npm run build:ts --workspace @barqdb/barq
           # Pure-JS packages: build/bundle each that defines the script.
           npm run --workspaces --if-present build
           npm run --workspaces --if-present bundle
@@ -148,7 +148,7 @@ jobs:
             version="$(node -p "require('./$pkgjson').version || ''")"
             private="$(node -p "!!require('./$pkgjson').private")"
             case "$name" in
-              @barq/*) ;;
+              @barqdb/*) ;;
               *) continue ;;
             esac
             if [ "$private" = "true" ] || [ -z "$version" ]; then

@@ -17,7 +17,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-import { PropertySchema, PropertyTypeName } from "@barq/barq";
+import { PropertySchema, PropertyTypeName } from "@barqdb/barq";
 import { generatePropertyCode, generatePropertyVariants, PropertyTestOptions } from "./variants";
 import { extractSchema, transformProperty } from "./transform";
 

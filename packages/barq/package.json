@@ -1,5 +1,5 @@
 {
-  "name": "@barq/barq",
+  "name": "@barqdb/barq",
   "version": "21.2.0",
   "description": "Barq is an offline-first database for JavaScript with optional sync powered by barq-core. A modified fork of Barq JS.",
   "license": "apache-2.0",
@@ -223,7 +223,7 @@
     }
   },
   "dependencies": {
-    "@barq/fetch": "^1.1.1",
+    "@barqdb/fetch": "^1.1.1",
     "debug": "^4.3.4",
     "path-browserify": "^1.0.1",
     "prebuild-install": "^7.1.2"

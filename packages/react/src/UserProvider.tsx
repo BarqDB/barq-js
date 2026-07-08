@@ -25,7 +25,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 import React, { createContext, useContext } from "react";
-import type { AnyUser } from "@barq/barq";
+import type { AnyUser } from "@barqdb/barq";
 
 /**
  * React context holding the current Barq sync {@link AnyUser | user}, if any.

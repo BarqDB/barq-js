@@ -18,7 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
-import Barq from "@barq/barq";
+import Barq from "@barqdb/barq";
 
 import { createCachedCollection } from "./cachedCollection";
 import { AnyBarqObject, BarqClassType, getObjects, isClassModelConstructor } from "./helpers";

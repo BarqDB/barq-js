@@ -10,7 +10,7 @@ Build better apps, faster.
 ## Introduction
 Setting up Barq in a React Native application has historically been complex. Re-rendering of components when objects in the database change requires manually adding and removing listeners, which produce a lot of boilerplate code and is error-prone (if listeners properly removed on unmount). This library alleviates that by providing [React hooks](https://reactjs.org/docs/hooks-intro.html) which return Barq data that is state aware. As a consequence, any change to the Barq data will cause components using the hook to re-render.
 
-Documentation for `@barq/react` and Barq can be found at [docs.barq.org](https://github.com/BarqDB/barq-js).
+Documentation for `@barqdb/react` and Barq can be found at [docs.barq.org](https://github.com/BarqDB/barq-js).
 ## Installation
 
 This library requires `react-native` >= 0.59 and `barq` >= 11
@@ -18,13 +18,13 @@ This library requires `react-native` >= 0.59 and `barq` >= 11
 npm:
 
 ```
-npm install barq @barq/react
+npm install barq @barqdb/react
 ```
 
 yarn:
 
 ```
-yarn add barq @barq/react
+yarn add barq @barqdb/react
 ```
 
 ## Try it out
@@ -34,7 +34,7 @@ Here is a simple task manager application written with Barq React.  Copy into a 
 ```tsx
 import React, { useState } from "react";
 import { SafeAreaView, View, Text, TextInput, FlatList, Pressable } from "react-native";
-import { Barq, BarqProvider, useBarq, useQuery } from '@barq/react'
+import { Barq, BarqProvider, useBarq, useQuery } from '@barqdb/react'
 
 class Task extends Barq.Object {
   _id!: Barq.Types.ObjectId;
@@ -122,7 +122,7 @@ For a full fledged example, check out [our templates](https://github.com/BarqDB/
 Returns the instance of the [`Barq`](https://github.com/BarqDB/barq-js) configured by `createBarqContext` and the `BarqProvider`.  The following is an example of how to use this Hook to make a write transaction callback for a component.
 
 ```tsx
-import {useBarq} from '@barq/react';
+import {useBarq} from '@barqdb/react';
 // assume props contain item a Barq.Object
 const Component = ({item}) => {
   const barq = useBarq();
@@ -150,7 +150,7 @@ Returns [`Barq.Results`](https://github.com/BarqDB/barq-js) from a given type. T
 The result of this can be consumed directly by the `data` argument of any React Native [`VirtualizedList`](https://reactnative.dev/docs/virtualizedlist) or [`FlatList`](https://reactnative.dev/docs/flatlist).  If the component used for the list's `renderItem` prop is wrapped with [`React.Memo`](https://reactjs.org/docs/react-api.html#reactmemo), then only the modified object will re-render.
 
 ```tsx
-import {useQuery} from '@barq/react';
+import {useQuery} from '@barqdb/react';
 
 const Component = () => {
   // ObjectClass is a class extending Barq.Object, which should have been provided in the Barq Config.
@@ -174,7 +174,7 @@ const Component = () => {
  Returns a [`Barq.Object`](https://github.com/BarqDB/barq-js) for a given type and primary key.  The Hook will update on any changes to the properties on the returned Object and return `null` if it either doesn't exist or has been deleted.
 
 ```tsx
-import {useObject} from '@barq/react';
+import {useObject} from '@barqdb/react';
 
 const Component = ({someId}) => {
   // ObjectClass is a class extending Barq.Object, which should have been provided in the Barq Config.
@@ -191,11 +191,11 @@ const Component = ({someId}) => {
 ## Setting Things Up
 ### BarqProvider
 
-To get started with `@barq/react`, one must wrap your app with a `BarqProvider`. The `BarqProvider` can be configured using props.  At a minimum, one must set the `schema` prop to the Barq models that they have configured.
+To get started with `@barqdb/react`, one must wrap your app with a `BarqProvider`. The `BarqProvider` can be configured using props.  At a minimum, one must set the `schema` prop to the Barq models that they have configured.
 Any child of the BarqProvider will be able to use the hooks to access and manipulate Barq data. Here is an example of how to setup Barq React with a Task model:
 
 ```tsx
-import { BarqProvider, useQuery, Barq } from '@barq/react';
+import { BarqProvider, useQuery, Barq } from '@barqdb/react';
 
 const AppWrapper = () => {
   return (
@@ -295,7 +295,7 @@ It is also possible to call it without any Config; in the case that you want to 
 When running into issues with sync, it may be helpful to view logs in order to determine what the issue was or to provide more context when submitting an issue. Set the log level and a logger on `Barq` before opening a synced database:
 
 ```ts
-import { Barq } from "@barq/barq";
+import { Barq } from "@barqdb/barq";
 
 Barq.setLogLevel("trace");
 Barq.setLogger((level, message) => console.log(`[${level}]: ${message}`));

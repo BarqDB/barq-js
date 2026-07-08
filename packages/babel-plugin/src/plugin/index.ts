@@ -377,7 +377,7 @@ function visitBarqClassStatic(path: NodePath<types.ClassProperty>) {
 }
 
 function visitBarqClass(path: NodePath<types.ClassDeclaration>) {
-  path.addComment("leading", " Modified by @barq/babel-plugin", true);
+  path.addComment("leading", " Modified by @barqdb/babel-plugin", true);
   const classIdentifier = path.node.id;
   if (!classIdentifier) {
     throw new Error("Classes extending Barq.Object are expected to have a name");
@@ -424,10 +424,10 @@ function isClassExtendingBarqObject(path: NodePath<types.ClassDeclaration>) {
   // Determine if the super class is the "Object" class from the "barq" package
   const superClass = path.get("superClass");
   if (path.isClassDeclaration() && superClass.isExpression() && isPropertyImportedFromBarq(superClass, "Object")) {
-    // The class is extending "Barq.Object" from "@barq/barq"
+    // The class is extending "Barq.Object" from "@barqdb/barq"
     return true;
   } else if (superClass.isIdentifier({ name: "Object" }) && isImportedFromBarq(superClass)) {
-    // The class is extending "Object" from "@barq/barq"
+    // The class is extending "Object" from "@barqdb/barq"
     return true;
   }
   return false;
@@ -448,7 +448,7 @@ export default function (): PluginObj<PluginPass> {
         if (isClassExtendingBarqObject(path)) {
           if (!isTypescriptFile(this.filename)) {
             console.warn(
-              `@barq/babel-plugin can only be used with Typescript source files. Ignoring ${this.filename}`,
+              `@barqdb/babel-plugin can only be used with Typescript source files. Ignoring ${this.filename}`,
             );
           } else {
             visitBarqClass(path);

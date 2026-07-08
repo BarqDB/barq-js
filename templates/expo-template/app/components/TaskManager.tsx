@@ -6,7 +6,7 @@ import {IntroText} from './IntroText';
 import {AddTaskForm} from './AddTaskForm';
 import TaskList from './TaskList';
 
-import {useBarq} from '@barq/react';
+import {useBarq} from '@barqdb/react';
 import {shadows} from '../styles/shadows';
 
 export const TaskManager: React.FC<{

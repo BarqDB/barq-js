@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, TextInput, Pressable} from 'react-native';
 import colors from '../styles/colors';
 import {shadows} from '../styles/shadows';
 import {buttonStyles} from '../styles/button';
-import {AuthOperationName, useAuth, useEmailPasswordAuth} from '@barq/react';
+import {AuthOperationName, useAuth, useEmailPasswordAuth} from '@barqdb/react';
 
 export const LoginScreen = () => {
   const {result, logInWithEmailPassword} = useAuth();

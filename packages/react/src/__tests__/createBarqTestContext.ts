@@ -18,7 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 import assert from "node:assert";
-import Barq, { Configuration } from "@barq/barq";
+import Barq, { Configuration } from "@barqdb/barq";
 import { act } from "@testing-library/react-native";
 
 import { randomBarqPath } from "./helpers";

@@ -14,4 +14,4 @@ This closes # ??? <!-- link to an existing issue -->
 * [ ] 📦 Updated internal package version in consuming `package.json`s (if updating internal packages)
 * [ ] 📱 Check the React Native/other sample apps work if necessary
 * [ ] 💥 `Breaking` label has been applied or is not necessary
-* [ ] 🔔 Mention `@barq/devdocs` if documentation changes are needed
+* [ ] 🔔 Mention `@barqdb/devdocs` if documentation changes are needed

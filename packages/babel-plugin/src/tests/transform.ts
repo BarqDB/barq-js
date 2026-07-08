@@ -37,7 +37,7 @@ export function transform({
   const result = babel.transform(source, {
     filename,
     presets: [
-      // TODO: Consider moving this to a @barq/babel-preset
+      // TODO: Consider moving this to a @barqdb/babel-preset
       [
         "@babel/preset-typescript",
         {

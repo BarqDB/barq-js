@@ -18,7 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 import React, { useRef, useState } from "react";
-import Barq, { User } from "@barq/barq";
+import Barq, { User } from "@barqdb/barq";
 import { Button, Text, View } from "react-native";
 import { act, fireEvent, render, renderHook, waitFor } from "@testing-library/react-native";
 

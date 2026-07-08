@@ -39,6 +39,6 @@ export default [
       },
     ],
     plugins: [nodeResolve(), commonjs(), typescript({ noEmitOnError: true })],
-    external: ["barq", "react", "@barq/common"],
+    external: ["barq", "react", "@barqdb/common"],
   },
 ];

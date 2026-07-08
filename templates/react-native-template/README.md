@@ -9,7 +9,7 @@ This app implements a simple todo list, using Barq for persistence and the [Barq
 ## 🚀 How to use
 
 ```
-npx react-native init AwesomeBarqProject --template @barq/react-native-template
+npx react-native init AwesomeBarqProject --template @barqdb/react-native-template
 ```
 
 ## 🏃 How to build and run locally
@@ -43,4 +43,4 @@ See https://github.com/BarqDB/barq-js/blob/main/templates/docs/sync-setup.md for
 - [React Hooks](https://reactjs.org/docs/hooks-intro.html)
 - [Setting Up Barq Sync](https://docs.barq.com/barq/sdk/react-native/quick-start/)
 - [Barq JS Documentation](https://docs.barq.com/barq/sdk/react-native/)
-- [@barq/react Readme](https://github.com/BarqDB/barq-js/tree/master/packages/react#readme)
+- [@barqdb/react Readme](https://github.com/BarqDB/barq-js/tree/master/packages/react#readme)

@@ -27,16 +27,16 @@ Object.defineProperty(safeGlobalThis, "Barq", {
   get() {
     if (flags.THROW_ON_GLOBAL_BARQ) {
       throw new Error(
-        "Accessed global Barq, please update your code to ensure you import Barq:\nimport Barq from '@barq/barq';",
+        "Accessed global Barq, please update your code to ensure you import Barq:\nimport Barq from '@barqdb/barq';",
       );
     } else if (!warnedAboutGlobalBarqUse) {
       // eslint-disable-next-line no-console
       console.warn(
         "Your app is relying on a Barq global, which will be removed in barq-js v13, please update your code to ensure you import Barq:\n\n",
-        'import Barq from "@barq/barq"; // For ES Modules\n',
-        'const Barq = require("@barq/barq"); // For CommonJS\n\n',
+        'import Barq from "@barqdb/barq"; // For ES Modules\n',
+        'const Barq = require("@barqdb/barq"); // For CommonJS\n\n',
         "To determine where, put this in the top of your index file:\n",
-        `import Barq from "@barq/barq";\n`,
+        `import Barq from "@barqdb/barq";\n`,
         `Barq.flags.THROW_ON_GLOBAL_BARQ = true`,
       );
       warnedAboutGlobalBarqUse = true;

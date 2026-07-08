@@ -17,7 +17,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-import Barq from "@barq/barq";
+import Barq from "@barqdb/barq";
 import React from "react";
 import { createBarqContext } from "./BarqContext";
 

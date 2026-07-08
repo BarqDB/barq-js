@@ -1,5 +1,5 @@
 import React from 'react';
-import {AppProvider, UserProvider} from '@barq/react';
+import {AppProvider, UserProvider} from '@barqdb/react';
 import {SafeAreaView, StyleSheet} from 'react-native';
 
 import {schemas} from './models';
@@ -7,8 +7,8 @@ import {LoginScreen} from './components/LoginScreen';
 import colors from './styles/colors';
 import {AppSync} from './AppSync';
 
-import {BarqProvider} from '@barq/react';
-import {OpenBarqBehaviorType, OpenBarqTimeOutBehavior} from '@barq/barq';
+import {BarqProvider} from '@barqdb/react';
+import {OpenBarqBehaviorType, OpenBarqTimeOutBehavior} from '@barqdb/barq';
 
 export const AppWrapperSync: React.FC<{
   appId: string;

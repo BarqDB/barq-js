@@ -11,7 +11,7 @@
     "noEmit": false,
     "allowImportingTsExtensions": false,
     "types": [
-      "@barq/fetch",
+      "@barqdb/fetch",
       "react-native",
       "path-browserify"
     ],

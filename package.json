@@ -1,5 +1,5 @@
 {
-  "name": "@barq/root",
+  "name": "@barqdb/root",
   "description": "Mono-repository root for the Barq JS SDK",
   "private": true,
   "license": "apache-2.0",

@@ -10,7 +10,7 @@
 * [Details on debugging C++](#details-on-debugging-c)
    * [Visual Studio Code configurations](#visual-studio-code-configurations)
       * [Configuration: LLDB & Node: Integration tests](#configuration-lldb-node-integration-tests)
-      * [Configuration: LLDB & Node: @barq/react](#configuration-lldb-node-barqreact-tests)
+      * [Configuration: LLDB & Node: @barqdb/react](#configuration-lldb-node-barqreact-tests)
       * [Configuration: LLDB: Node REPL](#configuration-lldb-node-repl)
       * [Configuration: LLDB: Attach to Process](#configuration-lldb-attach-to-process)
    * [Working with lldb in VS Code](#working-with-lldb-in-vs-code)
@@ -40,7 +40,7 @@ Then you will need the following plugins for VS Code:
 ## Debugging Barq Integration Tests Through Example
 
 [//]: # "TODO: Need to look into the following error:"
-[//]: # "Error: Cannot find module '/<path>/barq-js/integration-tests/tests/@barq/mocha-reporter'"
+[//]: # "Error: Cannot find module '/<path>/barq-js/integration-tests/tests/@barqdb/mocha-reporter'"
 [//]: # "May have to do with `--loader` vs `--import`?"
 
 First let's take a look at [.vscode/launch.json](https://github.com/BarqDB/barq-js/blob/main/.vscode/launch.json). This contains various ways to launch commands from VS Code. For this example we will look at the command `LLDB & Node: Integration tests`:
@@ -139,9 +139,9 @@ By default, running the tests will prompt you for a string to filter out which t
 
 This configuration will run the [integration tests](https://github.com/BarqDB/barq-js/tree/main/integration-tests/tests) with `lldb` attached. This option is the combination of the configurations `Node: Attach to process` and `LLDB: Integration tests`, enabling you to switch between their stack traces and placing breakpoints in C++ files.
 
-### Configuration: LLDB & Node: @barq/react
+### Configuration: LLDB & Node: @barqdb/react
 
-This configuration will run the [@barq/react tests](https://github.com/BarqDB/barq-js/tree/main/packages/react/src/__tests__) with `lldb` attached. This option is the combination of the configurations `Node: Attach to process` and `LLDB: Barq React Tests`, enabling you to switch between their stack traces and placing breakpoints in C++ files.
+This configuration will run the [@barqdb/react tests](https://github.com/BarqDB/barq-js/tree/main/packages/react/src/__tests__) with `lldb` attached. This option is the combination of the configurations `Node: Attach to process` and `LLDB: Barq React Tests`, enabling you to switch between their stack traces and placing breakpoints in C++ files.
 
 ### Configuration: LLDB: Node REPL
 

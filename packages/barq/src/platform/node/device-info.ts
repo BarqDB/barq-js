@@ -20,7 +20,7 @@
 import os from "node:os";
 import process from "node:process";
 
-import { config, version } from "@barq/barq/package.json";
+import { config, version } from "@barqdb/barq/package.json";
 
 import { inject } from "../device-info";
 

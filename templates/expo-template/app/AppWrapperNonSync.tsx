@@ -4,7 +4,7 @@ import {SafeAreaView, StyleSheet} from 'react-native';
 import colors from './styles/colors';
 import {AppNonSync} from './AppNonSync';
 
-import {BarqProvider} from '@barq/react';
+import {BarqProvider} from '@barqdb/react';
 import {schemas} from './models';
 
 export const AppWrapperNonSync = () => {

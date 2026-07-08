@@ -3,7 +3,7 @@ import React from 'react';
 import {Task} from './models/Task';
 import {TaskManager} from './components/TaskManager';
 
-import {useQuery} from '@barq/react';
+import {useQuery} from '@barqdb/react';
 
 export const AppNonSync = () => {
   const [showDone, setShowDone] = React.useState(false);

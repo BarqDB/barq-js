@@ -1,5 +1,5 @@
 {
-  "name": "@barq/react-native-template",
+  "name": "@barqdb/react-native-template",
   "version": "0.7.0",
   "description": "Barq Template for React Native",
   "scripts": {

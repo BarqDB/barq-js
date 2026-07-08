@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useApp, useAuth, useQuery, useBarq, useUser} from '@barq/react';
+import {useApp, useAuth, useQuery, useBarq, useUser} from '@barqdb/react';
 import {Pressable, StyleSheet, Text} from 'react-native';
 
 import {Task} from './models/Task';

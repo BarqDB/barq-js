@@ -20,7 +20,7 @@
 import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
 import React, { useEffect, useState } from "react";
 import { FlatList, ListRenderItem, Text, TextInput, TouchableHighlight, View } from "react-native";
-import Barq from "@barq/barq";
+import Barq from "@barqdb/barq";
 
 import { createUseObject } from "../useObject";
 import { randomBarqPath } from "./helpers";

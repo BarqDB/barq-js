@@ -18,7 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 import React, { useContext, useEffect, useRef, useState } from "react";
-import Barq from "@barq/barq";
+import Barq from "@barqdb/barq";
 import isEqual from "lodash.isequal";
 
 import { UserContext } from "./UserProvider";

@@ -1,5 +1,5 @@
 {
-  "name": "@barq/js-bindgen",
+  "name": "@barqdb/js-bindgen",
   "private": true,
   "type": "module",
   "version": "1.0.0"

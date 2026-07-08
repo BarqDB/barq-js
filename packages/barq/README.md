@@ -3,26 +3,26 @@ Copyright (c) 2026 the Barq authors
 Licensed under the Apache License, Version 2.0. See LICENSE and NOTICE.
 -->
 
-# @barq/barq
+# @barqdb/barq
 
 The core [Barq](https://github.com/BarqDB/barq-js) database SDK for JavaScript
 and TypeScript — an offline-first object database for Node.js, Electron and
 React Native, with optional synchronization powered by
 [barq-core](https://github.com/BarqDB/barq-core).
 
-`@barq/barq` is a modified fork of the `barq` package from the Barq JavaScript
+`@barqdb/barq` is a modified fork of the `barq` package from the Barq JavaScript
 SDK. See the top-level [NOTICE](../../NOTICE) for fork attribution.
 
 ## Install
 
 ```sh
-npm install @barq/barq
+npm install @barqdb/barq
 ```
 
 ## Usage
 
 ```ts
-import { Barq } from "@barq/barq";
+import { Barq } from "@barqdb/barq";
 
 class Task extends Barq.Object<Task> {
   _id!: Barq.Types.ObjectId;

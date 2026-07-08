@@ -23,7 +23,7 @@ import {
   ProgressDirection,
   ProgressMode,
   ProgressNotificationCallback,
-} from "@barq/barq";
+} from "@barqdb/barq";
 import { render } from "@testing-library/react-native";
 
 import { callMockedProgressNotifications, mockSyncedBarq } from "./mocks";

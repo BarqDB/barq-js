@@ -17,7 +17,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-import Barq from "@barq/barq";
+import Barq from "@barqdb/barq";
 
 // Convenience function that returns the correct type for the objectForPrimaryKey function
 // Since we don't have a combined declaration for this function, typescript needs to know

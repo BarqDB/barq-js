@@ -1,5 +1,5 @@
 import React from 'react';
-import Barq from '@barq/barq';
+import Barq from '@barqdb/barq';
 import {View, Text, Pressable, StyleSheet} from 'react-native';
 
 import {shadows} from '../styles/shadows';

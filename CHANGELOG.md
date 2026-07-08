@@ -11,10 +11,10 @@ Barq JS is the initial fork. See NOTICE for upstream attribution.
 
 ### Breaking changes vs. the upstream SDK
 
-- **Rebranded** to Barq. The main package is `@barq/barq` (default export `Barq`),
-  and the scoped packages are published under the `@barq` npm org
-  (`@barq/react`, `@barq/babel-plugin`, `@barq/common`, `@barq/fetch`,
-  `@barq/tools`, `@barq/mocha-reporter`).
+- **Rebranded** to Barq. The main package is `@barqdb/barq` (default export `Barq`),
+  and the scoped packages are published under the `@barqdb` npm org
+  (`@barqdb/react`, `@barqdb/babel-plugin`, `@barqdb/common`, `@barqdb/fetch`,
+  `@barqdb/tools`, `@barqdb/mocha-reporter`).
 - **Removed Barq / Barq / App Services.** The `App`, `Credentials`, email &
   API-key auth providers, Functions, Push, and the Barq data-access client
   have been removed. The `barq-web` SDK, the app importer and the BaaS test

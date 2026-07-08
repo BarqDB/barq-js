@@ -17,7 +17,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-import Barq from "@barq/barq";
+import Barq from "@barqdb/barq";
 import { renderHook } from "@testing-library/react-native";
 
 import { createUseQuery } from "../useQuery";

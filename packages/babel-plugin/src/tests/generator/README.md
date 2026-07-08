@@ -1,4 +1,4 @@
-# Test Generator for the `@barq/babel-plugin` package
+# Test Generator for the `@barqdb/babel-plugin` package
 
 ```mermaid
 flowchart TD

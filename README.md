@@ -17,26 +17,26 @@ and no bundled Types dependency. See [NOTICE](./NOTICE) for fork attribution.
 
 | npm package            | Path                       | Description                                   |
 | ---------------------- | -------------------------- | --------------------------------------------- |
-| `@barq/barq`           | `packages/barq`           | The core database SDK (native, binds barq-core) |
-| `@barq/react`          | `packages/react`     | React / React Native hooks and providers      |
-| `@barq/babel-plugin`   | `packages/babel-plugin`    | Babel plugin for schema-from-class syntax     |
-| `@barq/common`         | `packages/common`    | Cross-package shared utilities                |
-| `@barq/fetch`          | `packages/fetch`           | Minimal fetch abstraction                     |
-| `@barq/tools`          | `packages/tools`     | Developer tooling                             |
-| `@barq/mocha-reporter` | `packages/mocha-reporter`  | Mocha reporter used by the test suites        |
+| `@barqdb/barq`           | `packages/barq`           | The core database SDK (native, binds barq-core) |
+| `@barqdb/react`          | `packages/react`     | React / React Native hooks and providers      |
+| `@barqdb/babel-plugin`   | `packages/babel-plugin`    | Babel plugin for schema-from-class syntax     |
+| `@barqdb/common`         | `packages/common`    | Cross-package shared utilities                |
+| `@barqdb/fetch`          | `packages/fetch`           | Minimal fetch abstraction                     |
+| `@barqdb/tools`          | `packages/tools`     | Developer tooling                             |
+| `@barqdb/mocha-reporter` | `packages/mocha-reporter`  | Mocha reporter used by the test suites        |
 
 ## Install
 
 ```sh
-npm install @barq/barq
+npm install @barqdb/barq
 # React Native hooks:
-npm install @barq/react
+npm install @barqdb/react
 ```
 
 ## Quick start (local database)
 
 ```ts
-import { Barq } from "@barq/barq";
+import { Barq } from "@barqdb/barq";
 
 class Task extends Barq.Object<Task> {
   _id!: Barq.Types.ObjectId;
@@ -67,7 +67,7 @@ your own identity provider, build a token-based sync user, and open a synced
 database:
 
 ```ts
-import { Barq } from "@barq/barq";
+import { Barq } from "@barqdb/barq";
 
 const user = Barq.User.fromToken(accessToken, { route: "https://sync.example.com" });
 
@@ -98,7 +98,7 @@ Barq ships its own value types (no third-party Types dependency):
 
 ## Building
 
-CI builds the barq-core native engine and the Barq value types on every push. See [BUILDING.md](./BUILDING.md) for the build matrix and the status of the native `@barq/barq` addon.
+CI builds the barq-core native engine and the Barq value types on every push. See [BUILDING.md](./BUILDING.md) for the build matrix and the status of the native `@barqdb/barq` addon.
 
 ## License
 

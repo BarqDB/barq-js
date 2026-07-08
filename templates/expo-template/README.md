@@ -13,7 +13,7 @@ Simple Expo template to quickly get started with Barq.
 Use the following command to generate your template:
 
 ```
-npx create-expo-app MyAwesomeBarqApp --template @barq/expo-template
+npx create-expo-app MyAwesomeBarqApp --template @barqdb/expo-template
 ```
 
 NOTE: version of `npm` before v9 may cause problems when initializing the template.  If the initialization fails, please upgrade to the latest `npm` and try again.
@@ -62,4 +62,4 @@ See https://github.com/BarqDB/barq-js/blob/master/templates/docs/sync-setup.md f
 - [React Hooks](https://reactjs.org/docs/hooks-intro.html)
 - [Setting Up Barq Sync](https://docs.barq.com/barq/sdk/react-native/quick-start/)
 - [Barq JS Documentation](https://docs.barq.com/barq/sdk/react-native/)
-- [@barq/react Readme](https://github.com/BarqDB/barq-js/tree/master/packages/react#readme)
+- [@barqdb/react Readme](https://github.com/BarqDB/barq-js/tree/master/packages/react#readme)

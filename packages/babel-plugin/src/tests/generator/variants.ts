@@ -17,7 +17,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-import { PropertyTypeName } from "@barq/barq";
+import { PropertyTypeName } from "@barqdb/barq";
 
 type SourceCode = { source: string };
 

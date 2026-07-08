@@ -19,7 +19,7 @@
 
 import * as babel from "@babel/core";
 
-import type { ObjectSchema, PropertySchema } from "@barq/barq";
+import type { ObjectSchema, PropertySchema } from "@barqdb/barq";
 
 import { describeProperty, extractSchema } from "./tests/generator";
 import { transformProperty } from "./tests/generator/transform";
@@ -55,60 +55,60 @@ describe("Babel plugin", () => {
       },
     );
 
-    describe("importing from '@barq/barq'", () => {
+    describe("importing from '@barqdb/barq'", () => {
       itTransformsSchema(
-        "transform class using via `import * as Barq from '@barq/barq'`",
-        "import * as Barq from '@barq/barq'; class Person extends Barq.Object {}",
+        "transform class using via `import * as Barq from '@barqdb/barq'`",
+        "import * as Barq from '@barqdb/barq'; class Person extends Barq.Object {}",
         (schema) => {
           expect(schema && schema.name).toBe("Person");
         },
       );
 
       itTransformsSchema(
-        "transform class using via `import Barq from '@barq/barq'`",
-        "import Barq from '@barq/barq'; class Person extends Barq.Object {}",
+        "transform class using via `import Barq from '@barqdb/barq'`",
+        "import Barq from '@barqdb/barq'; class Person extends Barq.Object {}",
         (schema) => {
           expect(schema && schema.name).toBe("Person");
         },
       );
 
       itTransformsSchema(
-        "transform class using via `import { Object } from '@barq/barq'`",
-        "import { Object } from '@barq/barq'; class Person extends Object {}",
+        "transform class using via `import { Object } from '@barqdb/barq'`",
+        "import { Object } from '@barqdb/barq'; class Person extends Object {}",
         (schema) => {
           expect(schema && schema.name).toBe("Person");
         },
       );
 
       itTransformsSchema(
-        "transform class using `import Barq, { Object } from '@barq/barq'`",
-        "import Barq, { Object } from '@barq/barq'; class Person extends Object {}",
+        "transform class using `import Barq, { Object } from '@barqdb/barq'`",
+        "import Barq, { Object } from '@barqdb/barq'; class Person extends Object {}",
         (schema) => {
           expect(schema && schema.name).toBe("Person");
         },
       );
 
       itTransformsSchema(
-        "transform class using via `import { Object } from '@barq/barq'` and providing type argument",
-        "import { Object } from '@barq/barq'; class Person extends Object<Person> {}",
+        "transform class using via `import { Object } from '@barqdb/barq'` and providing type argument",
+        "import { Object } from '@barqdb/barq'; class Person extends Object<Person> {}",
         (schema) => {
           expect(schema && schema.name).toBe("Person");
         },
       );
     });
 
-    describe("importing from '@barq/react'", () => {
+    describe("importing from '@barqdb/react'", () => {
       itTransformsSchema(
-        "transform class using via `import * as BarqReact from '@barq/react'`",
-        "import * as BarqReact from '@barq/react'; class Person extends BarqReact.Barq.Object {}",
+        "transform class using via `import * as BarqReact from '@barqdb/react'`",
+        "import * as BarqReact from '@barqdb/react'; class Person extends BarqReact.Barq.Object {}",
         (schema) => {
           expect(schema && schema.name).toBe("Person");
         },
       );
 
       itTransformsSchema(
-        "transform class using via `import { Barq } from '@barq/react'`",
-        "import { Barq } from '@barq/react'; class Person extends Barq.Object {}",
+        "transform class using via `import { Barq } from '@barqdb/react'`",
+        "import { Barq } from '@barqdb/react'; class Person extends Barq.Object {}",
         (schema) => {
           expect(schema && schema.name).toBe("Person");
         },
@@ -367,7 +367,7 @@ describe("Babel plugin", () => {
 
     it("handles `@index` decorators from the Barq import", () => {
       const transformCode = transform({
-        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barq/barq";
+        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barqdb/barq";
         export class Person extends Barq.Object { @Barq.index name: Barq.Types.String; }`,
       });
       const parsedSchema = extractSchema(transformCode);
@@ -377,7 +377,7 @@ describe("Babel plugin", () => {
 
     it("ignores `@index` decorators not imported from `barq`", () => {
       const transformCode = transform({
-        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barq/barq";
+        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barqdb/barq";
         export class Person extends Barq.Object { @index name: Barq.Types.String; }`,
       });
       const parsedSchema = extractSchema(transformCode);
@@ -400,7 +400,7 @@ describe("Babel plugin", () => {
 
     it('handles `@index("full-text")` decorators from the Barq import', () => {
       const transformCode = transform({
-        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barq/barq";
+        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barqdb/barq";
         export class Person extends Barq.Object { @Barq.index("full-text") name: Barq.Types.String; }`,
       });
       const parsedSchema = extractSchema(transformCode);
@@ -410,7 +410,7 @@ describe("Babel plugin", () => {
 
     it('ignores `@index("full-text")` decorators not imported from `barq`', () => {
       const transformCode = transform({
-        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barq/barq";
+        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barqdb/barq";
         export class Person extends Barq.Object { @index("full-text") name: Barq.Types.String; }`,
       });
       const parsedSchema = extractSchema(transformCode);
@@ -433,7 +433,7 @@ describe("Babel plugin", () => {
 
     it("handles `@mapTo` decorators from the Barq import", () => {
       const transformCode = transform({
-        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barq/barq";
+        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barqdb/barq";
         export class Person extends Barq.Object { @Barq.mapTo('rename') name: Barq.Types.String; }`,
       });
       const parsedSchema = extractSchema(transformCode);
@@ -443,7 +443,7 @@ describe("Babel plugin", () => {
 
     it("handles `@mapTo` decorators on Barq.List", () => {
       const transformCode = transform({
-        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barq/barq";
+        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barqdb/barq";
         export class Person extends Barq.Object { @Barq.mapTo('rename') name: Barq.Types.List<Person>; }`,
       });
       const parsedSchema = extractSchema(transformCode);
@@ -453,7 +453,7 @@ describe("Babel plugin", () => {
 
     it("ignores `@mapTo` decorators not imported from `barq`", () => {
       const transformCode = transform({
-        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barq/barq";
+        source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barqdb/barq";
         export class Person extends Barq.Object { @mapTo("rename") name: Barq.Types.String; }`,
       });
       const parsedSchema = extractSchema(transformCode);
@@ -521,7 +521,7 @@ describe("Babel plugin", () => {
     it("outputs an error and does not transform if a non-Typescript source file contains a class extending Barq.Object", () => {
       transform({
         source: `
-import Barq, { Types, List, Set, Dictionary, Mixed } from "@barq/barq";
+import Barq, { Types, List, Set, Dictionary, Mixed } from "@barqdb/barq";
 
 class Test extends Barq.Object {
   static schema = {
@@ -538,7 +538,7 @@ class Test extends Barq.Object {
       expect(console.warn).toHaveBeenCalledTimes(1);
       expect(console.warn).toHaveBeenLastCalledWith(
         expect.stringMatching(
-          new RegExp("@barq/babel-plugin can only be used with Typescript source files. Ignoring.*"),
+          new RegExp("@barqdb/babel-plugin can only be used with Typescript source files. Ignoring.*"),
         ),
       );
     });

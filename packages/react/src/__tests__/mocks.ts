@@ -18,7 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 import { act } from "@testing-library/react-native";
-import { EstimateProgressNotificationCallback, ProgressBarqPromise, Barq } from "@barq/barq";
+import { EstimateProgressNotificationCallback, ProgressBarqPromise, Barq } from "@barqdb/barq";
 import { sleep } from "./helpers";
 
 /**

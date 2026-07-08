@@ -10,11 +10,11 @@
     "test": "jest"
   },
   "dependencies": {
-    "@barq/react": "^0.6.0",
+    "@barqdb/react": "^0.6.0",
     "react": "18.2.0",
     "react-native": "0.73.2",
     "react-native-get-random-values": "^1.9.0",
-    "@barq/barq": "12.5.1"
+    "@barqdb/barq": "12.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -17,7 +17,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-import { fetch } from "@barq/fetch";
+import { fetch } from "@barqdb/fetch";
 
 type NetworkType = { fetch: typeof fetch };
 

@@ -1,5 +1,5 @@
 {
-  "name": "@barq/react",
+  "name": "@barqdb/react",
   "version": "1.20.0",
   "description": "React specific hooks and implementation helpers for Barq",
   "type": "module",
@@ -63,12 +63,12 @@
     "react": "19.1.1",
     "react-native": "0.80.2",
     "react-test-renderer": "19.1.1",
-    "@barq/barq": "*",
+    "@barqdb/barq": "*",
     "ts-jest": "^29.1.2"
   },
   "peerDependencies": {
     "react": ">=17.0.2",
-    "@barq/barq": ">=21.0.0"
+    "@barqdb/barq": ">=21.0.0"
   },
   "optionalDependencies": {
     "@babel/runtime": ">=7",

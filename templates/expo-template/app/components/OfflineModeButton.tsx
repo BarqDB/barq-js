@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {StyleSheet, Switch, Text, View} from 'react-native';
-import {useBarq} from '@barq/react';
+import {useBarq} from '@barqdb/react';
 
 export function OfflineModeButton() {
   const barq = useBarq();

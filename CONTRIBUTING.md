@@ -49,7 +49,7 @@ cd barq-js
 # Install dependencies
 npm install
 # Run the node tests (which will transitively generate the binding, build the SDK, etc.)
-npm test --workspace @barq/node-tests
+npm test --workspace @barqdb/node-tests
 ```
 
 ## Running the "sync test" (requires running the sync server, a.k.a. baas)
@@ -69,9 +69,9 @@ BAASAAS_KEY="..."
 
 ```shell
 # Start the server
-npm start --workspace @barq/baas-test-server
+npm start --workspace @barqdb/baas-test-server
 # Run the tests (which will no longer skip sync tests)
-npm test --workspace @barq/node-tests
+npm test --workspace @barqdb/node-tests
 ```
 
 <!-- TODO: Create a guide on running tests on the other supported platforms -->

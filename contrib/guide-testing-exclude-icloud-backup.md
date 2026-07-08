@@ -10,7 +10,7 @@
 Ensure you have booted a simulator and execute the integration tests on iOS:
 
 ```sh
-MOCHA_REMOTE_GREP='icloud' npm run test:ios --workspace @barq/react-native-test-app-tests
+MOCHA_REMOTE_GREP='icloud' npm run test:ios --workspace @barqdb/react-native-test-app-tests
 ```
 
 In the command above, we're explicitly grepping for the icloud backup tests.

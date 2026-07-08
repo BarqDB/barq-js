@@ -21,13 +21,13 @@ import { types } from "@babel/core";
 import generate from "@babel/generator";
 import traverse from "@babel/traverse";
 
-import type { ObjectSchema } from "@barq/barq";
+import type { ObjectSchema } from "@barqdb/barq";
 
 import { transform } from "../transform";
 
 export function transformProperty(propertyCode: string): babel.BabelFileResult {
   const source = `
-    import Barq, { Types, List, Set, Dictionary, Mixed, index, mapTo } from "@barq/barq";
+    import Barq, { Types, List, Set, Dictionary, Mixed, index, mapTo } from "@barqdb/barq";
 
     export class Person extends Barq.Object { ${propertyCode} }
   `;

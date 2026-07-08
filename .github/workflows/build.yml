@@ -94,7 +94,7 @@ jobs:
         run: npx --yes tsx packages/barq/src/types/__ci_test.ts
 
   # Generates the JS<->C++ binding from barq-core's spec and compiles the native
-  # @barq/barq node addon (linking barq-core).
+  # @barqdb/barq node addon (linking barq-core).
   napi:
     name: Native addon (Linux)
     runs-on: ubuntu-latest
@@ -121,8 +121,8 @@ jobs:
 
       - name: Generate the binding (wrapper + jsi)
         run: |
-          npm run bindgen:wrapper --workspace @barq/barq
-          npm run bindgen:jsi --workspace @barq/barq
+          npm run bindgen:wrapper --workspace @barqdb/barq
+          npm run bindgen:jsi --workspace @barqdb/barq
 
       - name: Show generated binding
         run: |
@@ -130,7 +130,7 @@ jobs:
           echo "jsi_init.cpp:"; wc -l packages/barq/binding/jsi/jsi_init.cpp
 
       - name: Build the native addon
-        run: npm run build:node --workspace @barq/barq
+        run: npm run build:node --workspace @barqdb/barq
 
       - name: Verify barq.node was produced
         run: |

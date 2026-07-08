@@ -18,7 +18,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-import Barq from "@barq/barq";
+import Barq from "@barqdb/barq";
 import { ArgumentConfig, parse } from "ts-command-line-args";
 import * as fs from "fs";
 

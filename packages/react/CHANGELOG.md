@@ -42,7 +42,7 @@
 ### Enhancements
 * Added `useProgress` hook which provides a convenient way to access Barq's progress information. It works in a similar way as `barq.addProgressNotification`. ([#6797](https://github.com/BarqDB/barq-js/issues/6797))
 ```tsx
-import { BarqProvider, ProgressDirection, ProgressMode } from "@barq/react";
+import { BarqProvider, ProgressDirection, ProgressMode } from "@barqdb/react";
 
 const ProgressText = () => {
 	const progress = useProgress({ direction: ProgressDirection.Download, mode: ProgressMode.ReportIndefinitely });
@@ -60,7 +60,7 @@ const MyApp() = () => {
 ```
 * Added the ability to get `progress` information in `fallback` component of `BarqProvider` when opening a synced Barq. ([#6785](https://github.com/BarqDB/barq-js/issues/6785))
 ```tsx
-import { BarqProvider, BarqProviderFallback } from "@barq/react";
+import { BarqProvider, BarqProviderFallback } from "@barqdb/react";
 
 const Fallback: BarqProviderFallback = ({ progress }) => {
 	return <Text>Loading:{(100 * progress).toFixed()}%</Text>;
@@ -87,7 +87,7 @@ const MyApp() = () => {
 ### Enhancements
 * Added the ability to pass an existing `Barq.App` instance in `AppProvider` with the `app` prop. ([#6785](https://github.com/BarqDB/barq-js/issues/6785))
 ```jsx
-import { AppProvider } from "@barq/react";
+import { AppProvider } from "@barqdb/react";
 
 const app = new Barq.App(...);
 
@@ -114,7 +114,7 @@ function MyApp() {
 * Added the ability to use an existing Barq instance in `BarqProvider` and `createBarqContext`. ([#6714](https://github.com/BarqDB/barq-js/pull/6714))
 ```jsx
 // Using BarqProvider
-import { BarqProvider } from "@barq/react";
+import { BarqProvider } from "@barqdb/react";
 
 const barq = new Barq(...);
 
@@ -127,7 +127,7 @@ function MyApp() {
 }
 
 // Using createBarqContext
-import { createBarqContext } from "@barq/react";
+import { createBarqContext } from "@barqdb/react";
 
 const barq = new Barq(...);
 const { BarqProvider, useBarq } = createBarqContext(barq);
@@ -215,7 +215,7 @@ function MyApp() {
 ## 0.5.2 (2023-08-09)
 
 ### Fixed
-* Fixed using `@barq/react` in jest tests, by providing a common js distribution. ([#6049](https://github.com/BarqDB/barq-js/issues/6049)
+* Fixed using `@barqdb/react` in jest tests, by providing a common js distribution. ([#6049](https://github.com/BarqDB/barq-js/issues/6049)
 
 ### Compatibility
 * React Native >= v0.71.4
@@ -251,12 +251,12 @@ function MyApp() {
 	    );
 	};
 	```
-* Create a default context so the `BarqProvider`, `useQuery`, `useBarq`, and `useObject` can be directly imported from `@barq/react` ([#5292](https://github.com/BarqDB/barq-js/issue/5292))
+* Create a default context so the `BarqProvider`, `useQuery`, `useBarq`, and `useObject` can be directly imported from `@barqdb/react` ([#5292](https://github.com/BarqDB/barq-js/issue/5292))
 
   Example:
 	```tsx
 	// These imports are now available without calling `createBarqContext`
-	import {BarqProvider, useQuery} from '@barq/react'
+	import {BarqProvider, useQuery} from '@barqdb/react'
 	//...
 	// Provider your schema models directly to the barq provider
 	<BarqProvider schema={[Item]}>
@@ -344,7 +344,7 @@ function MyApp() {
 ## 0.3.2 (2022-07-14)
 ### Fixed
 * Fix peer dependency for Barq in package.json to support `-rc` branches of Barq ([#4621](https://github.com/BarqDB/barq-js/issues/4621))
-* Add generic type parameters to `@barq/react` hooks ([#4716](https://github.com/BarqDB/barq-js/pull/4716))
+* Add generic type parameters to `@barqdb/react` hooks ([#4716](https://github.com/BarqDB/barq-js/pull/4716))
 
 ## 0.3.1 (2022-05-31)
 
@@ -362,7 +362,7 @@ function MyApp() {
 * Add UserProvider and useUser hook ([#4557](https://github.com/BarqDB/barq-js/pull/4557)). Usage example:
 
 ```
-import {AppProvider, UserProvider} from '@barq/react'
+import {AppProvider, UserProvider} from '@barqdb/react'
 //...
 // Wrap your BarqProvider with the AppProvider and provide an appId
 <AppProvider id={appId}>
@@ -375,7 +375,7 @@ import {AppProvider, UserProvider} from '@barq/react'
 </AppProvider>
 
 // Access the app instance using the useApp hook
-import {useUser} from '@barq/react'
+import {useUser} from '@barqdb/react'
 
 const SomeComponent = () => {
 	const user = useUser()
@@ -387,7 +387,7 @@ const SomeComponent = () => {
 * Add AppProvider and useApp hook ([#4470](https://github.com/BarqDB/barq-js/pull/4470)). Usage example:
 
 ```
-import {AppProvider} from '@barq/react'
+import {AppProvider} from '@barqdb/react'
 //...
 // Wrap your BarqProvider with the AppProvider and provide an appId
 <AppProvider id={appId}>
@@ -397,7 +397,7 @@ import {AppProvider} from '@barq/react'
 </AppProvider>
 
 // Access the app instance using the useApp hook
-import {useApp} from '@barq/react'
+import {useApp} from '@barqdb/react'
 
 const SomeComponent = () => {
 	const app = useApp()
@@ -442,7 +442,7 @@ const SomeComponent = () => {
 
 ### Enhancements
 
-* Add ability to import `Barq` directly from `@barq/react`
+* Add ability to import `Barq` directly from `@barqdb/react`
 * Add cachedObject and cachedCollection
   * Ensures that React.Memo that have Barq.Object/Collection as a property only rerender on actual changes
   * Increased compatability with VirtualizedList/FlatList

@@ -128,7 +128,7 @@ const PROXY_HANDLER: ProxyHandler<BarqObject<any>> = {
  * }
  * ```
  * @example
- * If using the [@barq/babel-plugin](https://www.npmjs.com/package/@barq/babel-plugin):
+ * If using the [@barqdb/babel-plugin](https://www.npmjs.com/package/@barqdb/babel-plugin):
  * To define a class `Person` with required `name` and `age` properties, they would
  * need to be specified in the type argument when it is being constructed to allow
  * Typescript-only model definitions:
@@ -159,17 +159,17 @@ export class BarqObject<T = DefaultObject, RequiredProperties extends keyof Omit
   public static allowValuesArrays = false;
 
   /**
-   * Optionally specify the primary key of the schema when using [@barq/babel-plugin](https://www.npmjs.com/package/@barq/babel-plugin).
+   * Optionally specify the primary key of the schema when using [@barqdb/babel-plugin](https://www.npmjs.com/package/@barqdb/babel-plugin).
    */
   static primaryKey?: string;
 
   /**
-   * Optionally specify that the schema is an embedded schema when using [@barq/babel-plugin](https://www.npmjs.com/package/@barq/babel-plugin).
+   * Optionally specify that the schema is an embedded schema when using [@barqdb/babel-plugin](https://www.npmjs.com/package/@barqdb/babel-plugin).
    */
   static embedded?: boolean;
 
   /**
-   * Optionally specify that the schema should sync unidirectionally if using flexible sync when using [@barq/babel-plugin](https://www.npmjs.com/package/@barq/babel-plugin).
+   * Optionally specify that the schema should sync unidirectionally if using flexible sync when using [@barqdb/babel-plugin](https://www.npmjs.com/package/@barqdb/babel-plugin).
    */
   static asymmetric?: boolean;
 

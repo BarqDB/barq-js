@@ -1,6 +1,6 @@
 # Contribution Guide
 ## Introduction
-We are extremely happy for any contributions to `@barq/react`.  While we (the Barq team) are working hard to provide you the best possible experience as developers, we have a long backlog of things we want to do. If you are having an issue with or an idea for this package and want to take it on yourself, feel free to open a PR and we will help guide you to get it merged.
+We are extremely happy for any contributions to `@barqdb/react`.  While we (the Barq team) are working hard to provide you the best possible experience as developers, we have a long backlog of things we want to do. If you are having an issue with or an idea for this package and want to take it on yourself, feel free to open a PR and we will help guide you to get it merged.
 
 That being said, the following should be considered along with the code changes:
 * Regression tests that fail without the code changes and pass with the code changes
@@ -15,7 +15,7 @@ That being said, the following should be considered along with the code changes:
 
 
 ## Building and Running the Tests
-`barq-js` is a monorepo that uses `lerna` to dynamically link dependencies.  In the case of `@barq/react`, the `barq` library is linked into the package.  Therefore, one must build `barq` in order to run the `@barq/react` tests.  There is already a [guide for building barq](https://github.com/BarqDB/barq-js/blob/main/contrib/building.md), but an abridged version is provided here.
+`barq-js` is a monorepo that uses `lerna` to dynamically link dependencies.  In the case of `@barqdb/react`, the `barq` library is linked into the package.  Therefore, one must build `barq` in order to run the `@barqdb/react` tests.  There is already a [guide for building barq](https://github.com/BarqDB/barq-js/blob/main/contrib/building.md), but an abridged version is provided here.
 
 It is assumed you are already setup to run a `react-native` project and are on a mac (if not see the [guide for building barq](https://github.com/BarqDB/barq-js/blob/main/contrib/building.md)), so a good amount of the required [pre-req steps](https://github.com/BarqDB/barq-js/blob/main/contrib/building.md#setup-instructions-for-macos) are already accomplished.  One requirement is `cmake`, which can be installed with:
 
@@ -43,12 +43,12 @@ git submodule update --init --recursive
 npm install && npm run build
 ```
 
-* install and link all dependencies to `@barq/react`
+* install and link all dependencies to `@barqdb/react`
 ```
-npx lerna bootstrap --scope @barq/react --include-dependencies
+npx lerna bootstrap --scope @barqdb/react --include-dependencies
 ```
 
-* navigate to `@barq-react` and run the tests
+* navigate to `@barqdb/react` and run the tests
 ```
 cd packages/react
 npm run test

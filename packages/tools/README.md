@@ -6,18 +6,18 @@ This package contains various tools for working with Barq files. Each tool is br
 
 ## Installation
 
-The prerequisite for installing the `@barq/tools` package is a working [node.js](https://nodejs.org/en/) and a package manager.
+The prerequisite for installing the `@barqdb/tools` package is a working [node.js](https://nodejs.org/en/) and a package manager.
 
 npm:
 
 ```sh
-npm install -g @barq/tools
+npm install -g @barqdb/tools
 ```
 
 yarn:
 
 ```sh
-yarn global add @barq/tools
+yarn global add @barqdb/tools
 ```
 
 ## Building

@@ -27,7 +27,7 @@ import {
   createBarqProvider,
 } from "./BarqProvider";
 import { createContext } from "react";
-import Barq from "@barq/barq";
+import Barq from "@barqdb/barq";
 import { createUseProgress } from "./useProgress";
 
 export type BarqContext<BarqProvider = DynamicBarqProvider> = {

@@ -73,9 +73,9 @@ class Task extends Barq.Object<Task, "description"> {
 
 ## Installation
 
-1. Install the `@barq/babel-plugin` npm package:
+1. Install the `@barqdb/babel-plugin` npm package:
 
-   `npm install --save-dev @barq/babel-plugin`
+   `npm install --save-dev @barqdb/babel-plugin`
 
 2. If you don't already have it installed, install the `@babel/plugin-proposal-decorators` package (only required if you need to use the `@index` or `@mapTo` decorators):
 
@@ -93,7 +93,7 @@ class Task extends Barq.Object<Task, "description"> {
      // --------------------------
      // Add the following plugins:
      plugins: [
-       '@barq/babel-plugin',
+       '@barqdb/babel-plugin',
        ['@babel/plugin-proposal-decorators', { legacy: true }],
      ],
      // --------------------------
@@ -116,7 +116,7 @@ You can use property initialiser syntax to specify a default value for a propert
 The recommended pattern for constructing new instances with specified values for properties is to define a constructor which takes the properties as additional arguments. The second type parameter of `Barq.Object` can be used to specify any fields which are required to be specified in the second `fields` when an instance is constructed with `new` - all properties are optional by default.
 
 ```ts
-import Barq from "@barq/barq";
+import Barq from "@barqdb/barq";
 
 // Specify that the name and description fields are required when creating an instance with `new`
 export class Task extends Barq.Object<Task, "name" | "description"> {
@@ -134,7 +134,7 @@ export class Task extends Barq.Object<Task, "name" | "description"> {
 You can also import `Object` and `Types` directly from `barq`:
 
 ```ts
-import { Object, Types, Types } from "@barq/barq";
+import { Object, Types, Types } from "@barqdb/barq";
 
 export class Task extends Object<Task, "name" | "description"> {
   _id = Types.ObjectId();
@@ -187,7 +187,7 @@ Additional schema properties can be specified by adding `static` properties to y
 For example:
 
 ```ts
-import Barq from "@barq/barq";
+import Barq from "@barqdb/barq";
 
 export class Task extends Barq.Object<Task, "description"> {
   _id = new Barq.Types.ObjectId();
@@ -200,7 +200,7 @@ export class Task extends Barq.Object<Task, "description"> {
 
 ### Using decorators to index and remap properties
 
-The `@barq/babel-plugin` package exports decorators to allow you to specify certain properties should be indexed (using the `@index` decorators) or should remap to a Barq schema property with a different name (using the `@mapTo` decorator). To learn more about this functionality, see [the documentation](https://github.com/BarqDB/barq-js).
+The `@barqdb/babel-plugin` package exports decorators to allow you to specify certain properties should be indexed (using the `@index` decorators) or should remap to a Barq schema property with a different name (using the `@mapTo` decorator). To learn more about this functionality, see [the documentation](https://github.com/BarqDB/barq-js).
 
 Note that use of decorators requires using the `@babel/plugin-proposal-decorators` plugin and for `experimentalDecorators` to be enabled in your `tsconfig.json`. There is currently no way to specifying properties to be indexed or remapped without using decorators.
 
@@ -214,8 +214,8 @@ This table shows the available decorators:
 The example below shows both decorators in use:
 
 ```ts
-import Barq from "@barq/barq";
-import { mapTo, index } from "@barq/babel-plugin";
+import Barq from "@barqdb/barq";
+import { mapTo, index } from "@barqdb/babel-plugin";
 
 export class Task extends Barq.Object {
   _id!: Barq.Types.ObjectId;
@@ -247,5 +247,5 @@ To generate the output for your model (let's say it's located in `./models/task.
 
 ```
 npm install --save-dev @babel/cli @babel/preset-typescript
-npx babel --presets @babel/preset-typescript --plugins @barq/babel-plugin ./models/task.ts
+npx babel --presets @babel/preset-typescript --plugins @barqdb/babel-plugin ./models/task.ts
 ```

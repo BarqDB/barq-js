@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, FlatList, StyleSheet} from 'react-native';
-import {Barq} from '@barq/react';
+import {Barq} from '@barqdb/react';
 
 import {Task} from '../models/Task';
 import {TaskItem} from './TaskItem';

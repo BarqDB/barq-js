@@ -18,7 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import Barq from "@barq/barq";
+import Barq from "@barqdb/barq";
 import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
 import { FlatList, ListRenderItem, Text, TextInput, TouchableHighlight, View } from "react-native";
 

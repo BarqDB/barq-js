@@ -1,5 +1,5 @@
 {
-  "name": "@barq/expo-template",
+  "name": "@barqdb/expo-template",
   "version": "0.7.0",
   "description": "Barq Template for Expo",
   "scripts": {
@@ -8,7 +8,7 @@
     "ios": "expo run:ios"
   },
   "dependencies": {
-    "@barq/react": "^0.6.0",
+    "@barqdb/react": "^0.6.0",
     "expo": "^49.0.8",
     "expo-dev-client": "~2.4.8",
     "expo-splash-screen": "~0.20.5",
@@ -16,12 +16,12 @@
     "react": "18.2.0",
     "react-native": "0.72.4",
     "react-native-get-random-values": "~1.9.0",
-    "@barq/barq": "12.0.0"
+    "@barqdb/barq": "12.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.22.5",
     "@babel/plugin-proposal-decorators": "^7.22.5",
-    "@barq/babel-plugin": "^0.1.1",
+    "@barqdb/babel-plugin": "^0.1.1",
     "@types/react": "~18.2.13",
     "typescript": "^5.1.3"
   },

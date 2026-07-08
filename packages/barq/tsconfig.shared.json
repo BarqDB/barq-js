@@ -17,7 +17,7 @@
     "noResolve": true,
     "types": [
       "debug",
-      "@barq/fetch"
+      "@barqdb/fetch"
     ]
   },
   "include": [

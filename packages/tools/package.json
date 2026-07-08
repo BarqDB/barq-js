@@ -1,5 +1,5 @@
 {
-  "name": "@barq/tools",
+  "name": "@barqdb/tools",
   "version": "1.0.1",
   "description": "Tools useful for working with Barqs",
   "bin": {
@@ -51,7 +51,7 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@barq/barq": "*",
+    "@barqdb/barq": "*",
     "ts-command-line-args": "^2.2.1"
   },
   "devDependencies": {

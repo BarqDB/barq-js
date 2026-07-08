@@ -18,7 +18,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 import { useEffect, useMemo, useReducer, useRef } from "react";
-import Barq from "@barq/barq";
+import Barq from "@barqdb/barq";
 
 import { CachedObject, createCachedObject } from "./cachedObject";
 import {

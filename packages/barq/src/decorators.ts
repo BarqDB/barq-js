@@ -19,14 +19,14 @@
 
 /**
  * Decorators are not intended to be used at runtime and are removed from the source
- * by @barq/babel-plugin. Therefore, if a decorator is called, this means it is being
- * used outside of @barq/babel-plugin (or the plugin is incorrectly configured), so
+ * by @barqdb/babel-plugin. Therefore, if a decorator is called, this means it is being
+ * used outside of @barqdb/babel-plugin (or the plugin is incorrectly configured), so
  * we should throw
  */
 class DecoratorError extends Error {
   constructor(name: string) {
     super(
-      `The @${name} decorator cannot be used without the \`@barq/babel-plugin\` Babel plugin. Please check that you have installed and configured the Babel plugin.`,
+      `The @${name} decorator cannot be used without the \`@barqdb/babel-plugin\` Babel plugin. Please check that you have installed and configured the Babel plugin.`,
     );
   }
 }

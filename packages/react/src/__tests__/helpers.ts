@@ -20,7 +20,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
-import { AdminApiClient, AppConfig, AppImporter, Credentials } from "@barq/app-importer";
+import { AdminApiClient, AppConfig, AppImporter, Credentials } from "@barqdb/app-importer";
 import { act, waitFor } from "@testing-library/react-native";
 
 const {

@@ -17,7 +17,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-import Barq from "@barq/barq";
+import Barq from "@barqdb/barq";
 Barq.flags.THROW_ON_GLOBAL_BARQ = true;
 // Enable calling Barq.clearTestState()
 Barq.flags.ALLOW_CLEAR_TEST_STATE = true;

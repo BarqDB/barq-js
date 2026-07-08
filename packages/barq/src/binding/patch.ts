@@ -17,8 +17,8 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-import type { fetch } from "@barq/fetch";
-import { AbortSignal } from "@barq/fetch";
+import type { fetch } from "@barqdb/fetch";
+import { AbortSignal } from "@barqdb/fetch";
 
 /** @internal */
 import type { binding } from "./wrapper.generated";

@@ -53,8 +53,8 @@ export function isImportedFromBarq(path: NodePath<types.Node>): boolean {
 
     if (binding && binding.path.parentPath && binding.path.parentPath.isImportDeclaration()) {
       return (
-        binding.path.parentPath.get("source").isStringLiteral({ value: "@barq/barq" }) ||
-        binding.path.parentPath.get("source").isStringLiteral({ value: "@barq/react" })
+        binding.path.parentPath.get("source").isStringLiteral({ value: "@barqdb/barq" }) ||
+        binding.path.parentPath.get("source").isStringLiteral({ value: "@barqdb/react" })
       );
     }
   }
