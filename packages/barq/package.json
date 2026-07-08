@@ -137,7 +137,7 @@
       ]
     },
     "bindgen:jsi": {
-      "command": "barq-bindgen --template bindgen/src/templates/jsi.ts --spec bindgen/vendor/barq-core/bindgen/spec.yml --spec bindgen/js_spec.yml --opt-in bindgen/js_opt_in_spec.yml --output ./binding/jsi",
+      "command": "cross-env TSX_TSCONFIG_PATH=bindgen/vendor/barq-core/bindgen/tsconfig.json tsx bindgen/vendor/barq-core/bindgen/barq-bindgen.ts --template bindgen/src/templates/jsi.ts --spec bindgen/vendor/barq-core/bindgen/spec.yml --spec bindgen/js_spec.yml --opt-in bindgen/js_opt_in_spec.yml --output ./binding/jsi",
       "dependencies": [
         "bindgen:generate:spec-schema"
       ],
@@ -155,7 +155,7 @@
       ]
     },
     "bindgen:wrapper": {
-      "command": "barq-bindgen --template bindgen/src/templates/wrapper.ts --spec bindgen/vendor/barq-core/bindgen/spec.yml --spec bindgen/js_spec.yml --opt-in bindgen/js_opt_in_spec.yml --output ./src/binding",
+      "command": "cross-env TSX_TSCONFIG_PATH=bindgen/vendor/barq-core/bindgen/tsconfig.json tsx bindgen/vendor/barq-core/bindgen/barq-bindgen.ts --template bindgen/src/templates/wrapper.ts --spec bindgen/vendor/barq-core/bindgen/spec.yml --spec bindgen/js_spec.yml --opt-in bindgen/js_opt_in_spec.yml --output ./src/binding",
       "dependencies": [
         "bindgen:generate:spec-schema"
       ],

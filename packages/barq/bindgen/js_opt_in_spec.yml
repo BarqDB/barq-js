@@ -1,17 +1,3 @@
-# --------------------
-# Description of file:
-# --------------------
-# List all the unique names of what to opt in to from the general spec.
-#
-# The following can be listed:
-# * `classes` and their `methods`
-#   * Methods, static methods, constructors, and properties in the general `spec.yml`
-#     should all be listed in this opt-in list as `methods`.
-# * `records` and their `fields`
-#
-# If all methods in a class, or all fields of a record, are opted out of,
-# the entire class/record should be removed.
-
 records:
   Property:
     fields:
@@ -24,7 +10,6 @@ records:
       - is_indexed
       - is_fulltext_indexed
       - column_key
-
   ObjectSchema:
     fields:
       - name
@@ -33,7 +18,6 @@ records:
       - primary_key
       - table_key
       - table_type
-
   BarqConfig:
     fields:
       - path
@@ -51,19 +35,6 @@ records:
       - initialization_function
       - should_compact_on_launch_function
       - automatically_handle_backlinks_in_migrations
-
-  UserIdentity:
-    fields:
-      - id
-      - provider_type
-
-  UserAPIKey:
-    fields:
-      - id
-      - key
-      - name
-      - disabled
-
   SyncConfig:
     fields:
       - user
@@ -80,13 +51,11 @@ records:
       - client_resync_mode
       - notify_before_client_reset
       - notify_after_client_reset
-
   SyncProxyConfig:
     fields:
       - address
       - port
       - type
-
   SyncSubscription:
     fields:
       - id
@@ -95,38 +64,32 @@ records:
       - name
       - object_class_name
       - query_string
-
   ObjectChangeSet:
     fields:
       - is_deleted
       - changed_columns
-
   CollectionChangeSet:
     fields:
       - deletions
       - insertions
       - modifications
       - modifications_new
-
   DictionaryChangeSet:
     fields:
       - deletions
       - insertions
       - modifications
-
   BindingContext:
     fields:
       - did_change
       - before_notify
       - schema_did_change
-
   ResumptionDelayInfo:
     fields:
       - max_resumption_delay_interval
       - resumption_delay_interval
       - resumption_delay_backoff_multiplier
       - delay_jitter_divisor
-
   SyncClientTimeouts:
     fields:
       - connect_timeout
@@ -135,23 +98,20 @@ records:
       - pong_keepalive_timeout
       - fast_reconnect_limit
       - reconnect_backoff_info
-
   SyncClientConfig:
     fields:
       - user_agent_binding_info
       - multiplex_sessions
       - timeouts
-
   SyncError:
-   fields:
-     - status
-     - is_fatal
-     - simple_message
-     - logURL
-     - user_info
-     - is_client_reset_requested
-     - compensating_writes_info
-
+    fields:
+      - status
+      - is_fatal
+      - simple_message
+      - logURL
+      - user_info
+      - is_client_reset_requested
+      - compensating_writes_info
   Request:
     fields:
       - method
@@ -159,75 +119,38 @@ records:
       - timeout_ms
       - headers
       - body
-
   Response:
     fields:
       - http_status_code
       - custom_status_code
       - headers
       - body
-
-  DeviceInfo:
-    fields:
-      - platform_version
-      - sdk_version
-      - sdk
-      - device_name
-      - device_version
-      - framework_name
-      - framework_version
-      - bundle_id
-
-  AppConfig:
-    fields:
-      - app_id
-      - transport
-      - base_url
-      - base_file_path
-      - default_request_timeout_ms
-      - device_info
-      - sync_client_config
-      - metadata_mode
-      - custom_encryption_key
-        # - security_access_group
-
   CompensatingWriteErrorInfo:
-   fields:
-     - object_name
-     - reason
-     - primary_key
-
+    fields:
+      - object_name
+      - reason
+      - primary_key
   GeoBox:
     fields:
-     - lo
-     - hi
-
+      - lo
+      - hi
   GeoPolygon:
     fields:
-     - points
-
+      - points
   GeoCircle:
     fields:
-     - center
-     - radius_radians
-
+      - center
+      - radius_radians
   GeoPoint:
     fields:
-     - latitude
-     - longitude
-     - altitude
-
+      - latitude
+      - longitude
+      - altitude
   SaltedFileIdent:
     fields:
       - ident
       - salt
-
 classes:
-  ######################
-  # FROM JS EXTRA SPEC #
-  ######################
-
-  # These JsPlatformHelpers are used for React Native.
   JsPlatformHelpers:
     methods:
       - default_barq_file_directory
@@ -239,16 +162,10 @@ classes:
       - remove_directory
       - exclude_from_icloud_backup
       - get_cpu_arch
-
   WeakSyncSession:
     methods:
       - weak_copy_of
       - raw_dereference
-
-  #####################
-  # FROM GENERAL SPEC #
-  #####################
-
   Helpers:
     methods:
       - get_table
@@ -267,21 +184,15 @@ classes:
       - file_exists
       - erase_subscription
       - get_results_description
-      - feed_buffer
       - make_ssl_verify_callback
       - needs_file_format_upgrade
-      - sync_user_as_app_user
-      - app_user_as_sync_user
-
   LogCategoryRef:
     methods:
       - set_default_level_threshold
       - get_category
-
   Logger:
     methods:
       - set_default_logger
-
   ConstTableRef:
     methods:
       - get_key
@@ -291,7 +202,6 @@ classes:
       - try_get_object
       - query
       - find_primary_key
-
   TableRef:
     methods:
       - create_object
@@ -299,7 +209,6 @@ classes:
       - get_link_target
       - clear
       - get_primary_key_column
-
   Obj:
     methods:
       - is_valid
@@ -313,23 +222,19 @@ classes:
       - get_backlink_count
       - get_backlink_view
       - create_and_set_linked_object
-
   Timestamp:
     methods:
       - make
       - get_seconds
       - get_nanoseconds
-
   ObjLink:
     methods:
       - get_table_key
       - get_obj_key
-
   Query:
     methods:
       - get_table
       - get_description
-
   Results:
     methods:
       - from_table
@@ -353,7 +258,6 @@ classes:
       - sum
       - clear
       - add_notification_callback
-
   Barq:
     methods:
       - get_shared_barq
@@ -377,23 +281,18 @@ classes:
       - verify_open
       - create_key_path_array
       - close
-      # JS-specific
       - DOLLAR_addr
       - DOLLAR_resetSharedPtr
-
   BarqCoordinator:
     methods:
       - clear_all_caches
-
   ObjectNotifier:
     methods:
       - add_callback
-
   NotificationToken:
     methods:
       - for_object
       - unregister
-
   Collection:
     methods:
       - get_object_schema
@@ -403,7 +302,6 @@ classes:
       - get_any
       - as_results
       - snapshot
-
   List:
     methods:
       - make
@@ -421,7 +319,6 @@ classes:
       - set_any
       - set_embedded
       - set_collection
-
   Set:
     methods:
       - make
@@ -430,7 +327,6 @@ classes:
       - remove_any
       - remove_all
       - delete_all
-
   Dictionary:
     methods:
       - make
@@ -446,114 +342,9 @@ classes:
       - try_get_any
       - remove_all
       - try_erase
-
-  GoogleAuthCode:
-    methods:
-      - make
-
-  GoogleIdToken:
-    methods:
-      - make
-
-  AppCredentials:
-    methods:
-      - facebook
-      - anonymous
-      - apple
-      - google_auth
-      - google_id
-      - custom
-      - username_password
-      - function
-      - api_key
-
   SyncUser:
     methods:
       - is_logged_in
-
-  User:
-    methods:
-      - has_device_id
-      - device_id
-      - user_profile
-      - identities
-      - custom_data
-      - subscribe
-      - unsubscribe
-      - path_for_barq
-      - app
-      - user_id
-      - app_id
-      - legacy_identities
-      - access_token
-      - refresh_token
-      - state
-      - access_token_refresh_required
-      - request_refresh_location
-      - request_access_token
-      - track_barq
-
-  UserProfile:
-    methods:
-      - data
-
-  App:
-    methods:
-      - config
-      - current_user
-      - all_users
-      - sync_manager
-      - get_app
-      - clear_cached_apps
-      - log_in_with_credentials
-      - log_out_user
-      - refresh_custom_data
-      - link_user
-      - switch_user
-      - remove_user
-      - delete_user
-      - usernamePasswordProviderClient
-      - userAPIKeyProviderClient
-      - push_notification_client
-      - subscribe
-      - unsubscribe
-      - call_function
-      - make_streaming_request
-      - update_base_url
-      - get_base_url
-      - immediately_run_file_actions
-
-  WatchStream:
-    methods:
-      - make
-      - state
-      - error
-      - next_event
-
-  PushClient:
-    methods:
-      - register_device
-      - deregister_device
-
-  UsernamePasswordProviderClient:
-    methods:
-      - register_email
-      - retry_custom_confirmation
-      - confirm_user
-      - resend_confirmation_email
-      - reset_password
-      - send_reset_password_email
-      - call_reset_password_function
-
-  UserAPIKeyProviderClient:
-    methods:
-      - create_api_key
-      - fetch_api_key
-      - fetch_api_keys
-      - delete_api_key
-      - enable_api_key
-      - disable_api_key
-
   SyncManager:
     methods:
       - has_existing_sessions
@@ -564,16 +355,13 @@ classes:
       - reconnect
       - get_existing_active_session
       - get_all_sessions_for
-
   AsyncOpenTask:
     methods:
       - start
       - cancel
       - register_download_progress_notifier
       - unregister_download_progress_notifier
-      # JS-specific
       - DOLLAR_resetSharedPtr
-
   SyncSession:
     methods:
       - state
@@ -591,9 +379,7 @@ classes:
       - handle_reconnect
       - user
       - get_file_ident
-      # JS-specific
       - DOLLAR_resetSharedPtr
-
   SyncSubscriptionSet:
     methods:
       - version
@@ -605,7 +391,6 @@ classes:
       - find_by_name
       - find_by_query
       - refresh
-
   MutableSyncSubscriptionSet:
     methods:
       - clear
@@ -614,9 +399,8 @@ classes:
       - erase_by_name
       - erase_by_query
       - commit
-
   Geospatial:
     methods:
-    - make_from_circle
-    - make_from_box
-    - make_from_polygon
+      - make_from_circle
+      - make_from_box
+      - make_from_polygon
