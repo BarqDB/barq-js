@@ -1,54 +1,12 @@
-@font-face {
-  font-family: Euclid Circular A;
-  src: url(https://static.barq.com/com/fonts/EuclidCircularA-Regular-WebXL.woff2) format("woff2");
-  font-weight: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: Euclid Circular A;
-  src: url(https://static.barq.com/com/fonts/EuclidCircularA-Medium-WebXL.woff2) format("woff2");
-  font-weight: 500;
-  font-display: swap;
-}
-@font-face {
-  font-family: Barq Value Serif;
-  src: url(https://static.barq.com/com/fonts/BarqValueSerif-Regular.woff2) format("woff2");
-  font-weight: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: Barq Value Serif;
-  src: url(https://static.barq.com/com/fonts/BarqValueSerif-Medium.woff2) format("woff2");
-  font-weight: 500;
-  font-display: swap;
-}
-@font-face {
-  font-family: Barq Value Serif;
-  src: url(https://static.barq.com/com/fonts/BarqValueSerif-Bold.woff2) format("woff2");
-  font-weight: bold;
-  font-display: swap;
-}
-@font-face {
-  font-family: Source Code Pro;
-  src: url(https://static.barq.com/com/fonts/SourceCodePro-Regular.ttf) format("truetype");
-  font-weight: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: Source Code Pro;
-  src: url(https://static.barq.com/com/fonts/SourceCodePro-Medium.ttf) format("truetype");
-  font-weight: 500;
-  font-display: swap;
-}
 
 /* ==========================================================================
    Theme color and font definitions and overrides
    ========================================================================== */
 
 :root {
-  --font-family-default: "Euclid Circular A", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-family-serif: "Barq Value Serif", "Times New Roman", serif;
-  --font-family-code: "Source Code Pro", Menlo, monospace;
+  --font-family-default: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-family-serif: Georgia, "Times New Roman", serif;
+  --font-family-code: Menlo, monospace;
 
   /* Light theme colors
    ========================================================================== */

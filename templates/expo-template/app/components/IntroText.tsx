@@ -21,10 +21,10 @@ export const IntroText = () => {
       </Text>
       <Pressable
         onPress={() =>
-          openURLInBrowser('https://docs.barq.com/barq/sdk/react-native/')
+          openURLInBrowser('https://github.com/BarqDB/barq-js')
         }>
         <Text style={[styles.paragraph, styles.link]}>
-          docs.barq.com/barq/sdk/react-native
+          github.com/BarqDB/barq-js
         </Text>
       </Pressable>
     </View>

@@ -1,6 +1,6 @@
 # How to release Barq JavaScript (with Actions)
 
-In order to release Barq JavaScript, you need to be member of the [Barq organization at Github](https://github.com/barq).
+In order to release Barq JavaScript, you need to be member of the [Barq organization at Github](https://github.com/BarqDB).
 
 It is possible to add a specific tag for the release on npm, for example to release a `beta` version without affecting the `latest` version users will install by default.
 

@@ -43,12 +43,9 @@
   ],
   "author": {
     "name": "Barq",
-    "email": "help@barq.io",
-    "url": "https://www.barq.com/docs/barq/"
+    "email": "help@barqdb.space",
+    "url": "https://github.com/BarqDB/barq-js"
   },
-  "contributors": [
-    "Kenneth Geisshirt <kenneth.geisshirt@barq.com> (https://github.com/kneth)"
-  ],
   "license": "Apache-2.0",
   "dependencies": {
     "@barqdb/barq": "*",

@@ -41,6 +41,6 @@ See https://github.com/BarqDB/barq-js/blob/main/templates/docs/sync-setup.md for
 ## 📝 Notes
 - [React Native docs](https://reactnative.dev/docs/getting-started)
 - [React Hooks](https://reactjs.org/docs/hooks-intro.html)
-- [Setting Up Barq Sync](https://docs.barq.com/barq/sdk/react-native/quick-start/)
-- [Barq JS Documentation](https://docs.barq.com/barq/sdk/react-native/)
+- [Setting Up Barq Sync](https://github.com/BarqDB/barq-js)
+- [Barq JS Documentation](https://github.com/BarqDB/barq-js)
 - [@barqdb/react Readme](https://github.com/BarqDB/barq-js/tree/master/packages/react#readme)

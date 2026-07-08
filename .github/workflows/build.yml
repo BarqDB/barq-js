@@ -135,7 +135,7 @@ jobs:
       - name: Verify barq.node was produced
         run: |
           set -euo pipefail
-          node_file="$(find packages/barq -name 'barq.node' -o -name 'realm.node' | head -1)"
+          node_file="$(find packages/barq -name 'barq.node' | head -1)"
           test -n "$node_file"
           ls -lh "$node_file"
           echo "Built native addon: $node_file"

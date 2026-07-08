@@ -10,7 +10,7 @@ Build better apps, faster.
 ## Introduction
 Setting up Barq in a React Native application has historically been complex. Re-rendering of components when objects in the database change requires manually adding and removing listeners, which produce a lot of boilerplate code and is error-prone (if listeners properly removed on unmount). This library alleviates that by providing [React hooks](https://reactjs.org/docs/hooks-intro.html) which return Barq data that is state aware. As a consequence, any change to the Barq data will cause components using the hook to re-render.
 
-Documentation for `@barqdb/react` and Barq can be found at [docs.barq.org](https://github.com/BarqDB/barq-js).
+Documentation for `@barqdb/react` and Barq can be found at [the GitHub repository](https://github.com/BarqDB/barq-js).
 ## Installation
 
 This library requires `react-native` >= 0.59 and `barq` >= 11

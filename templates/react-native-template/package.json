@@ -12,8 +12,8 @@
   },
   "author": {
     "name": "Barq",
-    "email": "barq-help@barq.com",
-    "url": "https://www.barq.com/docs/barq/"
+    "email": "help@barqdb.space",
+    "url": "https://github.com/BarqDB/barq-js"
   },
   "license": "Apache-2.0"
 }
