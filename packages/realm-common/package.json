@@ -1,0 +1,60 @@
+{
+  "name": "@barq/common",
+  "version": "1.1.4",
+  "description": "Cross-product common code used by Realm",
+  "main": "./dist/bundle.cjs.js",
+  "module": "./dist/bundle.es.js",
+  "types": "./dist/bundle.d.ts",
+  "browser": {
+    "./dist/bundle.cjs.js": "./dist/bundle.dom.cjs.js",
+    "./dist/bundle.es.js": "./dist/bundle.dom.es.js",
+    "./dist/bundle.d.ts": "./dist/bundle.dom.d.ts"
+  },
+  "scripts": {
+    "bundle": "wireit",
+    "lint": "eslint --ext .js,.ts .",
+    "test": "mocha 'src/**/*.test.ts'"
+  },
+  "wireit": {
+    "bundle": {
+      "command": "rollup --config",
+      "dependencies": [
+        "generate-types"
+      ],
+      "files": [
+        "rollup.config.mjs",
+        "src/**/*.ts"
+      ],
+      "output": [
+        "dist/**"
+      ]
+    },
+    "generate-types": {
+      "command": "tsc --project tsconfig.types.json --declaration --emitDeclarationOnly --declarationDir types/generated",
+      "files": [
+        "src/**/*.ts"
+      ],
+      "output": [
+        "types/generated/**/*.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "author": {
+    "name": "MongoDB",
+    "email": "help@realm.io",
+    "url": "https://www.mongodb.com/docs/realm/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BarqDB/barq-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/BarqDB/barq-js/issues"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {},
+  "devDependencies": {}
+}

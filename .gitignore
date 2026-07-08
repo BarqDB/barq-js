@@ -1,0 +1,134 @@
+*~
+.DS_Store
+
+# Merge files
+*.orig
+
+# Binaries
+*.dylib
+*.a
+*.o
+*.d
+*.libdeps
+*.zip
+*.realm
+*.realm.lock
+*.realm.fresh.lock
+*.realm.note
+*.management/
+*.realm.backup-log
+
+vendor/realm-*
+!vendor/barq-core
+
+# extracted changelog
+EXTRACTED_CHANGELOG.md
+
+# jsdoc
+/docs/output
+
+# doxygen
+/contrib/docs/output
+
+# XCode
+*.bak
+xcuserdata/
+project.xcworkspace
+*.xccheckout
+DerivedData
+
+# node.js
+node_modules/
+npm-debug.log
+yarn.lock
+
+# Emacs
+*~
+
+# Android/IJ
+/android
+/packages/realm/binding/android/.cxx/
+.idea
+.gradle
+local.properties
+
+# Visual Studio Code
+.vscode
+compile_commands.json
+.cache
+
+# Tests
+object-server-for-testing/
+realm-object-server-data/
+tests/realm-object-server/
+tests/barq-sync/
+packager_out.txt
+build.log.*
+realm-object-server/
+tests/ReactTestApp/ios/out.txt
+tests/ReactTestApp/ios/Podfile.lock
+*.iml
+crash.log
+examples/ReactExample/ios/Pods/
+examples/ReactExample/ios/ReactExample.xcworkspace/
+tests/barq-sync
+install-tests/react-native/app/
+install-tests/react-native/payload.json
+install-tests/react-native/result-*
+
+# Integration tests
+integration-tests/environments/electron/dist/
+integration-tests/environments/react-native/ios/Pods/
+integration-tests/tests/dist/
+integration-tests/tests/src/bench/rolledup.js
+# TODO: Solve .lock files are produced in "throws when called with an empty string"
+integration-tests/**/.lock
+
+# Test coverage artifacts
+coverage/
+.nyc_output/
+
+# Realm App Importer artifacts
+**/imported-apps/
+**/realm-config
+
+/build-tmp*/
+/cmakebuild/
+/realm*.tgz
+
+# Ignore template package-lock.json files
+/templates/*/package-lock.json
+/templats/*/template/package-lock.json
+
+# Generated artifacts
+/packages/realm/bindgen/vendor/bindgen-lib/generated/
+/packages/realm/generated/
+/packages/realm/binding/jsi/jsi_init.cpp
+/packages/realm/src/**/*.generated.ts
+
+# Build artifacts
+/packages/realm/dist/
+/packages/realm/binding/build/
+/packages/realm/binding/android/build/
+/packages/realm/binding/node/build/
+/packages/realm/prebuilds/
+/packages/realm/binding/android/src/main/java/io/realm/react/Version.java
+/packages/realm/binding/android/src/main/jniLibs/
+/packages/realm/binding/apple/*.xcframework
+
+# Wireit repo caches
+.wireit
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Rollup
+.rollup.cache/
+
+# CocoaPods cache on GitHub
+.cocoapods/
+
+# Generated docs
+/packages/realm/docs/
+/packages/realm-react/docs/
+/packages/realm-web/docs/

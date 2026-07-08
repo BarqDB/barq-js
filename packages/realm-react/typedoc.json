@@ -1,0 +1,15 @@
+{
+  "name": "Realm React",
+  "entryPoints": ["src/index.tsx"],
+  "tsconfig": "./tsconfig.json",
+  "excludeInternal": true,
+  "customCss": "../../typedoc/style.css",
+  "media": "./media",
+  "includeVersion": true,
+  "sourceLinkTemplate": "https://github.com/BarqDB/barq-js/blob/{gitRevision}/{path}#L{line}",
+  "visibilityFilters": {},
+  "categorizeByGroup": false,
+  "navigationLinks": {
+    "GitHub": "https://github.com/BarqDB/barq-js/tree/main/packages/realm-react#readme"
+  }
+}

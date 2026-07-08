@@ -1,0 +1,10 @@
+{
+	"expo": {
+		"name": "RealmTemplateTs",
+		"slug": "realm-template-ts",
+		"version": "1.0.0",
+		"assetBundlePatterns": [
+			"**/*"
+		]
+	}
+}

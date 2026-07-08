@@ -1,0 +1,3 @@
+[submodule "packages/realm/bindgen/vendor/barq-core"]
+	path = packages/realm/bindgen/vendor/barq-core
+	url = https://github.com/BarqDB/barq-core.git

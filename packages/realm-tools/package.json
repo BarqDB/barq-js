@@ -1,0 +1,60 @@
+{
+  "name": "@barq/tools",
+  "version": "1.0.1",
+  "description": "Tools useful for working with Realms",
+  "bin": {
+    "realm-schema": "./dist/realm-schema.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "wireit",
+    "lint": "eslint --ext .js,.ts .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "wireit": {
+    "build": {
+      "command": "tsc -p tsconfig.build.json",
+      "dependencies": [
+        "../realm:build:ts",
+        "../realm:build:node"
+      ],
+      "files": [
+        "tsconfig.build.json",
+        "tsconfig.json",
+        "src"
+      ],
+      "output": [
+        "dist"
+      ]
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BarqDB/barq-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/BarqDB/barq-js/issues"
+  },
+  "keywords": [
+    "realm",
+    "tool"
+  ],
+  "author": {
+    "name": "MongoDB",
+    "email": "help@realm.io",
+    "url": "https://www.mongodb.com/docs/realm/"
+  },
+  "contributors": [
+    "Kenneth Geisshirt <kenneth.geisshirt@mongodb.com> (https://github.com/kneth)"
+  ],
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@barq/barq": "*",
+    "ts-command-line-args": "^2.2.1"
+  },
+  "devDependencies": {
+    "@types/command-line-args": "^5.2.0"
+  }
+}

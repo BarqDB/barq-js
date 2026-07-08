@@ -1,0 +1,385 @@
+@font-face {
+  font-family: Euclid Circular A;
+  src: url(https://static.mongodb.com/com/fonts/EuclidCircularA-Regular-WebXL.woff2) format("woff2");
+  font-weight: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Euclid Circular A;
+  src: url(https://static.mongodb.com/com/fonts/EuclidCircularA-Medium-WebXL.woff2) format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: MongoDB Value Serif;
+  src: url(https://static.mongodb.com/com/fonts/MongoDBValueSerif-Regular.woff2) format("woff2");
+  font-weight: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: MongoDB Value Serif;
+  src: url(https://static.mongodb.com/com/fonts/MongoDBValueSerif-Medium.woff2) format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: MongoDB Value Serif;
+  src: url(https://static.mongodb.com/com/fonts/MongoDBValueSerif-Bold.woff2) format("woff2");
+  font-weight: bold;
+  font-display: swap;
+}
+@font-face {
+  font-family: Source Code Pro;
+  src: url(https://static.mongodb.com/com/fonts/SourceCodePro-Regular.ttf) format("truetype");
+  font-weight: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Source Code Pro;
+  src: url(https://static.mongodb.com/com/fonts/SourceCodePro-Medium.ttf) format("truetype");
+  font-weight: 500;
+  font-display: swap;
+}
+
+/* ==========================================================================
+   Theme color and font definitions and overrides
+   ========================================================================== */
+
+:root {
+  --font-family-default: "Euclid Circular A", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-family-serif: "MongoDB Value Serif", "Times New Roman", serif;
+  --font-family-code: "Source Code Pro", Menlo, monospace;
+
+  /* Light theme colors
+   ========================================================================== */
+
+  --light-color-background: #ffffff;
+  --light-color-background-secondary: #f9fbfa;
+  --light-color-warning-text: #db3030;
+  --light-color-background-warning: #ffec9e;
+  --light-color-icon-background: var(--light-color-background);
+  --light-color-accent: #e8edeb;
+  --light-color-text: #001e2b;
+  --light-color-text-aside: #707070;
+  --light-color-link: #016bf8;
+  --light-color-ts: #db1373;
+  --light-color-ts-interface: #139d2c;
+  --light-color-ts-enum: #9c891a;
+  --light-color-ts-class: #7c25ff;
+  --light-color-ts-function: #b45af2;
+  --light-color-ts-namespace: #5400f8;
+  --light-color-ts-private: #707070;
+  --light-color-ts-variable: #4d68ff;
+  --light-color-ts-property: #00684a;
+  --light-color-ts-call-signature: #00684a;
+  --light-color-ts-parameter: #0d427c;
+  --light-color-ts-type-parameter: #023430;
+  --light-color-ts-type-alias: #b45af2;
+  --light-color-active-menu-item: #f9ebff;
+  --light-external-icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width='10' height='10'><path fill-opacity='0' stroke='%23000' stroke-width='10' d='m43,35H5v60h60V57M45,5v10l10,10-30,30 20,20 30-30 10,10h10V5z'/></svg>");
+  --light-color-scheme: light;
+  --light-code-background: #e8edeb;
+
+  /* Dark theme colors
+   ========================================================================== */
+
+  --dark-color-background: #001e2b;
+  --dark-color-background-secondary: #3d4f58;
+  --dark-color-background-warning: #ffcdc7;
+  --dark-color-warning-text: #222;
+  --dark-color-icon-background: var(--dark-color-background-secondary);
+  --dark-color-accent: #e3fcf7;
+  --dark-color-text: #f9fbfa;
+  --dark-color-text-aside: #dddddd;
+  --dark-color-link: #016bf8;
+  --dark-color-ts: #ff6492;
+  --dark-color-ts-interface: #6cff87;
+  --dark-color-ts-enum: #f4d93e;
+  --dark-color-ts-class: #61b0ff;
+  --dark-color-ts-function: #9772ff;
+  --dark-color-ts-namespace: #e14dff;
+  --dark-color-ts-private: #e2e2e2;
+  --dark-color-ts-variable: #4d68ff;
+  --dark-color-ts-property: #e9ff99;
+  --dark-color-ts-call-signature: #e9ff99;
+  --dark-color-ts-parameter: #e3fcf7;
+  --dark-color-ts-type-parameter: #ffeea9;
+  --dark-color-ts-type-alias: #f9ebff;
+  --dark-color-active-menu-item: #0d427c;
+  --dark-external-icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width='10' height='10'><path fill-opacity='0' stroke='%23fff' stroke-width='10' d='m43,35H5v60h60V57M45,5v10l10,10-30,30 20,20 30-30 10,10h10V5z'/></svg>");
+  --dark-color-scheme: dark;
+}
+
+/* `prefers-color-scheme` theme variable mapping
+   ========================================================================== */
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-background: var(--light-color-background);
+    --color-background-secondary: var(--light-color-background-secondary);
+    --color-background-warning: var(--light-color-background-warning);
+    --color-warning-text: var(--light-color-warning-text);
+    --color-icon-background: var(--light-color-icon-background);
+    --color-accent: var(--light-color-accent);
+    --color-text: var(--light-color-text);
+    --color-text-aside: var(--light-color-text-aside);
+    --color-link: var(--light-color-link);
+    --color-ts: var(--light-color-ts);
+    --color-ts-interface: var(--light-color-ts-interface);
+    --color-ts-enum: var(--light-color-ts-enum);
+    --color-ts-class: var(--light-color-ts-class);
+    --color-ts-function: var(--light-color-ts-function);
+    --color-ts-namespace: var(--light-color-ts-namespace);
+    --color-ts-private: var(--light-color-ts-private);
+    --color-ts-variable: var(--light-color-ts-variable);
+    --color-ts-property: var(--light-color-ts-property);
+    --color-ts-call-signature: var(--light-color-ts-call-signature);
+    --color-ts-parameter: var(--light-color-ts-parameter);
+    --color-ts-type-parameter: var(--light-color-ts-type-parameter);
+    --color-ts-type-alias: var(--light-color-ts-type-alias);
+    --color-active-menu-item: var(--light-color-active-menu-item);
+    --external-icon: var(--light-external-icon);
+    --color-scheme: var(--light-color-scheme);
+    --code-background: var(--light-color-background-secondary);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: var(--dark-color-background);
+    --color-background-secondary: var(--dark-color-background-secondary);
+    --color-background-warning: var(--dark-color-background-warning);
+    --color-warning-text: var(--dark-color-warning-text);
+    --color-icon-background: var(--dark-color-icon-background);
+    --color-accent: var(--dark-color-accent);
+    --color-text: var(--dark-color-text);
+    --color-text-aside: var(--dark-color-text-aside);
+    --color-link: var(--dark-color-link);
+    --color-ts: var(--dark-color-ts);
+    --color-ts-interface: var(--dark-color-ts-interface);
+    --color-ts-enum: var(--dark-color-ts-enum);
+    --color-ts-class: var(--dark-color-ts-class);
+    --color-ts-function: var(--dark-color-ts-function);
+    --color-ts-namespace: var(--dark-color-ts-namespace);
+    --color-ts-private: var(--dark-color-ts-private);
+    --color-ts-variable: var(--dark-color-ts-variable);
+    --color-ts-property: var(--dark-color-ts-property);
+    --color-ts-call-signature: var(--dark-color-ts-call-signature);
+    --color-ts-parameter: var(--dark-color-ts-parameter);
+    --color-ts-type-parameter: var(--dark-color-ts-type-parameter);
+    --color-ts-type-alias: var(--dark-color-ts-type-alias);
+    --color-active-menu-item: var(--dark-color-active-menu-item);
+    --external-icon: var(--dark-external-icon);
+    --color-scheme: var(--dark-color-scheme);
+    --code-background: var(--dark-color-background-secondary);
+  }
+}
+
+/* Theme variable mapping
+   ========================================================================== */
+:root[data-theme="light"] {
+  --color-background: var(--light-color-background);
+  --color-background-secondary: var(--light-color-background-secondary);
+  --color-background-warning: var(--light-color-background-warning);
+  --color-warning-text: var(--light-color-warning-text);
+  --color-icon-background: var(--light-color-icon-background);
+  --color-accent: var(--light-color-accent);
+  --color-text: var(--light-color-text);
+  --color-text-aside: var(--light-color-text-aside);
+  --color-link: var(--light-color-link);
+  --color-ts: var(--light-color-ts);
+  --color-ts-interface: var(--light-color-ts-interface);
+  --color-ts-enum: var(--light-color-ts-enum);
+  --color-ts-class: var(--light-color-ts-class);
+  --color-ts-function: var(--light-color-ts-function);
+  --color-ts-namespace: var(--light-color-ts-namespace);
+  --color-ts-private: var(--light-color-ts-private);
+  --color-ts-variable: var(--light-color-ts-variable);
+  --color-ts-property: var(--light-color-ts-property);
+  --color-ts-call-signature: var(--light-color-ts-call-signature);
+  --color-ts-parameter: var(--light-color-ts-parameter);
+  --color-ts-type-parameter: var(--light-color-ts-type-parameter);
+  --color-ts-type-alias: var(--light-color-ts-type-alias);
+  --color-active-menu-item: var(--light-color-active-menu-item);
+  --external-icon: var(--light-external-icon);
+  --color-scheme: var(--light-color-scheme);
+  --code-background: var(--light-color-background-secondary);
+}
+
+:root[data-theme="dark"] {
+  --color-background: var(--dark-color-background);
+  --color-background-secondary: var(--dark-color-background-secondary);
+  --color-background-warning: var(--dark-color-background-warning);
+  --color-warning-text: var(--dark-color-warning-text);
+  --color-icon-background: var(--dark-color-icon-background);
+  --color-accent: var(--dark-color-accent);
+  --color-text: var(--dark-color-text);
+  --color-text-aside: var(--dark-color-text-aside);
+  --color-link: var(--dark-color-link);
+  --color-ts: var(--dark-color-ts);
+  --color-ts-interface: var(--dark-color-ts-interface);
+  --color-ts-enum: var(--dark-color-ts-enum);
+  --color-ts-class: var(--dark-color-ts-class);
+  --color-ts-function: var(--dark-color-ts-function);
+  --color-ts-namespace: var(--dark-color-ts-namespace);
+  --color-ts-private: var(--dark-color-ts-private);
+  --color-ts-variable: var(--dark-color-ts-variable);
+  --color-ts-property: var(--dark-color-ts-property);
+  --color-ts-call-signature: var(--dark-color-ts-call-signature);
+  --color-ts-parameter: var(--dark-color-ts-parameter);
+  --color-ts-type-parameter: var(--dark-color-ts-type-parameter);
+  --color-ts-type-alias: var(--dark-color-ts-type-alias);
+  --color-active-menu-item: var(--dark-color-active-menu-item);
+  --external-icon: var(--dark-external-icon);
+  --color-scheme: var(--dark-color-scheme);
+  --code-background: var(--dark-color-background-secondary);
+}
+
+/* ==========================================================================
+   Specific dark theme style overrides
+   ========================================================================== */
+
+:root[data-theme="dark"] input[type="checkbox"]:checked ~ svg .tsd-checkbox-checkmark {
+  stroke: var(--light-color-text);
+}
+
+:root[data-theme="dark"] #tsd-search .field input,
+:root[data-theme="dark"] .tsd-page-toolbar a:hover,
+:root[data-theme="dark"] .tsd-page-toolbar #tsd-search .results a:hover span.parent {
+  color: var(--color-background);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="os"] #tsd-search .field input,
+  :root[data-theme="os"] .tsd-page-toolbar a:hover,
+  :root[data-theme="os"] .tsd-page-toolbar #tsd-search .results a:hover span.parent {
+    color: var(--color-background);
+  }
+}
+
+/* ==========================================================================
+   Basic element style overrides
+   ========================================================================== */
+
+html {
+  color-scheme: var(--color-scheme);
+}
+
+body {
+  font-family: var(--font-family-default);
+  margin: 0;
+  background: var(--color-background);
+  font-size: 16px;
+  color: var(--color-text);
+}
+
+p {
+  line-height: 1.8rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-family-serif);
+  color: var(--color-heading);
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 1.875rem;
+  margin: 0.67rem 0;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin: 0.83rem 0;
+}
+
+h3,
+.tsd-typography .tsd-index-panel h3,
+.tsd-index-panel .tsd-typography h3 {
+  font-size: 1.25rem;
+  margin: 1rem 0;
+}
+
+h4,
+.tsd-typography h4 {
+  font-size: 1.05rem;
+  margin: 1.33rem 0;
+}
+
+h5,
+.tsd-typography h5 {
+  font-size: 1rem;
+  margin: 1.5rem 0;
+}
+
+h6,
+.tsd-typography h6 {
+  font-size: 0.875rem;
+  margin: 2.33rem 0;
+}
+
+pre {
+  white-space: pre;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+dl,
+menu,
+ol,
+ul {
+  margin: 1em 0;
+}
+
+dd {
+  margin: 0 0 0 40px;
+}
+
+a {
+  color: var(--color-link);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a.external[target="_blank"] {
+  background-image: var(--external-icon);
+  background-position: top 3px right;
+  background-repeat: no-repeat;
+  padding-right: 13px;
+}
+
+code,
+pre {
+  font-family: var(--font-family-code);
+  padding: 0.2em;
+  margin: 0;
+  font-size: 0.9rem;
+  border-radius: 0.8em;
+  line-height: 1.5rem;
+}
+
+pre {
+  padding: 10px;
+  border: 0.1em solid var(--color-accent);
+}
+
+pre code {
+  padding: 0;
+  font-size: 100%;
+}
+
+/* ==========================================================================
+   TypeDoc theme layout overrides
+   ========================================================================== */
+
+.tsd-page-navigation ul {
+  padding-left: 1rem;
+}

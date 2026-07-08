@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=vendor/barq-core/bindgen/generated/spec.schema.json
+
+headers:
+  - "platform.hpp"
+
+classes:
+  JsPlatformHelpers:
+    abstract: true
+    staticMethods:
+      set_default_realm_file_directory: '(dir: std::string)'
+      default_realm_file_directory: () -> std::string
+      ensure_directory_exists_for_file: '(file: const std::string&)'
+      copy_bundled_realm_files: ()
+      remove_realm_files_from_directory: '(directory: const std::string&)'
+      remove_file: '(path: const std::string&)'
+      remove_directory: '(path: const std::string&)'
+      exclude_from_icloud_backup: '(path: const std::string&, value: bool)'
+      get_cpu_arch: () -> std::string
+      # print: (const char* fmt, ...) # can't expose varargs directly. Could expose a fixed overload.
+
+  WeakSyncSession:
+    cppName: std::weak_ptr<SyncSession>
+    constructors:
+      weak_copy_of: '(shared: SharedSyncSession)'
+    methods:
+      raw_dereference:
+        sig: '() const -> Nullable<SharedSyncSession>'
+        cppName: lock

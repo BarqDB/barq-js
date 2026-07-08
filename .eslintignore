@@ -1,0 +1,17 @@
+/core*/
+/docs/jsdoc-template/
+/docs/output/
+/docs/plugins/
+
+build/
+node_modules/
+vendor/
+
+/object-server-for-testing/
+
+# The sub-packages have their own linting
+/integration-tests/
+/install-tests/
+/packages/
+/templates/
+/example/

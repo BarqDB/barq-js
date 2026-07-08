@@ -1,0 +1,7 @@
+dist/
+docs/
+bindgen/vendor/barq-core/
+src/tests/realms/
+
+# Files transpiled by babel from generated files
+binding/generated/*.cjs

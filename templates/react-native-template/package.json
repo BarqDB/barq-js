@@ -1,0 +1,19 @@
+{
+  "name": "@barq/react-native-template",
+  "version": "0.7.0",
+  "description": "Realm Template for React Native",
+  "scripts": {
+    "lint": "cd template && npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BarqDB/barq-js.git",
+    "directory": "packages/react-native-template"
+  },
+  "author": {
+    "name": "MongoDB",
+    "email": "realm-help@mongodb.com",
+    "url": "https://www.mongodb.com/docs/realm/"
+  },
+  "license": "Apache-2.0"
+}

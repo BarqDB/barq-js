@@ -1,0 +1,61 @@
+////////////////////////////////////////////////////////////////////////////
+//
+// Copyright 2022 Realm Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+////////////////////////////////////////////////////////////////////////////
+
+import type { binding } from "./binding";
+import type { CanonicalObjectSchema, DefaultObject, BarqObjectConstructor } from "./schema";
+import type { PropertyMap } from "./PropertyMap";
+import type { BarqObject } from "./Object";
+import { OBJECT_HELPERS } from "./symbols";
+
+type ObjectWrapper = (obj: binding.Obj) => (BarqObject & DefaultObject) | null;
+
+/** @internal */
+export type ClassHelpers = {
+  constructor: BarqObjectConstructor;
+  objectSchema: binding.ObjectSchema;
+  properties: PropertyMap;
+  wrapObject: ObjectWrapper;
+  canonicalObjectSchema: CanonicalObjectSchema;
+};
+
+/** @internal */
+export function setClassHelpers(constructor: BarqObjectConstructor, value: ClassHelpers): void {
+  // Store the properties map on the object class
+  Object.defineProperty(constructor, OBJECT_HELPERS, {
+    enumerable: false,
+    writable: false,
+    configurable: false,
+    value,
+  });
+}
+
+/**
+ * Get internal helpers.
+ * NOTE: This is a free function instead of a member of BarqObject to limit conflicts with user defined properties.
+ * @param arg The object or constructor to get a helpers for.
+ * @returns Helpers injected onto the class by the `ClassMap`.
+ * @internal
+ */
+export function getClassHelpers(arg: typeof BarqObject): ClassHelpers {
+  const helpers = arg[OBJECT_HELPERS];
+  if (helpers) {
+    return helpers as ClassHelpers;
+  } else {
+    throw new Error(`Expected INTERNAL_HELPERS to be set on the '${arg.name}' class`);
+  }
+}

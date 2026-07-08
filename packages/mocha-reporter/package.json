@@ -1,0 +1,41 @@
+{
+  "name": "@barq/mocha-reporter",
+  "version": "1.0.1",
+  "description": "A custom reporter for mocha",
+  "main": "./dist/index.js",
+  "scripts": {
+    "bundle": "wireit"
+  },
+  "wireit": {
+    "bundle": {
+      "command": "tsc",
+      "files": [
+        "src/**/*.ts",
+        "tsconfig.json"
+      ],
+      "output": [
+        "dist/**/*.js",
+        "dist/**/*.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "author": {
+    "name": "MongoDB",
+    "email": "help@realm.io",
+    "url": "https://www.mongodb.com/docs/realm/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BarqDB/barq-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/BarqDB/barq-js/issues"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "dependencies": {
+    "mocha-github-actions-reporter": "^0.3.1"
+  }
+}
