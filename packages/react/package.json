@@ -1,6 +1,6 @@
 {
   "name": "@barq/react",
-  "version": "1.11.0",
+  "version": "1.20.0",
   "description": "React specific hooks and implementation helpers for Barq",
   "type": "module",
   "main": "dist/index.cjs",
@@ -68,7 +68,7 @@
   },
   "peerDependencies": {
     "react": ">=17.0.2",
-    "@barq/barq": ">=13.0.0"
+    "@barq/barq": ">=21.0.0"
   },
   "optionalDependencies": {
     "@babel/runtime": ">=7",

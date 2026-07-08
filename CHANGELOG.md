@@ -5,9 +5,9 @@ Licensed under the Apache License, Version 2.0. See LICENSE and NOTICE.
 
 # Changelog
 
-## 13.15.0 — Barq JS (initial fork)
+## 21.2.0 — Barq JS (initial fork)
 
-Barq JS is forked from the Barq JavaScript SDK at tag `barq-react-v0.20.0`.
+Barq JS is the initial fork. See NOTICE for upstream attribution.
 
 ### Breaking changes vs. the upstream SDK
 
