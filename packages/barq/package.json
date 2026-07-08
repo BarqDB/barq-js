@@ -241,7 +241,6 @@
     "@babel/core": "^7.23.9",
     "@babel/plugin-transform-modules-commonjs": "^7.23.3",
     "@commander-js/extra-typings": "^12",
-    "@barq/bindgen": "^1.1.0",
     "@types/node": "^22",
     "@types/path-browserify": "^1.0.0",
     "cmake-js": "6.3.2",
