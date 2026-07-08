@@ -96,6 +96,10 @@ Barq ships its own value types (no third-party BSON dependency):
 - `Barq.Types.EJSON`
 
 
+## Building
+
+CI builds the barq-core native engine and the Barq value types on every push. See [BUILDING.md](./BUILDING.md) for the build matrix and the status of the native `@barq/barq` addon.
+
 ## License
 
 Apache License 2.0. See [LICENSE](./LICENSE) and [NOTICE](./NOTICE).
