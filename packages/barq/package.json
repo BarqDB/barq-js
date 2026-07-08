@@ -128,7 +128,7 @@
       ]
     },
     "bindgen:configure": {
-      "command": "cmake-js configure --debug --directory binding/node"
+      "command": "cmake-js configure --debug --directory binding/node --CDBARQ_USE_SYSTEM_OPENSSL=ON"
     },
     "bindgen:build:node": {
       "command": "cmake --build binding/node/build --target barq-js-node",
