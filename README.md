@@ -5,6 +5,11 @@ Licensed under the Apache License, Version 2.0. See LICENSE and NOTICE.
 
 # Barq JS
 
+[![License](https://img.shields.io/github/license/BarqDB/barq-js)](./LICENSE)
+![Status](https://img.shields.io/badge/status-alpha-f7c948)
+![TypeScript](https://img.shields.io/badge/TypeScript-SDK-3178c6)
+![React Native](https://img.shields.io/badge/React%20Native-ready-23c483)
+
 Barq is an offline-first object database for JavaScript and React Native, with
 optional synchronization powered by [barq-core](https://github.com/BarqDB/barq-core).
 
@@ -99,6 +104,13 @@ Barq ships its own value types (no third-party Types dependency):
 ## Building
 
 CI builds the barq-core native engine and the Barq value types on every push. See [BUILDING.md](./BUILDING.md) for the build matrix and the status of the native `@barqdb/barq` addon.
+
+## Roadmap
+
+- Stabilize the `@barqdb/*` package surface
+- Publish React Native examples that are easy to run
+- Keep native builds aligned with barq-core releases
+- Improve docs for token-based sync users
 
 ## License
 
