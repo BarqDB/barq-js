@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +18,6 @@
 ////////////////////////////////////////////////////////////////////////////
 
 import Barq from "@barq/barq";
-Barq.flags.THROW_ON_GLOBAL_REALM = true;
+Barq.flags.THROW_ON_GLOBAL_BARQ = true;
 // Enable calling Barq.clearTestState()
 Barq.flags.ALLOW_CLEAR_TEST_STATE = true;

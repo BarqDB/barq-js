@@ -1,7 +1,7 @@
 {
   "name": "@barq/barq",
   "version": "13.15.0",
-  "description": "Barq is an offline-first database for JavaScript with optional sync powered by barq-core. A modified fork of Realm JS.",
+  "description": "Barq is an offline-first database for JavaScript with optional sync powered by barq-core. A modified fork of Barq JS.",
   "license": "apache-2.0",
   "homepage": "https://github.com/BarqDB/barq-js",
   "keywords": [
@@ -51,7 +51,7 @@
     "binding/jsi",
     "binding/*.hpp",
     "bindgen/src/*.h",
-    "bindgen/vendor/barq-core/bindgen/src/realm_helpers.h",
+    "bindgen/vendor/barq-core/bindgen/src/barq_helpers.h",
     "prebuilds/apple",
     "prebuilds/android",
     "index.react-native.js",

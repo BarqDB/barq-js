@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -75,7 +76,7 @@ const COLLECTION_SUFFIX_LENGTH = "[]".length;
 
 const PRESENTATION_TYPES = new Set<PresentationPropertyTypeName>(["counter"]);
 
-const PRESENTATION_TO_REALM_TYPE: Readonly<Record<PresentationPropertyTypeName, PropertyTypeName>> = {
+const PRESENTATION_TO_BARQ_TYPE: Readonly<Record<PresentationPropertyTypeName, PropertyTypeName>> = {
   counter: "int",
 };
 
@@ -101,9 +102,9 @@ function isUserDefined(type: string | undefined): type is UserTypeName {
  * Transform a validated user-provided Barq schema into its canonical form.
  */
 export function normalizeBarqSchema(
-  realmSchema: Readonly<(BarqObjectConstructor | ObjectSchema)[]>,
+  barqSchema: Readonly<(BarqObjectConstructor | ObjectSchema)[]>,
 ): CanonicalObjectSchema[] {
-  return realmSchema.map(normalizeObjectSchema);
+  return barqSchema.map(normalizeObjectSchema);
 }
 
 /**
@@ -223,7 +224,7 @@ function normalizePropertySchemaShorthand(info: PropertyInfoUsingShorthand): Can
 
   if (isPresentationType(propertySchema)) {
     presentation = propertySchema;
-    propertySchema = PRESENTATION_TO_REALM_TYPE[propertySchema];
+    propertySchema = PRESENTATION_TO_BARQ_TYPE[propertySchema];
   }
 
   if (isPrimitive(propertySchema)) {

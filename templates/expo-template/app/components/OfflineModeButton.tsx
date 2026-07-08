@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {StyleSheet, Switch, Text, View} from 'react-native';
-import {useRealm} from '@barq/react';
+import {useBarq} from '@barq/react';
 
 export function OfflineModeButton() {
-  const realm = useRealm();
+  const barq = useBarq();
 
   const [pauseSync, togglePauseSync] = useState(false);
 
@@ -12,15 +12,15 @@ export function OfflineModeButton() {
       <Text style={styles.toggleText}>Disable Sync</Text>
       <Switch
         onValueChange={() => {
-          if (!pauseSync && realm.syncSession?.state === 'active') {
-            realm.syncSession.pause();
+          if (!pauseSync && barq.syncSession?.state === 'active') {
+            barq.syncSession.pause();
             togglePauseSync(true);
-          } else if (pauseSync && realm.syncSession?.state === 'inactive') {
-            realm.syncSession.resume();
+          } else if (pauseSync && barq.syncSession?.state === 'inactive') {
+            barq.syncSession.resume();
             togglePauseSync(false);
           }
         }}
-        value={realm.syncSession?.state === 'inactive'}
+        value={barq.syncSession?.state === 'inactive'}
       />
     </View>
   );

@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2023 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,8 +31,8 @@ import type {
 import type { Configuration } from "../Configuration";
 
 // Need to use `CanonicalObjectSchema` rather than `ObjectSchema` due to some
-// integration tests using `openBarqHook()`. That function sets `this.realm`
-// to the opened realm whose schema is a `CanonicalObjectSchema[]`. Consequently,
+// integration tests using `openBarqHook()`. That function sets `this.barq`
+// to the opened barq whose schema is a `CanonicalObjectSchema[]`. Consequently,
 // the key `"ctor"` (which doesn't exist on `ObjectSchema`) also needs to be allowed.
 const OBJECT_SCHEMA_KEYS = new Set<keyof CanonicalObjectSchema>([
   "name",
@@ -59,11 +60,11 @@ const PROPERTY_SCHEMA_KEYS = new Set<keyof CanonicalPropertySchema>([
 ]);
 
 /**
- * Validate the data types of the fields of a user-provided realm schema.
+ * Validate the data types of the fields of a user-provided barq schema.
  */
-export function validateBarqSchema(realmSchema: unknown): asserts realmSchema is Configuration["schema"][] {
-  assert.array(realmSchema, "realm schema");
-  for (const objectSchema of realmSchema) {
+export function validateBarqSchema(barqSchema: unknown): asserts barqSchema is Configuration["schema"][] {
+  assert.array(barqSchema, "barq schema");
+  for (const objectSchema of barqSchema) {
     validateObjectSchema(objectSchema);
   }
   // TODO: Assert that backlinks point to object schemas that are actually declared

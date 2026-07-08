@@ -18,7 +18,7 @@
 
 #include <memory>
 
-using namespace realm::jni_util;
+using namespace barq::jni_util;
 
 static std::unique_ptr<JniUtils> s_instance;
 

@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -118,7 +119,7 @@ export const xcode = {
     assert.equal(status, 0, `Expected a clean exit (got status = ${status})`);
   },
   libtool({ outputPath, inputPaths }: LibtoolOptions) {
-    // xcrun libtool -static -D -o ./out/$CONFIGURATION-maccatalyst/librealm-js-ios.a ./out/$CONFIGURATION-maccatalyst/*.a
+    // xcrun libtool -static -D -o ./out/$CONFIGURATION-maccatalyst/libbarq-js-ios.a ./out/$CONFIGURATION-maccatalyst/*.a
     const { status } = spawnSync("xcrun", ["libtool", "-static", "-D", "-o", outputPath, ...inputPaths], {
       stdio: "inherit",
       env: this.env,

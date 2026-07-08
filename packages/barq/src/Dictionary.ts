@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,7 +33,7 @@ import { createResultsAccessor } from "./collection-accessors/Results";
 
 /* eslint-disable jsdoc/multiline-blocks -- We need this to have @ts-expect-error located correctly in the .d.ts bundle */
 
-const REALM = Symbol("Dictionary#realm");
+const BARQ = Symbol("Dictionary#barq");
 const INTERNAL = Symbol("Dictionary#internal");
 
 export type DictionaryChangeSet = {
@@ -114,7 +115,7 @@ export class Dictionary<T = unknown> extends Collection<
   DictionaryAccessor<T>
 > {
   /** @internal */
-  private declare [REALM]: Barq;
+  private declare [BARQ]: Barq;
 
   /**
    * The representation in the binding.
@@ -127,7 +128,7 @@ export class Dictionary<T = unknown> extends Collection<
    * @internal
    */
   constructor(
-    realm: Barq,
+    barq: Barq,
     internal: binding.Dictionary,
     accessor: DictionaryAccessor<T>,
     typeHelpers: TypeHelpers<T>,
@@ -161,17 +162,17 @@ export class Dictionary<T = unknown> extends Collection<
             });
           }
         },
-        keyPaths ? realm.internal.createKeyPathArray(internal.objectSchema.name, keyPaths) : keyPaths,
+        keyPaths ? barq.internal.createKeyPathArray(internal.objectSchema.name, keyPaths) : keyPaths,
       );
     });
 
     const proxied = new Proxy(this, PROXY_HANDLER as ProxyHandler<this>);
 
-    Object.defineProperty(this, REALM, {
+    Object.defineProperty(this, BARQ, {
       enumerable: false,
       configurable: false,
       writable: false,
-      value: realm,
+      value: barq,
     });
 
     this[INTERNAL] = internal;
@@ -211,12 +212,12 @@ export class Dictionary<T = unknown> extends Collection<
    * @since 10.5.0
    * @ts-expect-error We're exposing methods in the end-users namespace of values */
   *values(): Generator<T> {
-    const realm = this[REALM];
+    const barq = this[BARQ];
     const values = this[INTERNAL].values;
     const itemType = toItemType(values.type);
     const typeHelpers = this[TYPE_HELPERS];
-    const accessor = createResultsAccessor({ realm, typeHelpers, itemType });
-    const results = new indirect.Results<T>(realm, values, accessor, typeHelpers);
+    const accessor = createResultsAccessor({ barq, typeHelpers, itemType });
+    const results = new indirect.Results<T>(barq, values, accessor, typeHelpers);
 
     for (const value of results.values()) {
       yield value;
@@ -234,11 +235,11 @@ export class Dictionary<T = unknown> extends Collection<
     const size = keys.size();
     assert(size === snapshot.size(), "Expected keys and values to equal in size");
 
-    const realm = this[REALM];
+    const barq = this[BARQ];
     const itemType = toItemType(snapshot.type);
     const typeHelpers = this[TYPE_HELPERS];
-    const accessor = createResultsAccessor({ realm, typeHelpers, itemType });
-    const results = new indirect.Results<T>(realm, snapshot, accessor, typeHelpers);
+    const accessor = createResultsAccessor({ barq, typeHelpers, itemType });
+    const results = new indirect.Results<T>(barq, snapshot, accessor, typeHelpers);
 
     for (let i = 0; i < size; i++) {
       const key = keys.getAny(i);
@@ -282,7 +283,7 @@ export class Dictionary<T = unknown> extends Collection<
    * @since 10.6.0
    */
   set(elementsOrKey: string | { [key: string]: T }, value?: T): this {
-    assert.inTransaction(this[REALM]);
+    assert.inTransaction(this[BARQ]);
     const elements = typeof elementsOrKey === "object" ? elementsOrKey : { [elementsOrKey]: value as T };
     assert(Object.getOwnPropertySymbols(elements).length === 0, "Symbols cannot be used as keys of a dictionary");
 
@@ -301,7 +302,7 @@ export class Dictionary<T = unknown> extends Collection<
    * @since 10.6.0
    * @ts-expect-error We're exposing methods in the end-users namespace of keys */
   remove(key: string | string[]): this {
-    assert.inTransaction(this[REALM]);
+    assert.inTransaction(this[BARQ]);
     const internal = this[INTERNAL];
     const keys = typeof key === "string" ? [key] : key;
     for (const k of keys) {

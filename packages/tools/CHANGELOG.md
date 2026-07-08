@@ -4,7 +4,7 @@
 * None
 
 ### Enhancement
-* Added the tool `realm-schema` to inspect the schema in a Barq file.
+* Added the tool `barq-schema` to inspect the schema in a Barq file.
 
 ### Fixes
 * None

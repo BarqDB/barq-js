@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,7 +32,7 @@ import { Option, program } from "@commander-js/extra-typings";
 import * as apple from "./apple";
 import * as android from "./android";
 import * as xcode from "./xcode";
-import { REALM_CORE_PATH, SUPPORTED_CONFIGURATIONS } from "./common";
+import { BARQ_CORE_PATH, SUPPORTED_CONFIGURATIONS } from "./common";
 
 export { program };
 
@@ -83,7 +84,7 @@ function group<ReturnType>(title: string, callback: () => ReturnType) {
   }
 }
 
-program.name("build-realm");
+program.name("build-barq");
 
 program
   .command("build-apple")
@@ -96,7 +97,7 @@ program
   .action(
     actionWrapper(
       ({ clean, platform: rawPlatforms, configuration, skipCollectingHeaders, skipCreatingXcframework }) => {
-        assert(fs.existsSync(REALM_CORE_PATH), `Expected Barq Core at '${REALM_CORE_PATH}'`);
+        assert(fs.existsSync(BARQ_CORE_PATH), `Expected Barq Core at '${BARQ_CORE_PATH}'`);
         const { CMAKE_PATH: cmakePath = execSync("which cmake", { encoding: "utf8" }).trim() } = env;
         const platforms = apple.pickPlatforms(rawPlatforms);
 
@@ -156,7 +157,7 @@ program
   .option("--skip-collecting-headers", "Skip collecting headers from the build directory and copy them to the SDK")
   .action(
     actionWrapper(({ architecture: rawArchitectures, configuration, ndkVersion, clean }) => {
-      assert(fs.existsSync(REALM_CORE_PATH), `Expected Barq Core at '${REALM_CORE_PATH}'`);
+      assert(fs.existsSync(BARQ_CORE_PATH), `Expected Barq Core at '${BARQ_CORE_PATH}'`);
       const { ANDROID_HOME, CMAKE_PATH: cmakePath = execSync("which cmake", { encoding: "utf8" }).trim() } = env;
       assert(typeof ANDROID_HOME === "string", "Missing env variable ANDROID_HOME");
       assert(fs.existsSync(ANDROID_HOME), `Expected the Android SDK at ${ANDROID_HOME}`);

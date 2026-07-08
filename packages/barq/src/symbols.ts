@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,5 +18,5 @@
 ////////////////////////////////////////////////////////////////////////////
 
 export const OBJECT_INTERNAL = Symbol("Object#internal");
-export const OBJECT_REALM = Symbol("Object#realm");
+export const OBJECT_BARQ = Symbol("Object#barq");
 export const OBJECT_HELPERS = Symbol("Object#helpers");

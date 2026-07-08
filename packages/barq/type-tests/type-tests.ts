@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,20 +19,20 @@
 
 /* eslint-disable @typescript-eslint/no-unused-vars -- We're just testing types */
 
-import { Realm as Realm2 } from "../src/index";
+import { Barq as Barq2 } from "../src/index";
 
-const realm = new Realm();
-const realm2: Realm = new Realm();
-const realm3 = new Realm2();
-const app = new Realm.App("");
-const app2 = new Realm2.App("");
-const realm4: Realm2 = new Realm2();
-declare const options: Realm2.App.Sync.SubscriptionOptions;
-declare const options2: Realm.App.Sync.SubscriptionOptions;
+const barq = new Barq();
+const barq2: Barq = new Barq();
+const barq3 = new Barq2();
+const app = new Barq.App("");
+const app2 = new Barq2.App("");
+const barq4: Barq2 = new Barq2();
+declare const options: Barq2.App.Sync.SubscriptionOptions;
+declare const options2: Barq.App.Sync.SubscriptionOptions;
 
 // Calling statics is supported
-Realm.deleteFile({});
+Barq.deleteFile({});
 
 // Mixing enums is supported
-declare const state1: Realm.App.Sync.SubscriptionSetState;
-const state2: Realm2.App.Sync.SubscriptionSetState = state1;
+declare const state1: Barq.App.Sync.SubscriptionSetState;
+const state2: Barq2.App.Sync.SubscriptionSetState = state1;

@@ -23,9 +23,9 @@
     "dist"
   ],
   "author": {
-    "name": "MongoDB",
-    "email": "help@realm.io",
-    "url": "https://www.mongodb.com/docs/realm/"
+    "name": "Barq",
+    "email": "help@barq.io",
+    "url": "https://www.barq.com/docs/barq/"
   },
   "repository": {
     "type": "git",

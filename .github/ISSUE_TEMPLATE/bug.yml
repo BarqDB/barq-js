@@ -55,7 +55,7 @@ body:
         Ideally, please provide a self contained test case or link (e.g. github repo) to a sample app that demonstrates the bug.
         If that's not possible, please show code samples that highlight or reproduce the issue.
         If relevant, include your model definitions.
-        Should you need to share code confidentially, you can send a link to: realm-help (the @) mongodb.com.
+        Should you need to share code confidentially, you can send a link to: barq-help (the @) barq.com.
 # Version
   - type: input
     id: version
@@ -71,9 +71,9 @@ body:
       options:
         - -- select --
         - Local Database only
-        - Atlas Device Sync
-        - 'Atlas App Services: Functions or GraphQL or DataAPI etc'
-        - Both Atlas Device Sync and Atlas App Services
+        - Barq sync
+        - 'Barq: Functions or GraphQL or DataAPI etc'
+        - Both Barq sync and Barq
     validations:
       required: true
   - type: dropdown

@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -52,7 +53,7 @@ export class ObjectListeners<T> {
    */
   private internal!: binding.ObjectNotifier | null;
 
-  constructor(private realm: binding.Barq, private object: BarqObject<T>) {
+  constructor(private barq: binding.Barq, private object: BarqObject<T>) {
     this.properties = getClassHelpers(this.object.constructor as typeof BarqObject).properties;
   }
 
@@ -93,7 +94,7 @@ export class ObjectListeners<T> {
     if (notifier) {
       return notifier;
     } else {
-      notifier = binding.Helpers.makeObjectNotifier(this.realm, this.object[OBJECT_INTERNAL]);
+      notifier = binding.Helpers.makeObjectNotifier(this.barq, this.object[OBJECT_INTERNAL]);
       this.internal = notifier;
       return notifier;
     }
@@ -112,6 +113,6 @@ export class ObjectListeners<T> {
   }
 
   private mapKeyPaths(keyPaths: string[]) {
-    return this.realm.createKeyPathArray(this.object.objectSchema().name, keyPaths);
+    return this.barq.createKeyPathArray(this.object.objectSchema().name, keyPaths);
   }
 }

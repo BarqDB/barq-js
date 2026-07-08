@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,9 +28,9 @@ import assert from "node:assert";
 import type { Configuration } from "./common";
 import {
   PACKAGE_PATH,
-  REALM_CORE_LIBRARY_NAMES_ALLOWLIST,
-  REALM_CORE_PATH,
-  REALM_CORE_VERSION,
+  BARQ_CORE_LIBRARY_NAMES_ALLOWLIST,
+  BARQ_CORE_PATH,
+  BARQ_CORE_VERSION,
   ensureDirectory,
 } from "./common";
 
@@ -67,7 +68,7 @@ export function pickArchitectures(
 }
 
 function ensureBuildDirectory(architecture: AndroidArchitecture, configuration: Configuration, clean: boolean) {
-  const buildPath = path.join(REALM_CORE_PATH, "build-android-" + architecture + "-" + configuration);
+  const buildPath = path.join(BARQ_CORE_PATH, "build-android-" + architecture + "-" + configuration);
   ensureDirectory(buildPath, clean);
   return buildPath;
 }
@@ -94,7 +95,7 @@ export function buildArchive({ cmakePath, ndkPath, architecture, configuration, 
         "-G",
         "Ninja",
         "-S",
-        REALM_CORE_PATH,
+        BARQ_CORE_PATH,
         "-B",
         buildPath,
         "--toolchain",
@@ -127,9 +128,9 @@ export function buildArchive({ cmakePath, ndkPath, architecture, configuration, 
         "ANDROID_STL=c++_shared",
         // Barq specific variables below
         "-D",
-        `REALM_VERSION=${REALM_CORE_VERSION}`,
+        `BARQ_VERSION=${BARQ_CORE_VERSION}`,
         "-D",
-        "REALM_BUILD_LIB_ONLY=ON",
+        "BARQ_BUILD_LIB_ONLY=ON",
       ],
       { stdio: "inherit" },
     );
@@ -144,7 +145,7 @@ export function buildArchive({ cmakePath, ndkPath, architecture, configuration, 
   // Delete unwanted build artifacts
   const libsPath = path.join(installPath, "lib");
   for (const fileName of fs.readdirSync(libsPath)) {
-    if (!REALM_CORE_LIBRARY_NAMES_ALLOWLIST.includes(fileName)) {
+    if (!BARQ_CORE_LIBRARY_NAMES_ALLOWLIST.includes(fileName)) {
       const libraryPath = path.join(libsPath, fileName);
       console.log("Deleting unwanted library archive file", libraryPath);
       fs.rmSync(libraryPath);

@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -71,11 +72,11 @@ const configuration: Barq.Configuration = {
 };
 
 // TODO: It would be better not to have to rely on this, but at the moment I see no other alternatives
-function forceSynchronousNotifications(realm: Barq) {
+function forceSynchronousNotifications(barq: Barq) {
   // Starting a transaction will force all listeners to advance to the latest version
   // and deliver notifications. We don't need to commit the transaction for this to work.
-  realm.beginTransaction();
-  realm.cancelTransaction();
+  barq.beginTransaction();
+  barq.cancelTransaction();
 }
 
 const itemRenderCounter = jest.fn();
@@ -110,23 +111,23 @@ const App = ({ renderItems = true, targetPrimaryKey = parentObjectId }) => {
 const parentObjectId = new Barq.Types.ObjectId();
 
 const SetupComponent = ({ children }: { children: JSX.Element }): JSX.Element | null => {
-  const realm = useBarq();
+  const barq = useBarq();
 
   /*
   useEffect(() => {
     return () => {
-      realm.close();
+      barq.close();
     };
-  }, [realm]);
+  }, [barq]);
   */
 
   const [setupComplete, setSetupComplete] = useState(false);
   useEffect(() => {
-    realm.write(() => {
-      realm.deleteAll();
+    barq.write(() => {
+      barq.deleteAll();
     });
     setSetupComplete(true);
-  }, [realm]);
+  }, [barq]);
 
   if (!setupComplete) {
     return null;
@@ -137,7 +138,7 @@ const SetupComponent = ({ children }: { children: JSX.Element }): JSX.Element | 
 
 const Item: React.FC<{ item: ListItem }> = React.memo(({ item }) => {
   itemRenderCounter();
-  const realm = useBarq();
+  const barq = useBarq();
   const idString = item.id.toHexString();
 
   return (
@@ -149,7 +150,7 @@ const Item: React.FC<{ item: ListItem }> = React.memo(({ item }) => {
         testID={`input${idString}`}
         value={item.name}
         onChangeText={(text) => {
-          realm.write(() => {
+          barq.write(() => {
             item.name = text;
           });
         }}
@@ -157,8 +158,8 @@ const Item: React.FC<{ item: ListItem }> = React.memo(({ item }) => {
       <TouchableHighlight
         testID={`deleteButton${idString}`}
         onPress={() => {
-          realm.write(() => {
-            realm.delete(item);
+          barq.write(() => {
+            barq.delete(item);
           });
         }}
       >
@@ -202,7 +203,7 @@ const TestComponent: React.FC<{ testID?: string; renderItems?: boolean; targetPr
   targetPrimaryKey,
 }) => {
   const list = useObject(List, targetPrimaryKey);
-  const realm = useBarq();
+  const barq = useBarq();
   const [counter, setCounter] = useState(0);
 
   // This useEffect is to test that the list object reference is not changing when
@@ -230,7 +231,7 @@ const TestComponent: React.FC<{ testID?: string; renderItems?: boolean; targetPr
           testID={`listTitleInput${listIdString}`}
           value={list.title}
           onChangeText={(text) => {
-            realm.write(() => {
+            barq.write(() => {
               list.title = text;
             });
           }}
@@ -238,8 +239,8 @@ const TestComponent: React.FC<{ testID?: string; renderItems?: boolean; targetPr
         <TouchableHighlight
           testID={`deleteListButton${listIdString}`}
           onPress={() => {
-            realm.write(() => {
-              realm.delete(list);
+            barq.write(() => {
+              barq.delete(list);
             });
           }}
         >
@@ -440,7 +441,7 @@ describe("useObject: rendering objects with a Barq.List property", () => {
       fireEvent.press(rerenderButton);
       expect(objectChangeCounter).toHaveBeenCalledTimes(expectedCount);
     });
-    it("will rerender when the realm database is cleared", async () => {
+    it("will rerender when the barq database is cleared", async () => {
       await setupTest();
 
       const initialCount = 2;

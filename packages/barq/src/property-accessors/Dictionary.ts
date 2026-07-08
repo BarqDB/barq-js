@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,7 +28,7 @@ import { createDictionaryAccessor } from "../collection-accessors/Dictionary";
 /** @internal */
 export function createDictionaryPropertyAccessor({
   columnKey,
-  realm,
+  barq,
   name,
   type,
   optional,
@@ -37,7 +38,7 @@ export function createDictionaryPropertyAccessor({
 }: PropertyOptions): PropertyAccessor {
   const itemType = toItemType(type);
   const itemHelpers = getTypeHelpers(itemType, {
-    realm,
+    barq,
     name: `value in ${name}`,
     getClassHelpers,
     objectType,
@@ -45,7 +46,7 @@ export function createDictionaryPropertyAccessor({
     objectSchemaName: undefined,
   });
   const dictionaryAccessor = createDictionaryAccessor({
-    realm,
+    barq,
     typeHelpers: itemHelpers,
     itemType,
     isEmbedded: embedded,
@@ -53,13 +54,13 @@ export function createDictionaryPropertyAccessor({
 
   return {
     get(obj) {
-      const internal = binding.Dictionary.make(realm.internal, obj, columnKey);
-      return new Dictionary(realm, internal, dictionaryAccessor, itemHelpers);
+      const internal = binding.Dictionary.make(barq.internal, obj, columnKey);
+      return new Dictionary(barq, internal, dictionaryAccessor, itemHelpers);
     },
     set(obj, value) {
-      assert.inTransaction(realm);
+      assert.inTransaction(barq);
 
-      const internal = binding.Dictionary.make(realm.internal, obj, columnKey);
+      const internal = binding.Dictionary.make(barq.internal, obj, columnKey);
       // Clear the dictionary before adding new values
       internal.removeAll();
       assert.object(value, `values of ${name}`, { allowArrays: false });

@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,7 +32,7 @@ export class BarqInExpoGoError extends Error {
   constructor() {
     const runCommand = `npx expo run:${Platform.OS}`;
     super(
-      `Expo Go does not contain the native module for the 'realm' package. To use native modules outside of what is packaged in Expo Go, create a development build:\n\nnpx expo install expo-dev-client\n${runCommand}\n\nRead more: https://docs.expo.dev/develop/development-builds/introduction/`,
+      `Expo Go does not contain the native module for the 'barq' package. To use native modules outside of what is packaged in Expo Go, create a development build:\n\nnpx expo install expo-dev-client\n${runCommand}\n\nRead more: https://docs.expo.dev/develop/development-builds/introduction/`,
     );
   }
 }

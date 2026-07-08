@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,13 +20,13 @@
 import { binding } from "../binding";
 import { assert } from "../assert";
 import { BarqObject, UpdateMode } from "../Object";
-import { OBJECT_INTERNAL, OBJECT_REALM } from "../symbols";
+import { OBJECT_INTERNAL, OBJECT_BARQ } from "../symbols";
 import { nullPassthrough } from "./null-passthrough";
 import type { TypeHelpers, TypeOptions } from "./types";
 
 /** @internal */
 export function createObjectTypeHelpers({
-  realm,
+  barq,
   name,
   objectType,
   optional,
@@ -39,7 +40,7 @@ export function createObjectTypeHelpers({
       if (
         value instanceof BarqObject &&
         value.constructor.name === objectType &&
-        value[OBJECT_REALM].internal.$addr === realm.internal.$addr
+        value[OBJECT_BARQ].internal.$addr === barq.internal.$addr
       ) {
         return value[OBJECT_INTERNAL];
       } else {
@@ -47,8 +48,8 @@ export function createObjectTypeHelpers({
         assert.object(value, name);
         // Use the update mode if set; otherwise, the object is assumed to be an
         // unmanaged object that the user wants to create.
-        // TODO: Ideally use `options?.updateMode` instead of `realm.currentUpdateMode`.
-        const createdObject = BarqObject.create(realm, value, realm.currentUpdateMode ?? UpdateMode.Never, {
+        // TODO: Ideally use `options?.updateMode` instead of `barq.currentUpdateMode`.
+        const createdObject = BarqObject.create(barq, value, barq.currentUpdateMode ?? UpdateMode.Never, {
           helpers,
           createObj: options?.createObj,
         });
@@ -57,7 +58,7 @@ export function createObjectTypeHelpers({
     }, optional),
     fromBinding: nullPassthrough((value) => {
       if (value instanceof binding.ObjLink) {
-        const table = binding.Helpers.getTable(realm.internal, value.tableKey);
+        const table = binding.Helpers.getTable(barq.internal, value.tableKey);
         const linkedObj = table.getObject(value.objKey);
         return wrapObject(linkedObj);
       } else {

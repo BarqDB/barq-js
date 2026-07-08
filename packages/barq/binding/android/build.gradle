@@ -44,7 +44,7 @@ def reactNativeArchitectures() {
 
 
 android {
-    namespace 'io.realm.react'
+    namespace 'io.barq.react'
     compileSdkVersion rootProject.hasProperty('compileSdkVersion') ? rootProject.compileSdkVersion : 28
     buildToolsVersion rootProject.hasProperty('buildToolsVersion') ? rootProject.buildToolsVersion : '28.0.3'
     buildFeatures {
@@ -69,7 +69,7 @@ android {
         debug {
             jniDebuggable true
             packagingOptions {
-                doNotStrip "**/librealm.so"
+                doNotStrip "**/libbarq.so"
             }
             // TODO: Remove the comments and test this
             // externalNativeBuild {

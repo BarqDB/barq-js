@@ -1,7 +1,7 @@
 {
   "name": "@barq/common",
   "version": "1.1.4",
-  "description": "Cross-product common code used by Realm",
+  "description": "Cross-product common code used by Barq",
   "main": "./dist/bundle.cjs.js",
   "module": "./dist/bundle.es.js",
   "types": "./dist/bundle.d.ts",
@@ -43,9 +43,9 @@
     "dist"
   ],
   "author": {
-    "name": "MongoDB",
-    "email": "help@realm.io",
-    "url": "https://www.mongodb.com/docs/realm/"
+    "name": "Barq",
+    "email": "help@barq.io",
+    "url": "https://www.barq.com/docs/barq/"
   },
   "repository": {
     "type": "git",

@@ -69,9 +69,6 @@ export class Binary {
     this.sub_type = subType;
   }
 
-  get _bsontype(): "Binary" {
-    return "Binary";
-  }
 
   length(): number {
     return this.buffer.length;

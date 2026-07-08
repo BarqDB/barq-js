@@ -1,8 +1,8 @@
 blank_issues_enabled: true
 contact_links:
   - name: General Questions and Inquiries
-    url: https://developer.mongodb.com/community/forums/c/realm-sdks
+    url: https://developer.barq.com/community/forums/c/barq-sdks
     about: Please ask general design/architecture questions in the community forums.
-  - name: Atlas Device Sync and Atlas App Services Production Issues
-    url: https://support.mongodb.com/
+  - name: Barq sync and Barq Production Issues
+    url: https://support.barq.com/
     about: Please report urgent production issues to the support portal directly.

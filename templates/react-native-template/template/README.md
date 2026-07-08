@@ -1,6 +1,6 @@
-Simple React Native template to quickly get started with Realm.
+Simple React Native template to quickly get started with Barq.
 
-This app implements a simple todo list, using Realm for persistence and the [Realm React](https://github.com/BarqDB/barq-js/tree/master/packages/react) hooks for React integration. It supports sync, allowing users to login and sync their todo lists across multiple devices.
+This app implements a simple todo list, using Barq for persistence and the [Barq React](https://github.com/BarqDB/barq-js/tree/master/packages/react) hooks for React integration. It supports sync, allowing users to login and sync their todo lists across multiple devices.
 
 # Getting Started
 

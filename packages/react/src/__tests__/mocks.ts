@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,7 +28,7 @@ import { sleep } from "./helpers";
 export class MockedProgressBarqPromise extends Promise<Barq> implements ProgressBarqPromise {
   private progressHandler?: (callback: EstimateProgressNotificationCallback) => void;
   private cancelHandler?: () => void;
-  private realmPromise!: Promise<Barq>;
+  private barqPromise!: Promise<Barq>;
 
   constructor(
     getBarq: () => Promise<Barq>,
@@ -36,13 +37,13 @@ export class MockedProgressBarqPromise extends Promise<Barq> implements Progress
       cancel?: () => void;
     },
   ) {
-    let realmPromise: Promise<Barq>;
+    let barqPromise: Promise<Barq>;
     super((resolve) => {
-      realmPromise = getBarq();
-      realmPromise.then((realm) => resolve(realm));
+      barqPromise = getBarq();
+      barqPromise.then((barq) => resolve(barq));
     });
-    // @ts-expect-error realmPromise value will be assigned right away
-    this.realmPromise = realmPromise;
+    // @ts-expect-error barqPromise value will be assigned right away
+    this.barqPromise = barqPromise;
     this.progressHandler = options?.progress;
     this.cancelHandler = options?.cancel;
   }
@@ -62,7 +63,7 @@ export class MockedProgressBarqPromise extends Promise<Barq> implements Progress
     onfulfilled?: ((value: Barq) => TResult1 | PromiseLike<TResult1>) | null | undefined,
     onrejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null | undefined,
   ): Promise<TResult1 | TResult2> {
-    return this.realmPromise.then(onfulfilled, onrejected);
+    return this.barqPromise.then(onfulfilled, onrejected);
   }
 
   progress = (callback: EstimateProgressNotificationCallback) => {

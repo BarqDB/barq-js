@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -69,14 +70,14 @@ inject({
     debug("removeBarqFilesFromDirectory", path);
     for (const dirent of readdirSync(path, { encoding: "utf8", withFileTypes: true })) {
       const direntPath = join(path, dirent.name);
-      if (dirent.isDirectory() && dirent.name.endsWith(".realm.management")) {
+      if (dirent.isDirectory() && dirent.name.endsWith(".barq.management")) {
         rmSync(direntPath, { recursive: true, force: true });
       } else if (
-        dirent.name.endsWith(".realm") ||
-        dirent.name.endsWith(".realm.note") ||
-        dirent.name.endsWith(".realm.lock") ||
-        dirent.name.endsWith(".realm.fresh.lock") ||
-        dirent.name.endsWith(".realm.log")
+        dirent.name.endsWith(".barq") ||
+        dirent.name.endsWith(".barq.note") ||
+        dirent.name.endsWith(".barq.lock") ||
+        dirent.name.endsWith(".barq.fresh.lock") ||
+        dirent.name.endsWith(".barq.log")
       ) {
         rmSync(direntPath, { force: true });
       }

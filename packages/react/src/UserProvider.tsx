@@ -17,8 +17,8 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Modifications Copyright (c) 2026 the Barq authors
-// Part of Barq (https://github.com/BarqDB/barq-js), a modified fork of Realm JS.
-// Reshaped from Atlas App-Services authentication into a simple provider for a
+// Part of Barq (https://github.com/BarqDB/barq-js), a modified fork of Barq JS.
+// Reshaped from Barq App-Services authentication into a simple provider for a
 // Barq token-based sync user. Licensed under the Apache License, Version 2.0.
 // See the top-level NOTICE file for fork attribution and trademark notices.
 //
@@ -44,7 +44,7 @@ type UserProviderProps = {
 
 /**
  * Makes a Barq token {@link AnyUser | user} available to the descendant
- * `BarqProvider` and to {@link useUser}. Unlike Atlas App Services, Barq performs
+ * `BarqProvider` and to {@link useUser}. Unlike Barq, Barq performs
  * no login flow here — you obtain a signed token from your own identity provider,
  * build a user with `Barq.User.fromToken`, and pass it in.
  * @example

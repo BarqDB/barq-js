@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -141,24 +142,24 @@ assert.never = (value: never, target?: string): never => {
 
 // SDK specific
 
-assert.open = (realm: Barq) => {
-  assert(!realm.isClosed, "Cannot access realm that has been closed.");
+assert.open = (barq: Barq) => {
+  assert(!barq.isClosed, "Cannot access barq that has been closed.");
 };
 
-assert.inTransaction = (realm: Barq, message = "Cannot modify managed objects outside of a write transaction.") => {
-  assert.open(realm);
-  assert(realm.isInTransaction, message);
+assert.inTransaction = (barq: Barq, message = "Cannot modify managed objects outside of a write transaction.") => {
+  assert.open(barq);
+  assert(barq.isInTransaction, message);
 };
 
-assert.outTransaction = (realm: Barq, message = "Expected realm to be outside of a write transaction") => {
-  assert.open(realm);
-  assert(!realm.isInTransaction, message);
+assert.outTransaction = (barq: Barq, message = "Expected barq to be outside of a write transaction") => {
+  assert.open(barq);
+  assert(!barq.isInTransaction, message);
 };
 
 assert.isValid = (obj: binding.Obj, message = "Accessing object which has been invalidated or deleted") => {
   assert(obj.isValid, message);
 };
 
-assert.isSameBarq = (realm1: binding.Barq, realm2: binding.Barq, message = "Expected the Barqs to be the same") => {
-  assert(realm1.$addr == realm2.$addr, message);
+assert.isSameBarq = (barq1: binding.Barq, barq2: binding.Barq, message = "Expected the Barqs to be the same") => {
+  assert(barq1.$addr == barq2.$addr, message);
 };

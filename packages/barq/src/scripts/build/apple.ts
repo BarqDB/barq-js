@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,25 +31,25 @@ import type { XcodeSDKName } from "./xcode";
 import { ARCHIVE_INSTALL_PATH, SUPPORTED_PLATFORMS, xcode } from "./xcode";
 import {
   PACKAGE_PATH,
-  REALM_CORE_LIBRARY_NAMES_ALLOWLIST,
-  REALM_CORE_PATH,
-  REALM_CORE_VERSION,
+  BARQ_CORE_LIBRARY_NAMES_ALLOWLIST,
+  BARQ_CORE_PATH,
+  BARQ_CORE_VERSION,
   collectHeaders as commonCollectHeaders,
   ensureDirectory,
 } from "./common";
 
 const EXPECTED_XCODE_VERSION = "15.4";
 
-const REALM_CORE_BUILD_PATH = path.resolve(REALM_CORE_PATH, "build-xcode");
-const REALM_CORE_CMAKE_TOOLCHAIN_PATH = path.resolve(REALM_CORE_PATH, "tools/cmake/xcode.toolchain.cmake");
-const REALM_CORE_COMBINED_LIBRARY_NAME = "librealm-combined.a";
+const BARQ_CORE_BUILD_PATH = path.resolve(BARQ_CORE_PATH, "build-xcode");
+const BARQ_CORE_CMAKE_TOOLCHAIN_PATH = path.resolve(BARQ_CORE_PATH, "tools/cmake/xcode.toolchain.cmake");
+const BARQ_CORE_COMBINED_LIBRARY_NAME = "libbarq-combined.a";
 
 // TODO: Consider if this needs to be platform specific
-const REALM_CORE_HEADERS_PATH = path.resolve(REALM_CORE_BUILD_PATH, "include");
+const BARQ_CORE_HEADERS_PATH = path.resolve(BARQ_CORE_BUILD_PATH, "include");
 
-const REALM_CORE_PRODUCTS_INSTALL_PATH = `Products${ARCHIVE_INSTALL_PATH}`;
+const BARQ_CORE_PRODUCTS_INSTALL_PATH = `Products${ARCHIVE_INSTALL_PATH}`;
 
-const XCFRAMEWORK_PATH = path.resolve(PACKAGE_PATH, "prebuilds/apple/realm-core.xcframework");
+const XCFRAMEWORK_PATH = path.resolve(PACKAGE_PATH, "prebuilds/apple/barq-core.xcframework");
 
 const APPLE_DESTINATIONS_PR_PLATFORM = new Map<XcodeSDKName, string[]>([
   ["iphoneos", ["generic/platform=iOS"]],
@@ -76,7 +77,7 @@ export function pickPlatforms(values: readonly (XcodeSDKName | "all" | "none")[]
 }
 
 function ensureBuildDirectory(clean: boolean) {
-  ensureDirectory(REALM_CORE_BUILD_PATH, clean);
+  ensureDirectory(BARQ_CORE_BUILD_PATH, clean);
 }
 
 function checkXCodeVersion() {
@@ -100,17 +101,17 @@ export function generateXcodeProject({ cmakePath, clean }: GenerateXcodeProjectO
       "-G",
       "Xcode",
       "-S",
-      REALM_CORE_PATH,
+      BARQ_CORE_PATH,
       "-B",
-      REALM_CORE_BUILD_PATH,
+      BARQ_CORE_BUILD_PATH,
       "--toolchain",
-      REALM_CORE_CMAKE_TOOLCHAIN_PATH,
+      BARQ_CORE_CMAKE_TOOLCHAIN_PATH,
       "-D",
       "CMAKE_CXX_STANDARD=20",
       "-D",
-      `REALM_VERSION=${REALM_CORE_VERSION}`,
+      `BARQ_VERSION=${BARQ_CORE_VERSION}`,
       "-D",
-      "REALM_BUILD_LIB_ONLY=ON",
+      "BARQ_BUILD_LIB_ONLY=ON",
     ],
     { stdio: "inherit" },
   );
@@ -126,9 +127,9 @@ export function buildFramework({ platform, configuration }: BuildFrameworkOption
   ensureBuildDirectory(false);
 
   console.log(`Building archive for '${platform}'`);
-  const archivePath = path.join(REALM_CORE_BUILD_PATH, platform + ".xcarchive");
+  const archivePath = path.join(BARQ_CORE_BUILD_PATH, platform + ".xcarchive");
   xcode.archive({
-    cwd: REALM_CORE_BUILD_PATH,
+    cwd: BARQ_CORE_BUILD_PATH,
     scheme: "ALL_BUILD",
     configuration,
     sdkName: platform,
@@ -137,13 +138,13 @@ export function buildFramework({ platform, configuration }: BuildFrameworkOption
   });
   assert(fs.existsSync(archivePath), `Expected xcodebuild to emit ${archivePath}`);
 
-  console.log(`Using libtool to combine libraries into a single ${REALM_CORE_COMBINED_LIBRARY_NAME}`);
-  const archiveInstallPath = path.join(archivePath, REALM_CORE_PRODUCTS_INSTALL_PATH);
+  console.log(`Using libtool to combine libraries into a single ${BARQ_CORE_COMBINED_LIBRARY_NAME}`);
+  const archiveInstallPath = path.join(archivePath, BARQ_CORE_PRODUCTS_INSTALL_PATH);
   const inputPaths = fs
     .readdirSync(archiveInstallPath)
-    .filter((name) => REALM_CORE_LIBRARY_NAMES_ALLOWLIST.includes(name))
+    .filter((name) => BARQ_CORE_LIBRARY_NAMES_ALLOWLIST.includes(name))
     .map((name) => path.join(archiveInstallPath, name));
-  const combinedArchivePath = path.join(archiveInstallPath, REALM_CORE_COMBINED_LIBRARY_NAME);
+  const combinedArchivePath = path.join(archiveInstallPath, BARQ_CORE_COMBINED_LIBRARY_NAME);
   xcode.libtool({
     outputPath: combinedArchivePath,
     inputPaths,
@@ -154,12 +155,12 @@ export function buildFramework({ platform, configuration }: BuildFrameworkOption
 }
 
 export function collectHeaders() {
-  commonCollectHeaders({ buildPath: REALM_CORE_BUILD_PATH, includePath: REALM_CORE_HEADERS_PATH });
+  commonCollectHeaders({ buildPath: BARQ_CORE_BUILD_PATH, includePath: BARQ_CORE_HEADERS_PATH });
 }
 
 export function collectArchivePaths() {
   const archivePaths = globSync([path.join("*.xcarchive")], {
-    cwd: REALM_CORE_BUILD_PATH,
+    cwd: BARQ_CORE_BUILD_PATH,
     ignore: ["external/**"],
     absolute: true,
   });
@@ -167,8 +168,8 @@ export function collectArchivePaths() {
   return archivePaths.filter((archivePath) => {
     const combinedLibraryPath = path.join(
       archivePath,
-      REALM_CORE_PRODUCTS_INSTALL_PATH,
-      REALM_CORE_COMBINED_LIBRARY_NAME,
+      BARQ_CORE_PRODUCTS_INSTALL_PATH,
+      BARQ_CORE_COMBINED_LIBRARY_NAME,
     );
     return fs.existsSync(combinedLibraryPath);
   });
@@ -180,15 +181,15 @@ type CreateXCFrameworkOptions = {
 
 export function createXCFramework({ archivePaths }: CreateXCFrameworkOptions) {
   console.log(`Creating an xcframework from ${archivePaths.length} archives`);
-  assert(fs.existsSync(REALM_CORE_HEADERS_PATH), "Collect headers before creating XCFramework");
+  assert(fs.existsSync(BARQ_CORE_HEADERS_PATH), "Collect headers before creating XCFramework");
   // Delete any existing xcframework to prevent the error:
-  // “librealm-combined.a” couldn’t be copied to “...” because an item with the same name already exists
+  // “libbarq-combined.a” couldn’t be copied to “...” because an item with the same name already exists
   // Ideally, it would only be necessary to delete the specific platform+arch, to allow selectively building from source.
   fs.rmSync(XCFRAMEWORK_PATH, { recursive: true, force: true });
   xcode.createXcframework({
     archivePaths,
-    libraryNames: [REALM_CORE_COMBINED_LIBRARY_NAME],
+    libraryNames: [BARQ_CORE_COMBINED_LIBRARY_NAME],
     outputPath: XCFRAMEWORK_PATH,
-    headerPaths: [REALM_CORE_HEADERS_PATH],
+    headerPaths: [BARQ_CORE_HEADERS_PATH],
   });
 }

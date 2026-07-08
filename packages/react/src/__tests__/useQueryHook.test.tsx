@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2021 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -57,11 +58,11 @@ describe("useQuery", () => {
   const useQuery = createUseQuery(context.useBarq);
 
   beforeEach(() => {
-    const realm = context.openBarq();
-    realm.write(() => {
-      realm.deleteAll();
+    const barq = context.openBarq();
+    barq.write(() => {
+      barq.deleteAll();
       testDataSet.forEach((data) => {
-        realm.create("dog", data);
+        barq.create("dog", data);
       });
     });
   });

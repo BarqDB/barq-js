@@ -1,10 +1,14 @@
 #pragma once
 
 #include <jsi/jsi.h>
-#include <realm_helpers.h>
+#include <barq_helpers.h>
 #include <type_traits>
 
-namespace realm::js::JSI {
+#ifndef BARQ_DECAY_COPY
+#define BARQ_DECAY_COPY(x) (::std::decay_t<decltype(x)>(x))
+#endif
+
+namespace barq::js::JSI {
 namespace {
 
 namespace jsi = facebook::jsi;
@@ -85,16 +89,16 @@ std::remove_cvref_t<T> copyIfNeeded(jsi::Runtime&, T&& val)
 
 #define FWD_OR_COPY(x) copyIfNeeded(_env, FWD(x))
 
-REALM_NOINLINE inline jsi::Value toJsiErrorCode(jsi::Runtime& env, const std::error_code& e) noexcept
+BARQ_NOINLINE inline jsi::Value toJsiErrorCode(jsi::Runtime& env, const std::error_code& e) noexcept
 {
-    REALM_ASSERT_RELEASE(e);
+    BARQ_ASSERT_RELEASE(e);
     auto out = jsi::JSError(env, e.message()).value().getObject(env);
     out.setProperty(env, "code", e.value());
     out.setProperty(env, "category", e.category().name());
     return jsi::Value(std::move(out));
 }
 
-REALM_NOINLINE inline jsi::Value toJsiException(jsi::Runtime& env, const std::exception_ptr& e) noexcept
+BARQ_NOINLINE inline jsi::Value toJsiException(jsi::Runtime& env, const std::exception_ptr& e) noexcept
 {
     auto jsError = [&] {
         try {
@@ -113,7 +117,7 @@ REALM_NOINLINE inline jsi::Value toJsiException(jsi::Runtime& env, const std::ex
     return jsi::Value(env, jsError.value());
 }
 
-[[noreturn]] REALM_NOINLINE inline void throwJsiException(jsi::Runtime& env, const std::exception& e)
+[[noreturn]] BARQ_NOINLINE inline void throwJsiException(jsi::Runtime& env, const std::exception& e)
 {
     if (dynamic_cast<const jsi::JSError*>(&e))
         throw; // Just allow exception propagation to continue
@@ -122,7 +126,7 @@ REALM_NOINLINE inline jsi::Value toJsiException(jsi::Runtime& env, const std::ex
     throw jsi::JSError(env, e.what());
 }
 
-[[noreturn]] REALM_NOINLINE inline void throwNullSharedPtrError(jsi::Runtime& env, const char* clsName)
+[[noreturn]] BARQ_NOINLINE inline void throwNullSharedPtrError(jsi::Runtime& env, const char* clsName)
 {
     throw jsi::JSError(env, util::format("Attempting to use an instanace of %1 holding a null shared_ptr. "
                                          "Did you call $resetSharedPtr on it already?",
@@ -180,4 +184,4 @@ private:
 };
 
 } // namespace
-} // namespace realm::js::JSI
+} // namespace barq::js::JSI

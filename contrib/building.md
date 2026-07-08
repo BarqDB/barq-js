@@ -57,7 +57,7 @@ The following dependencies are required. All except Xcode can be installed by fo
 Moreover, in order to avoid introducing false positives in our analytics dataset, it is highly recommended to disable analytics by adding the following to your shell configuration:
 
 ```sh
-export REALM_DISABLE_ANALYTICS=1
+export BARQ_DISABLE_ANALYTICS=1
 ```
 
 ### Setup instructions for MacOS
@@ -206,7 +206,7 @@ In most cases, it's not required to build the SDK explicitly. You can either sim
 Most of Barq JS is platform independent code (commonly referred to as the SDK), which is built explicitly by running:
 
 ```sh
-npm run build:ts --workspace realm
+npm run build:ts --workspace barq
 ```
 
 ### Building for iOS
@@ -215,9 +215,9 @@ You can build and bundle for iOS by running the following command from the root 
 
 ```sh
 # Pre-build Barq Core into an XCFramework
-npm run prebuild-apple --workspace realm
+npm run prebuild-apple --workspace barq
 # Generate the JSI binding code (to be compiled when building the consuming app)
-npm run bindgen:jsi  --workspace realm
+npm run bindgen:jsi  --workspace barq
 ```
 
 The resulting prebuilt binary is stored in `packages/barq/prebuilds/apple`.
@@ -228,9 +228,9 @@ You can build and bundle for Android by running the following command from the r
 
 ```sh
 # Pre-build Barq Core into a CPack install directory
-npm run prebuild-android --workspace realm
+npm run prebuild-android --workspace barq
 # Generate the JSI binding code (to be compiled when building the consuming app)
-npm run bindgen:jsi  --workspace realm
+npm run bindgen:jsi  --workspace barq
 ```
 
 The resulting prebuilt binary is stored in `packages/barq/prebuilds/android`.
@@ -240,18 +240,18 @@ The resulting prebuilt binary is stored in `packages/barq/prebuilds/android`.
 You can build the native prebuilt binary for Node.js by running the following command from the root directory:
 
 ```sh
-npm run build:node --workspace realm
+npm run build:node --workspace barq
 ```
 
-The resulting prebuilt binary is the `packages/barq/prebuilds/node/realm.node` file.
+The resulting prebuilt binary is the `packages/barq/prebuilds/node/barq.node` file.
 
 If you want to produce a prebuild (a OS +arch specific archive meant for distribution alongside the NPM archive):
 
 ```sh
-npm run prebuild-node --workspace realm
+npm run prebuild-node --workspace barq
 ```
 
-The resulting prebuilt binary is stored in a `packages/barq/prebuilds/realm-*.tar.gz` file.
+The resulting prebuilt binary is stored in a `packages/barq/prebuilds/barq-*.tar.gz` file.
 
 #### Additional steps for Windows
 
@@ -302,13 +302,13 @@ nvm install 16 # you can use any supported node version
 You can now build and bundle Barq JS from source:
 
 ```sh
-export REALM_USE_SYSTEM_OPENSSL=1
+export BARQ_USE_SYSTEM_OPENSSL=1
 git clone https://github.com/BarqDB/barq-js
 cd barq-js
 git submodule update —-init —-recursive
 npm install --ignore-scripts
-npm run build:node --workspace realm
-npm run build:ts --workspace realm
+npm run build:node --workspace barq
+npm run build:ts --workspace barq
 ```
 
 Finally, you can use Barq JS in your example project `MyProject`:
@@ -335,7 +335,7 @@ npm run clean
 API documentation is written using [TypeDoc](https://typedoc.org/). To generate the documentation, run the following command from the root directory:
 
 ```sh
-npm run docs --workspace realm
+npm run docs --workspace barq
 ```
 
 The generated docs can be found in `packages/barq/docs/index.html`.
@@ -410,7 +410,7 @@ The relevant snippet is:
 
 ## Updating the Android JNI headers
 
-If you add a new JNI method to [`RealmReactModule.java`](https://github.com/BarqDB/barq-js/blob/main/packages/barq/react-native/android/src/main/java/io/realm/react/RealmReactModule.java), you will need to regenerate the auto-generated [header file](https://github.com/BarqDB/barq-js/blob/main/packages/barq/src/android/io_realm_react_RealmReactModule.h).
+If you add a new JNI method to [`BarqReactModule.java`](https://github.com/BarqDB/barq-js/blob/main/packages/barq/react-native/android/src/main/java/io/barq/react/BarqReactModule.java), you will need to regenerate the auto-generated [header file](https://github.com/BarqDB/barq-js/blob/main/packages/barq/src/android/io_barq_react_BarqReactModule.h).
 
 1. First you need to find some classpaths required to generate the header. In a terminal, `cd ~/.gradle/caches` and then run:
     1. `find "$(pwd -P)" -name "jetified-react-native-0.69.1-debug" -exec find {} -name "classes.jar" \;`
@@ -422,5 +422,5 @@ If you add a new JNI method to [`RealmReactModule.java`](https://github.com/Barq
 
     You should end up with something like: `~/Library/Android/sdk/platforms/android-31/android.jar:~/.gradle/caches/transforms-3/7d342974325594036ab59618107595df/transformed/jetified-react-native-0.69.1-debug/jars/classes.jar:~/.gradle/caches/transforms-3/6c67d7687cdaa9b6d194c80ea9a580e2/transformed/jetified-soloader-0.10.3/jars/classes.jar:~/.gradle/caches/modules-2/files-2.1/org.nanohttpd/nanohttpd/2.2.0/73a02117620b6cc7683a1ed6ae24c2f36e2a715/nanohttpd-2.2.0.jar`
 3. Change to the `react-native/android/src/main/java` directory in your Barq JS checkout
-4. Run `javac -h ../../../../../src/android/ -classpath <CLASSPATH_STRING> io/realm/react/RealmReactModule.java`, replacing `<CLASSPATH_STRING>` with the string you built up in step 2
+4. Run `javac -h ../../../../../src/android/ -classpath <CLASSPATH_STRING> io/barq/react/BarqReactModule.java`, replacing `<CLASSPATH_STRING>` with the string you built up in step 2
 5. Delete the `.class` files that the `javac` command created

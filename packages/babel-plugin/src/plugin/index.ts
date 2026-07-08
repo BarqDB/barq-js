@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,7 +31,7 @@ type BarqType = {
 
 // This could be "int" or "double", but we default to "double" because this is how a JS Number is represented internally
 const DEFAULT_NUMERIC_TYPE = "double";
-const REALM_NAMED_EXPORT = "Barq";
+const BARQ_NAMED_EXPORT = "Barq";
 const TYPES_NAMED_EXPORT = "Types";
 
 function isBarqTypeAlias(
@@ -42,7 +43,7 @@ function isBarqTypeAlias(
     return isBarqTypeAlias(path.get("typeName"), name, namespace);
   } else if (path.isTSQualifiedName() && path.get("right").isIdentifier({ name })) {
     const left = path.get("left");
-    if (namespace === null && left.isIdentifier({ name: REALM_NAMED_EXPORT })) {
+    if (namespace === null && left.isIdentifier({ name: BARQ_NAMED_EXPORT })) {
       // Barq.{{name}}
       return isImportedFromBarq(left);
     } else if (left.isIdentifier({ name: namespace })) {
@@ -52,7 +53,7 @@ function isBarqTypeAlias(
       // Barq.{{namespace}}.{{name}}
       return (
         left.isTSQualifiedName() &&
-        left.get("left").isIdentifier({ name: REALM_NAMED_EXPORT }) &&
+        left.get("left").isIdentifier({ name: BARQ_NAMED_EXPORT }) &&
         left.get("right").isIdentifier({ name: namespace }) &&
         isImportedFromBarq(path.get("left"))
       );
@@ -309,24 +310,24 @@ function visitBarqClassProperty(path: NodePath<types.ClassProperty>) {
 
   if (keyPath.isIdentifier()) {
     const name = keyPath.node.name;
-    const realmType = getBarqTypeForClassProperty(path);
-    if (realmType) {
+    const barqType = getBarqTypeForClassProperty(path);
+    if (barqType) {
       const properties: types.ObjectProperty[] = [
-        types.objectProperty(types.identifier("type"), types.stringLiteral(realmType.type)),
+        types.objectProperty(types.identifier("type"), types.stringLiteral(barqType.type)),
       ];
 
-      if (path.node.optional || realmType.optional) {
+      if (path.node.optional || barqType.optional) {
         properties.push(types.objectProperty(types.identifier("optional"), types.booleanLiteral(true)));
       }
 
-      if (realmType.objectType) {
+      if (barqType.objectType) {
         properties.push(
-          types.objectProperty(types.identifier("objectType"), types.stringLiteral(realmType.objectType)),
+          types.objectProperty(types.identifier("objectType"), types.stringLiteral(barqType.objectType)),
         );
       }
 
-      if (realmType.property) {
-        properties.push(types.objectProperty(types.identifier("property"), types.stringLiteral(realmType.property)));
+      if (barqType.property) {
+        properties.push(types.objectProperty(types.identifier("property"), types.stringLiteral(barqType.property)));
       }
 
       if (valuePath.isLiteral()) {
@@ -417,10 +418,10 @@ function visitBarqClass(path: NodePath<types.ClassDeclaration>) {
 
 /**
  * @param path The path of a class which might extend Barq's `Object`
- * @returns True iff the `path` points to a class which extends the `Object` which binds to an `Object` imported from the `"realm"` package.
+ * @returns True iff the `path` points to a class which extends the `Object` which binds to an `Object` imported from the `"barq"` package.
  */
 function isClassExtendingBarqObject(path: NodePath<types.ClassDeclaration>) {
-  // Determine if the super class is the "Object" class from the "realm" package
+  // Determine if the super class is the "Object" class from the "barq" package
   const superClass = path.get("superClass");
   if (path.isClassDeclaration() && superClass.isExpression() && isPropertyImportedFromBarq(superClass, "Object")) {
     // The class is extending "Barq.Object" from "@barq/barq"

@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +24,7 @@ import { act } from "@testing-library/react-native";
 import { randomBarqPath } from "./helpers";
 
 export type BarqTestContext = {
-  realm: Barq;
+  barq: Barq;
   useBarq: () => Barq;
   write(cb: () => void): void;
   openBarq(config?: Configuration): Barq;
@@ -31,33 +32,33 @@ export type BarqTestContext = {
 };
 
 /**
- * Opens a test realm at a randomized and temporary path.
- * @returns The `realm` and a `write` function, which will wrap `realm.write` with an `act` and prepand a second `realm.write` to force notifications to trigger synchronously.
+ * Opens a test barq at a randomized and temporary path.
+ * @returns The `barq` and a `write` function, which will wrap `barq.write` with an `act` and prepand a second `barq.write` to force notifications to trigger synchronously.
  */
 export function createBarqTestContext(rootConfig: Configuration = {}): BarqTestContext {
-  let realm: Barq | null = null;
+  let barq: Barq | null = null;
   const context = {
-    get realm(): Barq {
-      assert(realm, "Open the Barq first");
-      return realm;
+    get barq(): Barq {
+      assert(barq, "Open the Barq first");
+      return barq;
     },
     useBarq() {
-      return context.realm;
+      return context.barq;
     },
     openBarq(config: Configuration = {}) {
-      if (realm) {
-        // Close any realm, previously opened
-        realm.close();
+      if (barq) {
+        // Close any barq, previously opened
+        barq.close();
       }
-      realm = new Barq({ ...rootConfig, ...config, path: randomBarqPath() });
-      return realm;
+      barq = new Barq({ ...rootConfig, ...config, path: randomBarqPath() });
+      return barq;
     },
     write(callback: () => void) {
       act(() => {
-        context.realm.write(callback);
+        context.barq.write(callback);
         // Starting another write transaction will force notifications to fire synchronously
-        context.realm.beginTransaction();
-        context.realm.cancelTransaction();
+        context.barq.beginTransaction();
+        context.barq.cancelTransaction();
       });
     },
     cleanup() {

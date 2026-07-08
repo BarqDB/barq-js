@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,25 +36,25 @@ assert(typeof PACKAGE_JSON === "object" && PACKAGE_JSON !== null, "Failed to rea
 export const PACKAGE_VERSION: string = PACKAGE_JSON.version;
 assert(typeof PACKAGE_VERSION === "string", "Failed to determine package version");
 
-export const REALM_CORE_RELATIVE_PATH = "bindgen/vendor/realm-core";
-export const REALM_CORE_PATH = path.resolve(PACKAGE_PATH, REALM_CORE_RELATIVE_PATH);
+export const BARQ_CORE_RELATIVE_PATH = "bindgen/vendor/barq-core";
+export const BARQ_CORE_PATH = path.resolve(PACKAGE_PATH, BARQ_CORE_RELATIVE_PATH);
 
-const REALM_CORE_DEPENDENCIES_PATH = path.resolve(REALM_CORE_PATH, "dependencies.yml");
-const REALM_CORE_DEPENDENCIES = fs.readFileSync(REALM_CORE_DEPENDENCIES_PATH, "utf8");
+const BARQ_CORE_DEPENDENCIES_PATH = path.resolve(BARQ_CORE_PATH, "dependencies.yml");
+const BARQ_CORE_DEPENDENCIES = fs.readFileSync(BARQ_CORE_DEPENDENCIES_PATH, "utf8");
 // We could add a dependency on 'yaml', but it seems a bit overkill for this
-const REALM_CORE_VERSION_MATCH = REALM_CORE_DEPENDENCIES.match(/^VERSION: ?(.+)$/m);
-assert(REALM_CORE_VERSION_MATCH, "Failed to determine Barq Core version");
-export const REALM_CORE_VERSION = REALM_CORE_VERSION_MATCH[1];
+const BARQ_CORE_VERSION_MATCH = BARQ_CORE_DEPENDENCIES.match(/^VERSION: ?(.+)$/m);
+assert(BARQ_CORE_VERSION_MATCH, "Failed to determine Barq Core version");
+export const BARQ_CORE_VERSION = BARQ_CORE_VERSION_MATCH[1];
 
-export const REALM_CORE_LIBRARY_NAMES_ALLOWLIST = [
-  "librealm.a",
-  "librealm-dbg.a",
-  "librealm-object-store.a",
-  "librealm-object-store-dbg.a",
-  "librealm-parser.a",
-  "librealm-parser-dbg.a",
-  "librealm-sync.a",
-  "librealm-sync-dbg.a",
+export const BARQ_CORE_LIBRARY_NAMES_ALLOWLIST = [
+  "libbarq.a",
+  "libbarq-dbg.a",
+  "libbarq-object-store.a",
+  "libbarq-object-store-dbg.a",
+  "libbarq-parser.a",
+  "libbarq-parser-dbg.a",
+  "libbarq-sync.a",
+  "libbarq-sync-dbg.a",
 ];
 
 export function copyFiles(basePath: string, relativeFilePaths: string[], destinationPath: string) {
@@ -86,16 +87,16 @@ export function collectHeaders({ buildPath, includePath }: CollectHeadersOptions
   // Delete any existing files
   fs.rmSync(includePath, { recursive: true, force: true });
 
-  const srcPath = path.join(REALM_CORE_PATH, "src");
+  const srcPath = path.join(BARQ_CORE_PATH, "src");
   const sourceHeaderPaths = globSync(["**/*.h", "**/*.hpp"], {
     cwd: srcPath,
     ignore: [
       "win32/**",
       /* c-api */
-      "realm.h",
-      "realm/object-store/c_api/**",
+      "barq.h",
+      "barq/object-store/c_api/**",
       /* executables */
-      "realm/exec/**",
+      "barq/exec/**",
     ],
   });
   copyFiles(srcPath, sourceHeaderPaths, includePath);

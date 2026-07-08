@@ -2,6 +2,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,14 +39,14 @@ type Formatters = {
   [key: string]: FormatterFunction;
 };
 
-const mermaid: FormatterFunction = (realm: Barq) => {
+const mermaid: FormatterFunction = (barq: Barq) => {
   const collectionTypes = ["list", "dictionary", "set"];
   const primitiveTypes = ["bool", "int", "float", "double", "string", "date", "objectId", "uuid", "data", "mixed"];
   writer("```mermaid");
   writer("classDiagram");
 
   const relationships: Array<Relationship> = [];
-  realm.schema.forEach((objectSchema) => {
+  barq.schema.forEach((objectSchema) => {
     const name = objectSchema.name;
     writer(`class ${name} {`);
     Object.keys(objectSchema.properties).forEach((propertyName) => {
@@ -72,8 +73,8 @@ const mermaid: FormatterFunction = (realm: Barq) => {
   writer("```");
 };
 
-const json: FormatterFunction = (realm: Barq) => {
-  writer(JSON.stringify(realm.schema));
+const json: FormatterFunction = (barq: Barq) => {
+  writer(JSON.stringify(barq.schema));
 };
 
 const formatters: Formatters = {
@@ -87,7 +88,7 @@ const argumentConfig: ArgumentConfig<ExtractSchemaArgs> = {
     type: String,
     multiple: false,
     optional: true,
-    defaultValue: "default.realm",
+    defaultValue: "default.barq",
     description: "Input file name",
   },
   outputFileName: {
@@ -131,9 +132,9 @@ function writer(line: string) {
 
 if (args.format) {
   if (formatters[args.format]) {
-    const realm = new Barq({ path: args.inputFileName });
-    formatters[args.format](realm);
-    realm.close();
+    const barq = new Barq({ path: args.inputFileName });
+    formatters[args.format](barq);
+    barq.close();
   } else {
     console.error(`Formatter '${args.format} is not supported.`);
   }

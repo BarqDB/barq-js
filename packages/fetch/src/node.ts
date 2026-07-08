@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,8 +33,8 @@ export const Headers = globalThis.Headers satisfies typeof types.Headers;
 export const AbortSignal = globalThis.AbortSignal satisfies typeof types.AbortSignal;
 export const AbortController = globalThis.AbortController satisfies typeof types.AbortController<AbortSignal>;
 // Binding the function to avoid "Failed to execute 'fetch' on 'Window': Illegal invocation".
-// This happens when the "node" export of "realm" is imported from an Electron renderer process.
-// It could be revisited if / when "realm" gets a "browser" export condition.
+// This happens when the "node" export of "barq" is imported from an Electron renderer process.
+// It could be revisited if / when "barq" gets a "browser" export condition.
 export const fetch = globalThis.fetch.bind(globalThis) satisfies typeof types.fetch<
   BodyInit,
   Headers,

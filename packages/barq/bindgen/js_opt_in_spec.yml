@@ -34,7 +34,7 @@ records:
       - table_key
       - table_type
 
-  RealmConfig:
+  BarqConfig:
     fields:
       - path
       - cache
@@ -230,11 +230,11 @@ classes:
   # These JsPlatformHelpers are used for React Native.
   JsPlatformHelpers:
     methods:
-      - default_realm_file_directory
-      - set_default_realm_file_directory
+      - default_barq_file_directory
+      - set_default_barq_file_directory
       - ensure_directory_exists_for_file
-      - copy_bundled_realm_files
-      - remove_realm_files_from_directory
+      - copy_bundled_barq_files
+      - remove_barq_files_from_directory
       - remove_file
       - remove_directory
       - exclude_from_icloud_backup
@@ -263,7 +263,7 @@ classes:
       - make_logger_factory
       - make_logger
       - simulate_sync_error
-      - consume_thread_safe_reference_to_shared_realm
+      - consume_thread_safe_reference_to_shared_barq
       - file_exists
       - erase_subscription
       - get_results_description
@@ -356,8 +356,8 @@ classes:
 
   Barq:
     methods:
-      - get_shared_realm
-      - get_synchronized_realm
+      - get_shared_barq
+      - get_synchronized_barq
       - get_schema_version
       - config
       - schema
@@ -381,7 +381,7 @@ classes:
       - DOLLAR_addr
       - DOLLAR_resetSharedPtr
 
-  RealmCoordinator:
+  BarqCoordinator:
     methods:
       - clear_all_caches
 
@@ -480,7 +480,7 @@ classes:
       - custom_data
       - subscribe
       - unsubscribe
-      - path_for_realm
+      - path_for_barq
       - app
       - user_id
       - app_id
@@ -491,7 +491,7 @@ classes:
       - access_token_refresh_required
       - request_refresh_location
       - request_access_token
-      - track_realm
+      - track_barq
 
   UserProfile:
     methods:
@@ -579,7 +579,7 @@ classes:
       - state
       - connection_state
       - config
-      - full_realm_url
+      - full_barq_url
       - wait_for_upload_completion
       - wait_for_download_completion
       - register_progress_notifier

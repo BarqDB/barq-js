@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,16 +23,16 @@ import type { PropertyAccessor, PropertyOptions } from "./types";
 
 /** @internal */
 export function createIntPropertyAccessor(options: PropertyOptions): PropertyAccessor {
-  const { realm, columnKey, presentation, optional } = options;
+  const { barq, columnKey, presentation, optional } = options;
   const defaultAccessor = createDefaultPropertyAccessor(options);
 
   if (presentation === "counter") {
     return {
       get(obj) {
-        return obj.getAny(columnKey) === null ? null : new Counter(realm, obj, columnKey);
+        return obj.getAny(columnKey) === null ? null : new Counter(barq, obj, columnKey);
       },
       set(obj, value, isCreating) {
-        // We only allow resetting a counter this way (e.g. realmObject.counter = 5)
+        // We only allow resetting a counter this way (e.g. barqObject.counter = 5)
         // when it is first created, or when resetting a nullable/optional counter
         // to `null`, or when a nullable counter was previously `null`.
         const isAllowed =

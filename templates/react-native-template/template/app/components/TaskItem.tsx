@@ -1,5 +1,5 @@
 import React from 'react';
-import Realm from '@barq/barq';
+import Barq from '@barq/barq';
 import {View, Text, Pressable, StyleSheet} from 'react-native';
 
 import {shadows} from '../styles/shadows';
@@ -7,7 +7,7 @@ import colors from '../styles/colors';
 import {Task} from '../models/Task';
 
 type TaskItemProps = {
-  task: Task & Realm.Object;
+  task: Task & Barq.Object;
   onToggleStatus: () => void;
   onDelete: () => void;
 };

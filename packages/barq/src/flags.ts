@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,7 +26,7 @@ export const flags = {
    * When enabled, accessing the `Barq` without first importing it from the Barq package, will throw.
    * Helps finding places where the app is depending on the now deprecated way of using the package.
    */
-  THROW_ON_GLOBAL_REALM: false,
+  THROW_ON_GLOBAL_BARQ: false,
   /**
    * Enables calling internal, test-only functions like `Barq.clearTestState`.
    * This is disabled by default, mainly because the data-structures needed to support this, introduce minor memory leaks if clearTestState() is not called regularly and are not intended for production use.

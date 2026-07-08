@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -42,7 +43,7 @@ export type BarqContext<BarqProvider = DynamicBarqProvider> = {
    *   };
    *
    *   return (
-   *     <BarqProvider schema={[Task, User]} path={"data.realm"} sync={syncConfig}>
+   *     <BarqProvider schema={[Task, User]} path={"data.barq"} sync={syncConfig}>
    *       <App/>
    *     </BarqProvider>
    *   )
@@ -52,7 +53,7 @@ export type BarqContext<BarqProvider = DynamicBarqProvider> = {
    * are set based on the options passed to `createBarqProvider`. When using a
    * {@link Barq.Configuration}, individual config keys can be overridden when
    * creating a `<BarqProvider>` by passing them as props. For example, to override
-   * the `path` config value, use a prop named `path` e.g., `path="newPath.realm"` an
+   * the `path` config value, use a prop named `path` e.g., `path="newPath.barq"` an
    * attribute of the same key.
    */
   BarqProvider: BarqProvider;
@@ -60,9 +61,9 @@ export type BarqContext<BarqProvider = DynamicBarqProvider> = {
    * Returns the instance of the {@link Barq} opened by the `BarqProvider`.
    * @example
    * ```
-   * const realm = useBarq();
+   * const barq = useBarq();
    * ```
-   * @returns a realm instance
+   * @returns a barq instance
    */
   useBarq: ReturnType<typeof createUseBarq>;
 
@@ -96,7 +97,7 @@ export type BarqContext<BarqProvider = DynamicBarqProvider> = {
    * @param options.query - A function that takes a {@link Barq.Collection} and returns a {@link Barq.Collection} of the same type. This allows for filtering and sorting of the collection, before it is returned.
    * @param options.keyPaths - Indicates a lower bound on the changes relevant for the hook. This is a lower bound, since if multiple hooks add listeners (each with their own `keyPaths`) the union of these key-paths will determine the changes that are considered relevant for all listeners registered on the collection. In other words: A listener might fire and cause a re-render more than the key-paths specify, if other listeners with different key-paths are present.
    * @param deps - An array of dependencies that will be passed to {@link React.useMemo}
-   * @returns a collection of realm objects or an empty array
+   * @returns a collection of barq objects or an empty array
    */
   useQuery: ReturnType<typeof createUseQuery>;
   /**
@@ -148,23 +149,23 @@ export type BarqContext<BarqProvider = DynamicBarqProvider> = {
  *
  *const {useBarq, useQuery, useObject, BarqProvider} = createBarqContext({schema: [Task]});
  * ```
- * @param realmConfig - {@link Barq.Configuration} used to open the Barq
+ * @param barqConfig - {@link Barq.Configuration} used to open the Barq
  * @returns An object containing a `BarqProvider` component, and `useBarq`, `useQuery` and `useObject` hooks
  */
-export function createBarqContext(realmConfig: Barq.Configuration): BarqContext<BarqProviderFromConfiguration>;
+export function createBarqContext(barqConfig: Barq.Configuration): BarqContext<BarqProviderFromConfiguration>;
 /**
  * Creates Barq React hooks and Provider component for a given Barq instance.
  *
  * **Note:** the hooks returned from `createBarqContext` using an existing Barq can be used outside of the scope of the provider.
  * @example
  * ```
- * const realm = new Barq({ schema: [...] });
- * const {useBarq, useQuery, useObject, BarqProvider} = createBarqContext(realm);
+ * const barq = new Barq({ schema: [...] });
+ * const {useBarq, useQuery, useObject, BarqProvider} = createBarqContext(barq);
  * ```
- * @param realm - {@link Barq} instance
+ * @param barq - {@link Barq} instance
  * @returns An object containing a `BarqProvider` component, and `useBarq`, `useQuery` and `useObject` hooks
  */
-export function createBarqContext(realm: Barq): BarqContext<BarqProviderFromBarq>;
+export function createBarqContext(barq: Barq): BarqContext<BarqProviderFromBarq>;
 /**
  * Creates Barq React hooks and Provider component.
  * @example
@@ -185,19 +186,19 @@ export function createBarqContext(realm: Barq): BarqContext<BarqProviderFromBarq
  * ```
  * @example
  * ```
- * const realm = await Barq.open({ path: "example.realm", schema: [Task] });
+ * const barq = await Barq.open({ path: "example.barq", schema: [Task] });
  * const {BarqProvider} = createBarqContext();
  * ...
- * <BarqProvider realm={realm}></BarqProvider>
+ * <BarqProvider barq={barq}></BarqProvider>
  * ```
  * @returns An object containing a `BarqProvider` component, and `useBarq`, `useQuery` and `useObject` hooks
  */
 export function createBarqContext(): BarqContext<DynamicBarqProvider>;
 export function createBarqContext(
-  realmOrConfig?: Barq | Barq.Configuration,
+  barqOrConfig?: Barq | Barq.Configuration,
 ): BarqContext<BarqProviderFromConfiguration | BarqProviderFromBarq | DynamicBarqProvider> {
-  const BarqContext = createContext<Barq | null>(realmOrConfig instanceof Barq ? realmOrConfig : null);
-  const BarqProvider = createBarqProvider(realmOrConfig, BarqContext);
+  const BarqContext = createContext<Barq | null>(barqOrConfig instanceof Barq ? barqOrConfig : null);
+  const BarqProvider = createBarqProvider(barqOrConfig, BarqContext);
 
   const useBarq = createUseBarq(BarqContext);
   const useQuery = createUseQuery(useBarq);

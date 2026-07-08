@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2021 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -42,7 +43,7 @@ type BarqProviderConfigurationProps = {
    * A ref to the Barq instance. This is useful if you need to access the Barq
    * instance outside of a component that uses the Barq hooks.
    */
-  realmRef?: React.MutableRefObject<Barq | null>;
+  barqRef?: React.MutableRefObject<Barq | null>;
   /**
    * The fallback component to render if the Barq is not open.
    */
@@ -55,7 +56,7 @@ type BarqProviderBarqProps = {
   /**
    * The Barq instance to be used by the provider.
    */
-  realm: Barq;
+  barq: Barq;
   children: React.ReactNode;
 };
 
@@ -63,11 +64,11 @@ type BarqProviderProps = BarqProviderConfigurationProps & BarqProviderBarqProps;
 
 /**
  * Represents the provider returned from `createBarqContext` with a Barq instance  i.e. `createBarqContext(new Barq(...))`.
- * Omits "realm" as it gets set at creation and cannot be changed.
+ * Omits "barq" as it gets set at creation and cannot be changed.
  
  * **Note:** the hooks returned from `createBarqContext` using an existing Barq can be used outside of the scope of the provider.
  */
-export type BarqProviderFromBarq = React.FC<Omit<BarqProviderBarqProps, "realm">>;
+export type BarqProviderFromBarq = React.FC<Omit<BarqProviderBarqProps, "barq">>;
 
 /**
  * Represents the provider returned from `createBarqContext` with a configuration, i.e. `createBarqContext({schema: [...]})`.
@@ -96,28 +97,28 @@ export type DynamicBarqProvider = React.FC<
 >;
 
 export function createBarqProviderFromBarq(
-  realm: Barq,
+  barq: Barq,
   BarqContext: React.Context<Barq | null>,
 ): BarqProviderFromBarq {
   return ({ children }) => {
-    return <BarqContext.Provider value={realm} children={children} />;
+    return <BarqContext.Provider value={barq} children={children} />;
   };
 }
 
 /**
  * Generates a `BarqProvider` given a {@link Barq.Configuration} and {@link React.Context}.
- * @param realmConfig - The configuration of the Barq to be instantiated
+ * @param barqConfig - The configuration of the Barq to be instantiated
  * @param BarqContext - The context that will contain the Barq instance
  * @returns a BarqProvider component that provides context to all context hooks
  */
 export function createBarqProviderFromConfig(
-  realmConfig: Barq.Configuration,
+  barqConfig: Barq.Configuration,
   BarqContext: React.Context<Barq | null>,
 ): BarqProviderFromConfiguration {
-  return ({ children, fallback: Fallback, closeOnUnmount = true, realmRef, ...restProps }) => {
-    const [realm, setBarq] = useState<Barq | null>(() =>
-      realmConfig.sync === undefined && restProps.sync === undefined
-        ? new Barq(mergeBarqConfiguration(realmConfig, restProps))
+  return ({ children, fallback: Fallback, closeOnUnmount = true, barqRef, ...restProps }) => {
+    const [barq, setBarq] = useState<Barq | null>(() =>
+      barqConfig.sync === undefined && restProps.sync === undefined
+        ? new Barq(mergeBarqConfiguration(barqConfig, restProps))
         : null,
     );
 
@@ -130,17 +131,17 @@ export function createBarqProviderFromConfig(
     // new config
     const [configVersion, setConfigVersion] = useState(0);
 
-    // We put realm in a ref to avoid have an endless loop of updates when the realm is updated
-    const currentBarq = useRef(realm);
+    // We put barq in a ref to avoid have an endless loop of updates when the barq is updated
+    const currentBarq = useRef(barq);
 
     // This will merge the configuration provided by createBarqContext and any configuration properties
     // set directly on the BarqProvider component.  Any settings on the component will override the original configuration.
-    const configuration = useRef<Barq.Configuration>(mergeBarqConfiguration(realmConfig, restProps));
+    const configuration = useRef<Barq.Configuration>(mergeBarqConfiguration(barqConfig, restProps));
 
     // Merge and set the configuration again and increment the version if any
     // of the BarqProvider properties change.
     useEffect(() => {
-      const combinedConfig = mergeBarqConfiguration(realmConfig, restProps);
+      const combinedConfig = mergeBarqConfiguration(barqConfig, restProps);
 
       // If there is a user in the current context and not one set by the props, then use the one from context
       const combinedConfigWithUser =
@@ -148,7 +149,7 @@ export function createBarqProviderFromConfig(
 
       if (!areConfigurationsIdentical(configuration.current, combinedConfigWithUser)) {
         configuration.current = combinedConfigWithUser;
-        // Only rerender if realm has already been configured
+        // Only rerender if barq has already been configured
         if (currentBarq.current != null) {
           setConfigVersion((x) => x + 1);
         }
@@ -156,20 +157,20 @@ export function createBarqProviderFromConfig(
     }, [restProps, user]);
 
     useEffect(() => {
-      currentBarq.current = realm;
-      if (realmRef) {
-        realmRef.current = realm;
+      currentBarq.current = barq;
+      if (barqRef) {
+        barqRef.current = barq;
       }
-    }, [realm]);
+    }, [barq]);
 
     const [progress, setProgress] = useState<number>(0);
 
     useEffect(() => {
-      const realmRef = currentBarq.current;
+      const barqRef = currentBarq.current;
       // Check if we currently have an open Barq. If we do not (i.e. it is the first
       // render, or the Barq has been closed due to a config change), then we
       // need to open a new Barq.
-      const shouldInitBarq = realmRef === null;
+      const shouldInitBarq = barqRef === null;
       const initBarq = async () => {
         const openBarq = await Barq.open(configuration.current).progress((estimate: number) => {
           setProgress(estimate);
@@ -181,40 +182,40 @@ export function createBarqProviderFromConfig(
       }
 
       return () => {
-        if (realm) {
+        if (barq) {
           if (closeOnUnmount) {
-            realm.close();
+            barq.close();
           }
           setBarq(null);
         }
       };
-    }, [configVersion, realm, setBarq, closeOnUnmount]);
+    }, [configVersion, barq, setBarq, closeOnUnmount]);
 
-    if (!realm) {
+    if (!barq) {
       if (typeof Fallback === "function") {
         return <Fallback progress={progress} />;
       }
       return <>{Fallback}</>;
     }
 
-    return <BarqContext.Provider value={realm} children={children} />;
+    return <BarqContext.Provider value={barq} children={children} />;
   };
 }
 
 /**
  * Generates a `BarqProvider` which is either based on a configuration
- * or based on a realm, depending on its props.
+ * or based on a barq, depending on its props.
  * @param BarqContext - The context that will contain the Barq instance
  * @returns a BarqProvider component that provides context to all context hooks
  */
 export function createDynamicBarqProvider(BarqContext: React.Context<Barq | null>): DynamicBarqProvider {
   const BarqProviderFromConfig = createBarqProviderFromConfig({}, BarqContext);
-  return ({ realm, children, ...config }) => {
-    if (realm) {
+  return ({ barq, children, ...config }) => {
+    if (barq) {
       if (Object.keys(config).length > 0) {
         throw new Error("Cannot use configuration props when using an existing Barq instance.");
       }
-      return <BarqContext.Provider value={realm} children={children} />;
+      return <BarqContext.Provider value={barq} children={children} />;
     } else {
       return <BarqProviderFromConfig {...config} children={children} />;
     }
@@ -222,21 +223,21 @@ export function createDynamicBarqProvider(BarqContext: React.Context<Barq | null
 }
 
 /**
- * Generates the appropriate `BarqProvider` based on whether there is a config, realm, or neither given.
- * @param realmOrConfig - A Barq instance, a configuration, or undefined (including default provider).
+ * Generates the appropriate `BarqProvider` based on whether there is a config, barq, or neither given.
+ * @param barqOrConfig - A Barq instance, a configuration, or undefined (including default provider).
  * @param BarqContext - The context that will contain the Barq instance
  * @returns a BarqProvider component that provides context to all context hooks
  */
 export function createBarqProvider(
-  realmOrConfig: Barq.Configuration | Barq | undefined,
+  barqOrConfig: Barq.Configuration | Barq | undefined,
   BarqContext: React.Context<Barq | null>,
 ): BarqProviderFromConfiguration | BarqProviderFromBarq | DynamicBarqProvider {
-  if (!realmOrConfig) {
+  if (!barqOrConfig) {
     return createDynamicBarqProvider(BarqContext);
-  } else if (realmOrConfig instanceof Barq) {
-    return createBarqProviderFromBarq(realmOrConfig, BarqContext);
+  } else if (barqOrConfig instanceof Barq) {
+    return createBarqProviderFromBarq(barqOrConfig, BarqContext);
   } else {
-    return createBarqProviderFromConfig(realmOrConfig, BarqContext);
+    return createBarqProviderFromConfig(barqOrConfig, BarqContext);
   }
 }
 

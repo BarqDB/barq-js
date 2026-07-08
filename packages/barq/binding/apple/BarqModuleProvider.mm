@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2016 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,18 +20,18 @@
 #import <ReactCommon/CxxTurboModuleUtils.h>
 #import <jsi/jsi.h>
 
-#include <BarqJS/CxxRealmModule.hpp>
+#include <BarqJS/CxxBarqModule.hpp>
 
-@interface RealmModule : NSObject
+@interface BarqModule : NSObject
 @end
 
-@implementation RealmModule
+@implementation BarqModule
 
 + (void)load {
   facebook::react::registerCxxModuleToGlobalModuleMap(
-      realm::js::CxxRealmModule::kModuleName,
+      barq::js::CxxBarqModule::kModuleName,
       [](std::shared_ptr<facebook::react::CallInvoker> jsInvoker) {
-        return std::make_shared<realm::js::CxxRealmModule>(jsInvoker);
+        return std::make_shared<barq::js::CxxBarqModule>(jsInvoker);
       });
 }
 

@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,5 +20,5 @@
 import { NativeBigInt, type binding, injectNativeModule } from "../binding";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const nativeModule = require("#realm.node");
+const nativeModule = require("#barq.node");
 injectNativeModule(nativeModule, { Int64: NativeBigInt as typeof binding.Int64, WeakRef });

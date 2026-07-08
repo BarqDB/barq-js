@@ -3,7 +3,7 @@
 add_library(barq-js-node SHARED)
 
 set_target_properties(barq-js-node PROPERTIES
-    OUTPUT_NAME "realm"
+    OUTPUT_NAME "barq"
     PREFIX ""
     SUFFIX ".node"
 )
@@ -27,8 +27,8 @@ if(WIN32)
 endif()
 
 target_compile_definitions(barq-js PRIVATE
-    REALM_HAVE_UV=1
-    REALM_PLATFORM_NODE=1
+    BARQ_HAVE_UV=1
+    BARQ_PLATFORM_NODE=1
     NAPI_VERSION=6
 )
 
@@ -36,8 +36,8 @@ if(TARGET ObjectStore)
     # we need to tell ObjectStore to use the libuv provided by Node.js
     target_link_libraries(ObjectStore PUBLIC NodeJS)
     target_compile_definitions(ObjectStore PUBLIC
-        REALM_HAVE_UV=1
-        REALM_PLATFORM_NODE=1
+        BARQ_HAVE_UV=1
+        BARQ_PLATFORM_NODE=1
     )
 endif()
 

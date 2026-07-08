@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2023 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -128,7 +129,7 @@ const PROXY_HANDLER: ProxyHandler<BaseSubscriptionSet> = {
  *
  * The SubscriptionSet is an iterable; thus, the contained {@link Subscription}s can be
  * accessed in `for-of` loops or spread into an `Array` for access to the ECMAScript
- * Array API, e.g. `[...realm.subscriptions][0]`.
+ * Array API, e.g. `[...barq.subscriptions][0]`.
  */
 export abstract class BaseSubscriptionSet {
   /** @internal */

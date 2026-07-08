@@ -2,6 +2,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2021 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,8 +28,8 @@ const EXCLUDED_PATHS = [
   "react-native/node_modules",
   // Skipping the Pods of the react-native project as these are not used by the application package
   "react-native/ios/Pods",
-  // This is handled by the download-realm.js script
-  "vendor/realm-*",
+  // This is handled by the download-barq.js script
+  "vendor/barq-*",
 ];
 
 function readPackageJson(packagePath) {
@@ -37,10 +38,10 @@ function readPackageJson(packagePath) {
   return JSON.parse(packageJsonContent);
 }
 
-const realmPackagePath = path.resolve(__dirname, "..");
-const realmPackageJson = readPackageJson(realmPackagePath);
-const realmPackageFileGlobs = realmPackageJson.files.map((p) => {
-  const resolvedPath = path.resolve(realmPackagePath, p);
+const barqPackagePath = path.resolve(__dirname, "..");
+const barqPackageJson = readPackageJson(barqPackagePath);
+const barqPackageFileGlobs = barqPackageJson.files.map((p) => {
+  const resolvedPath = path.resolve(barqPackagePath, p);
   if (fs.existsSync(resolvedPath) && fs.lstatSync(resolvedPath).isDirectory()) {
     return p + "/**";
   } else {
@@ -77,21 +78,21 @@ const watchman = {
 };
 
 async function run(dependencyPath) {
-  // Ensure that a dependency on the "realm" package
+  // Ensure that a dependency on the "barq" package
   const dependencyPackageJson = readPackageJson(dependencyPath);
-  if (Object.keys(dependencyPackageJson.dependencies).includes("realm") === false) {
-    console.warn(`Expected the package (${dependencyPath}) to be depending on "realm"`);
+  if (Object.keys(dependencyPackageJson.dependencies).includes("barq") === false) {
+    console.warn(`Expected the package (${dependencyPath}) to be depending on "barq"`);
   }
-  // Ensure that the "realm" package has already been installed
-  const dependencyRealmPath = path.resolve(dependencyPath, "node_modules/realm");
-  if (fs.existsSync(dependencyRealmPath) === false) {
-    throw new Error(`Expected realm to be installed at ${dependencyRealmPath} - run "npm install" first`);
+  // Ensure that the "barq" package has already been installed
+  const dependencyBarqPath = path.resolve(dependencyPath, "node_modules/barq");
+  if (fs.existsSync(dependencyBarqPath) === false) {
+    throw new Error(`Expected barq to be installed at ${dependencyBarqPath} - run "npm install" first`);
   }
 
-  // Ensure the "realm" directory is being watched
-  console.log(`Watching the realm project '${realmPackagePath}'`);
+  // Ensure the "barq" directory is being watched
+  console.log(`Watching the barq project '${barqPackagePath}'`);
   // Note: Watching a project which is already being watched is a no-op
-  const { watch: rootPath } = await watchman.watchProject(realmPackagePath);
+  const { watch: rootPath } = await watchman.watchProject(barqPackagePath);
 
   // Register a listner to handle changes
   watchman.client.on("subscription", (resp) => {
@@ -112,14 +113,14 @@ async function run(dependencyPath) {
         "--delete",
         ...EXCLUDED_PATHS.map((p) => ["--exclude", p]).flat(),
         // The file or directory itself
-        ...realmPackageJson.files.map((f) => ["--include", f]).flat(),
+        ...barqPackageJson.files.map((f) => ["--include", f]).flat(),
         // Any files under this
-        ...realmPackageJson.files.map((f) => ["--include", f + "/**"]).flat(),
+        ...barqPackageJson.files.map((f) => ["--include", f + "/**"]).flat(),
         // Exclude anything that was not explicitly included
         "--exclude",
         "*",
-        realmPackagePath + "/",
-        dependencyRealmPath + "/",
+        barqPackagePath + "/",
+        dependencyBarqPath + "/",
       ],
       { stdio: "inherit" },
     );
@@ -127,13 +128,13 @@ async function run(dependencyPath) {
   });
 
   // Create a subscription
-  const subscriptionName = `realm → ${dependencyRealmPath}`;
+  const subscriptionName = `barq → ${dependencyBarqPath}`;
   console.log("Creating subscription ...\n");
   await watchman.subscribe(rootPath, subscriptionName, {
     expression: [
       "allof",
       // Include all the files included by the package
-      ["anyof", ...realmPackageFileGlobs.map((pattern) => ["match", pattern, "wholename"])],
+      ["anyof", ...barqPackageFileGlobs.map((pattern) => ["match", pattern, "wholename"])],
       ...EXCLUDED_PATHS.map((p) => ["not", ["match", p + "/**", "wholename"]]),
     ],
     fields: ["name"],

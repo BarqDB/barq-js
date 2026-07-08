@@ -14,9 +14,9 @@
 /packages/barq/bindgen/build/*
 !/packages/barq/bindgen/build/*.cpp
 
-# We also generate extracted .d.ts files into realm/generated/types,
+# We also generate extracted .d.ts files into barq/generated/types,
 # but those are redundant with the source files so we don't need to see them.
 !/packages/barq/generated
 /packages/barq/generated/*
 !/packages/barq/generated/ts
-/packages/barq/generated/ts/realm.node
+/packages/barq/generated/ts/barq.node

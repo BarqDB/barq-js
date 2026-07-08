@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2023 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,10 +35,10 @@ import type { FlexibleSyncConfiguration } from "./SyncConfiguration";
  */
 export class SubscriptionSet extends BaseSubscriptionSet {
   /** @internal */
-  constructor(/** @internal */ private realm: Barq, internal: binding.SyncSubscriptionSet) {
+  constructor(/** @internal */ private barq: Barq, internal: binding.SyncSubscriptionSet) {
     super(internal);
 
-    Object.defineProperty(this, "realm", {
+    Object.defineProperty(this, "barq", {
       enumerable: false,
       configurable: false,
       writable: false,
@@ -61,7 +62,7 @@ export class SubscriptionSet extends BaseSubscriptionSet {
         throw new Error(this.error || "Encountered an error when waiting for synchronization.");
       }
     } finally {
-      if (!this.realm.isClosed) {
+      if (!this.barq.isClosed) {
         this.internal.refresh();
       }
     }
@@ -85,27 +86,27 @@ export class SubscriptionSet extends BaseSubscriptionSet {
    * @returns A promise which resolves when the SubscriptionSet is synchronized, or is rejected
    *  if there was an error during synchronization (see {@link SubscriptionSet.waitForSynchronization})
    * @example
-   * await realm.subscriptions.update(mutableSubscriptions => {
-   *   mutableSubscriptions.add(realm.objects("Cat").filtered("age > 10"));
-   *   mutableSubscriptions.add(realm.objects("Dog").filtered("age > 20"), { name: "oldDogs" });
+   * await barq.subscriptions.update(mutableSubscriptions => {
+   *   mutableSubscriptions.add(barq.objects("Cat").filtered("age > 10"));
+   *   mutableSubscriptions.add(barq.objects("Dog").filtered("age > 20"), { name: "oldDogs" });
    *   mutableSubscriptions.removeByName("youngDogs");
    * });
-   * // `realm` will now return the expected results based on the updated subscriptions
+   * // `barq` will now return the expected results based on the updated subscriptions
    */
-  async update(callback: (mutableSubscriptions: MutableSubscriptionSet, realm: Barq) => void): Promise<void> {
+  async update(callback: (mutableSubscriptions: MutableSubscriptionSet, barq: Barq) => void): Promise<void> {
     this.updateNoWait(callback);
     await this.waitForSynchronization();
   }
 
   /** @internal */
-  updateNoWait(callback: (mutableSubscriptions: MutableSubscriptionSet, realm: Barq) => void): void {
+  updateNoWait(callback: (mutableSubscriptions: MutableSubscriptionSet, barq: Barq) => void): void {
     assert.function(callback, "callback");
 
     // Create a mutable copy of this instance (which copies the original and upgrades
     // its internal transaction to a write transaction) so that we can make updates to it.
     const mutableSubscriptions = this.internal.makeMutableCopy();
 
-    callback(new MutableSubscriptionSet(mutableSubscriptions), this.realm);
+    callback(new MutableSubscriptionSet(mutableSubscriptions), this.barq);
 
     // Commit the mutation, which downgrades its internal transaction to a read transaction
     // so no more changes can be made to it, and returns a new (immutable) SubscriptionSet

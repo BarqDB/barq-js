@@ -52,9 +52,6 @@ export class UUID {
     }
   }
 
-  get _bsontype(): "UUID" {
-    return "UUID";
-  }
 
   /** The raw 16 bytes. Provided as an alias of {@link UUID.id} for compatibility. */
   get buffer(): Uint8Array {

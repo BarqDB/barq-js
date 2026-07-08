@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2021 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,9 +38,9 @@ exec("npm --version", (err, stdout) => {
 
   const objectStoreDir = path.join(__dirname, "..", "vendor", "barq-core");
   if (fs.existsSync(objectStoreDir)) {
-    successLog("Realm Core submodule is checked out");
+    successLog("Barq Core submodule is checked out");
   } else {
-    console.error("Realm Core folder not found. Did you remember to pull submodules?");
+    console.error("Barq Core folder not found. Did you remember to pull submodules?");
   }
 
   // TODO: Check ANDROID_NDK and SDK for Android, and XCode for iOS.

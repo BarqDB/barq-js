@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +30,7 @@ export type BarqListenerCallback = (
   /**
    * The Barq in which the change event occurred.
    */
-  realm: Barq,
+  barq: Barq,
   /**
    * The name of the event that occurred.
    */
@@ -49,7 +50,7 @@ class BarqListeners {
    * Keeps tracked of registered listener callbacks for Barq class notifications.
    */
 
-  constructor(private realm: Barq, private eventType: BarqEvent) {
+  constructor(private barq: Barq, private eventType: BarqEvent) {
     this.eventType = eventType;
   }
   private listeners = new Set<BarqListenerCallback>();
@@ -58,7 +59,7 @@ class BarqListeners {
   notify(schema?: CanonicalObjectSchema[]): void {
     // Spreading to an array to avoid firing listeners that gets added from another listener
     for (const callback of [...this.listeners]) {
-      callback(this.realm, this.eventType, schema);
+      callback(this.barq, this.eventType, schema);
     }
   }
 

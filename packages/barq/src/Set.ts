@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -50,11 +51,11 @@ export class BarqSet<T = unknown> extends OrderedCollection<
   public declare readonly internal: binding.Set;
 
   /** @internal */
-  constructor(realm: Barq, internal: binding.Set, accessor: SetAccessor<T>, typeHelpers: TypeHelpers<T>) {
+  constructor(barq: Barq, internal: binding.Set, accessor: SetAccessor<T>, typeHelpers: TypeHelpers<T>) {
     if (arguments.length === 0 || !(internal instanceof binding.Set)) {
       throw new IllegalConstructorError("Set");
     }
-    super(realm, internal.asResults(), accessor, typeHelpers);
+    super(barq, internal.asResults(), accessor, typeHelpers);
 
     Object.defineProperty(this, "internal", {
       enumerable: false,
@@ -96,7 +97,7 @@ export class BarqSet<T = unknown> extends OrderedCollection<
    * @returns `true` if the value existed in the Set prior to deletion, `false` if not.
    */
   delete(value: T): boolean {
-    assert.inTransaction(this.realm);
+    assert.inTransaction(this.barq);
     const [, success] = this.internal.removeAny(this[TYPE_HELPERS].toBinding(value));
     return success;
   }
@@ -119,7 +120,7 @@ export class BarqSet<T = unknown> extends OrderedCollection<
    * @throws An {@link Error} if not inside a write transaction.
    */
   clear(): void {
-    assert.inTransaction(this.realm);
+    assert.inTransaction(this.barq);
     this.internal.deleteAll();
   }
 

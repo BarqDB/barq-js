@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +21,7 @@
 
 #include <ReactCommon/CallInvoker.h>
 
-namespace realm::js::react_scheduler {
+namespace barq::js::react_scheduler {
 void create_scheduler(std::shared_ptr<facebook::react::CallInvoker> js_invoker);
 void reset_scheduler();
-} // namespace realm::js::react_scheduler
+} // namespace barq::js::react_scheduler

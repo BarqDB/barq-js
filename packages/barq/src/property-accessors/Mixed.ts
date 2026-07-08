@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,10 +32,10 @@ import type { PropertyAccessor, PropertyOptions } from "./types";
 
 /** @internal */
 export function createMixedPropertyAccessor(options: PropertyOptions): PropertyAccessor {
-  const { realm, columnKey, typeHelpers } = options;
+  const { barq, columnKey, typeHelpers } = options;
   const { fromBinding, toBinding } = typeHelpers;
-  const listAccessor = createListAccessor({ realm, typeHelpers, itemType: binding.PropertyType.Mixed });
-  const dictionaryAccessor = createDictionaryAccessor({ realm, typeHelpers, itemType: binding.PropertyType.Mixed });
+  const listAccessor = createListAccessor({ barq, typeHelpers, itemType: binding.PropertyType.Mixed });
+  const dictionaryAccessor = createDictionaryAccessor({ barq, typeHelpers, itemType: binding.PropertyType.Mixed });
   const { set: defaultSet } = createDefaultPropertyAccessor(options);
 
   return {
@@ -43,12 +44,12 @@ export function createMixedPropertyAccessor(options: PropertyOptions): PropertyA
         const value = obj.getAny(columnKey);
         switch (value) {
           case binding.ListSentinel: {
-            const internal = binding.List.make(realm.internal, obj, columnKey);
-            return new List(realm, internal, listAccessor, typeHelpers);
+            const internal = binding.List.make(barq.internal, obj, columnKey);
+            return new List(barq, internal, listAccessor, typeHelpers);
           }
           case binding.DictionarySentinel: {
-            const internal = binding.Dictionary.make(realm.internal, obj, columnKey);
-            return new Dictionary(realm, internal, dictionaryAccessor, typeHelpers);
+            const internal = binding.Dictionary.make(barq.internal, obj, columnKey);
+            return new Dictionary(barq, internal, dictionaryAccessor, typeHelpers);
           }
           default:
             return fromBinding(value);
@@ -59,15 +60,15 @@ export function createMixedPropertyAccessor(options: PropertyOptions): PropertyA
       }
     },
     set(obj: binding.Obj, value: unknown) {
-      assert.inTransaction(realm);
+      assert.inTransaction(barq);
 
       if (isJsOrBarqList(value)) {
         obj.setCollection(columnKey, binding.CollectionType.List);
-        const internal = binding.List.make(realm.internal, obj, columnKey);
+        const internal = binding.List.make(barq.internal, obj, columnKey);
         insertIntoListOfMixed(value, internal, toBinding);
       } else if (isJsOrBarqDictionary(value)) {
         obj.setCollection(columnKey, binding.CollectionType.Dictionary);
-        const internal = binding.Dictionary.make(realm.internal, obj, columnKey);
+        const internal = binding.Dictionary.make(barq.internal, obj, columnKey);
         insertIntoDictionaryOfMixed(value, internal, toBinding);
       } else {
         defaultSet(obj, value);

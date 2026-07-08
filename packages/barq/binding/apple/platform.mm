@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2016 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +19,7 @@
 
 #include "../platform.hpp"
 
-#include <realm/util/to_string.hpp>
+#include <barq/util/to_string.hpp>
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -35,21 +36,21 @@ static NSString *error_description(NSError *error) {
   return error.localizedDescription;
 }
 
-static std::string s_default_realm_directory;
+static std::string s_default_barq_directory;
 
-namespace realm {
+namespace barq {
 
-void JsPlatformHelpers::set_default_realm_file_directory(std::string dir)
+void JsPlatformHelpers::set_default_barq_file_directory(std::string dir)
 {
-    s_default_realm_directory = dir;
+    s_default_barq_directory = dir;
 }
 
-std::string JsPlatformHelpers::default_realm_file_directory()
+std::string JsPlatformHelpers::default_barq_file_directory()
 {
     std::string ret;
     @autoreleasepool {        
-        if (!s_default_realm_directory.empty()) {
-            return s_default_realm_directory;
+        if (!s_default_barq_directory.empty()) {
+            return s_default_barq_directory;
         }
 #if TARGET_OS_IPHONE
         // On iOS the Documents directory isn't user-visible, so put files there
@@ -95,15 +96,15 @@ void JsPlatformHelpers::ensure_directory_exists_for_file(const std::string &file
     }
 }
 
-void JsPlatformHelpers::copy_bundled_realm_files()
+void JsPlatformHelpers::copy_bundled_barq_files()
 {
     @autoreleasepool {
-        NSString *docsDir = @(default_realm_file_directory().c_str());
+        NSString *docsDir = @(default_barq_file_directory().c_str());
         NSFileManager *manager = [NSFileManager defaultManager];
         for (id bundle in [NSBundle allBundles]) {
             NSString *resourcePath = [bundle resourcePath];
             for (NSString *path in [manager enumeratorAtPath:resourcePath]) {
-                if (![path containsString:@".realm"]) {
+                if (![path containsString:@".barq"]) {
                     continue;
                 }
 
@@ -122,16 +123,16 @@ void JsPlatformHelpers::copy_bundled_realm_files()
     }
 }
 
-void JsPlatformHelpers::remove_realm_files_from_directory(const std::string &directory)
+void JsPlatformHelpers::remove_barq_files_from_directory(const std::string &directory)
 {
     @autoreleasepool {
         NSFileManager *manager = [NSFileManager defaultManager];
         NSString *fileDir = @(directory.c_str());
 
         for (NSString *path in [manager enumeratorAtPath:fileDir]) {
-            if (![path.pathExtension isEqualToString:@"realm"] && ![path.pathExtension isEqualToString:@"realm.lock"]
-                && ![path.pathExtension isEqualToString:@"realm.management"] && ![path.pathExtension isEqualToString:@"realm.note"]
-                && ![path.pathExtension isEqualToString:@"realm.log"] && ![path.pathExtension isEqualToString:@"realm.log_a"] && ![path.pathExtension isEqualToString:@"realm.log_b"]) {
+            if (![path.pathExtension isEqualToString:@"barq"] && ![path.pathExtension isEqualToString:@"barq.lock"]
+                && ![path.pathExtension isEqualToString:@"barq.management"] && ![path.pathExtension isEqualToString:@"barq.note"]
+                && ![path.pathExtension isEqualToString:@"barq.log"] && ![path.pathExtension isEqualToString:@"barq.log_a"] && ![path.pathExtension isEqualToString:@"barq.log_b"]) {
                 continue;
             }
             NSError *error = nil;

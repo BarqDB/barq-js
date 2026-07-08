@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +23,7 @@ import { IllegalConstructorError } from "./errors";
 import type { Barq } from "./Barq";
 import type { UpdateMode } from "./Object";
 
-const REALM = Symbol("Counter#realm");
+const BARQ = Symbol("Counter#barq");
 const OBJ = Symbol("Counter#obj");
 const COLUMN_KEY = Symbol("Counter#columnKey");
 
@@ -54,8 +55,8 @@ const COLUMN_KEY = Symbol("Counter#columnKey");
  * Use a `number` when creating your counter on a {@link Barq.Object}.
  *
  * ```typescript
- * realm.write(() => {
- *   realm.create(MyObject, { _id: "123", counter: 0 });
+ * barq.write(() => {
+ *   barq.create(MyObject, { _id: "123", counter: 0 });
  * });
  * ```
  *
@@ -73,26 +74,26 @@ const COLUMN_KEY = Symbol("Counter#columnKey");
  * counter to `null`, use {@link UpdateMode.Modified} or {@link UpdateMode.All}.
  *
  * ```typescript
- * realm.write(() => {
- *   realm.create(MyObject, { _id: "123", counter: 0 }, UpdateMode.Modified);
+ * barq.write(() => {
+ *   barq.create(MyObject, { _id: "123", counter: 0 }, UpdateMode.Modified);
  * });
  * ```
  */
 export class Counter {
   /** @internal */
-  private readonly [REALM]: Barq;
+  private readonly [BARQ]: Barq;
   /** @internal */
   private readonly [OBJ]: binding.Obj;
   /** @internal */
   private readonly [COLUMN_KEY]: binding.ColKey;
 
   /** @internal */
-  constructor(realm: Barq, obj: binding.Obj, columnKey: binding.ColKey) {
+  constructor(barq: Barq, obj: binding.Obj, columnKey: binding.ColKey) {
     if (!(obj instanceof binding.Obj)) {
       throw new IllegalConstructorError("Counter");
     }
 
-    this[REALM] = realm;
+    this[BARQ] = barq;
     this[OBJ] = obj;
     this[COLUMN_KEY] = columnKey;
   }
@@ -120,7 +121,7 @@ export class Counter {
    * @param by The value to increment by. (Default: `1`)
    */
   increment(by = 1): void {
-    assert.inTransaction(this[REALM]);
+    assert.inTransaction(this[BARQ]);
     assert.integer(by, "by");
     this[OBJ].addInt(this[COLUMN_KEY], binding.Int64.numToInt(by));
   }
@@ -130,7 +131,7 @@ export class Counter {
    * @param by The value to decrement by. (Default: `1`)
    */
   decrement(by = 1): void {
-    assert.inTransaction(this[REALM]);
+    assert.inTransaction(this[BARQ]);
     // Assert that it is a number here despite calling into `increment` in order to
     // report the type provided by the user, rather than e.g. NaN or 0 due to negation.
     assert.integer(by, "by");
@@ -145,7 +146,7 @@ export class Counter {
    * setting the count behaves like regular individual updates to the underlying value.
    */
   set(value: number): void {
-    assert.inTransaction(this[REALM]);
+    assert.inTransaction(this[BARQ]);
     assert.integer(value, "value");
     this[OBJ].setAny(this[COLUMN_KEY], binding.Int64.numToInt(value));
   }

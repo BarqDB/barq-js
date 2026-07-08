@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useApp, useAuth, useQuery, useRealm, useUser} from '@barq/react';
+import {useApp, useAuth, useQuery, useBarq, useUser} from '@barq/react';
 import {Pressable, StyleSheet, Text} from 'react-native';
 
 import {Task} from './models/Task';
@@ -10,7 +10,7 @@ import colors from './styles/colors';
 import {OfflineModeButton} from './components/OfflineModeButton';
 
 export const AppSync: React.FC = () => {
-  const realm = useRealm();
+  const barq = useBarq();
   const user = useUser();
   const app = useApp();
   const {logOut} = useAuth();
@@ -25,10 +25,10 @@ export const AppSync: React.FC = () => {
   );
 
   useEffect(() => {
-    realm.subscriptions.update(mutableSubs => {
+    barq.subscriptions.update(mutableSubs => {
       mutableSubs.add(tasks);
     });
-  }, [realm, tasks]);
+  }, [barq, tasks]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-# NOTE: This is a common file that is overwritten by realm/ci-actions sync service
+# NOTE: This is a common file that is overwritten by barq/ci-actions sync service
 # and should only be modified in that repository.
 
 name: Feature Request
@@ -49,7 +49,7 @@ body:
       options:
         - -- select --
         - Local Database only
-        - Atlas Device Sync
-        - 'Atlas App Services: Auth or Functions etc'
+        - Barq sync
+        - 'Barq: Auth or Functions etc'
     validations:
       required: true

@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +23,7 @@ import type { PropertyAccessor, PropertyOptions } from "./types";
 
 /** @internal */
 export function createDefaultPropertyAccessor({
-  realm,
+  barq,
   typeHelpers: { fromBinding, toBinding },
   columnKey,
 }: PropertyOptions): PropertyAccessor {
@@ -36,9 +37,9 @@ export function createDefaultPropertyAccessor({
       }
     },
     set(obj: binding.Obj, value: unknown) {
-      assert.inTransaction(realm);
+      assert.inTransaction(barq);
       try {
-        if (!realm.isInMigration && obj.table.getPrimaryKeyColumn() === columnKey) {
+        if (!barq.isInMigration && obj.table.getPrimaryKeyColumn() === columnKey) {
           throw new Error(`Cannot change value of primary key outside migration function`);
         }
         obj.setAny(columnKey, toBinding(value));

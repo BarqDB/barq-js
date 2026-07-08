@@ -1,4 +1,4 @@
-package com.realmtemplate
+package com.barqtemplate
 
 import android.app.Application
 import com.facebook.react.PackageList

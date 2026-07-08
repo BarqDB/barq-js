@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,25 +22,25 @@ import fs from "node:fs";
 
 import type { Barq } from "../Barq";
 
-export type BarqContext = Mocha.Context & { realm: Barq };
+export type BarqContext = Mocha.Context & { barq: Barq };
 
 export function generateRandomInteger() {
   return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
 }
 
-export const REALMS_DIR = path.resolve(__dirname, "realms");
-export const REALMS_TEMP_DIR = path.resolve(REALMS_DIR, "temp");
-if (!fs.existsSync(REALMS_TEMP_DIR)) {
-  fs.mkdirSync(REALMS_TEMP_DIR, { recursive: true });
+export const BARQS_DIR = path.resolve(__dirname, "barqs");
+export const BARQS_TEMP_DIR = path.resolve(BARQS_DIR, "temp");
+if (!fs.existsSync(BARQS_TEMP_DIR)) {
+  fs.mkdirSync(BARQS_TEMP_DIR, { recursive: true });
 }
 
 export function generateTempBarqPath() {
-  return path.resolve(REALMS_TEMP_DIR, "random-" + generateRandomInteger() + ".realm");
+  return path.resolve(BARQS_TEMP_DIR, "random-" + generateRandomInteger() + ".barq");
 }
 
 export function closeBarq(this: Mocha.Context & Partial<BarqContext>) {
-  if (this.realm && !this.realm.isClosed) {
-    this.realm.close();
-    delete this.realm;
+  if (this.barq && !this.barq.isClosed) {
+    this.barq.close();
+    delete this.barq;
   }
 }

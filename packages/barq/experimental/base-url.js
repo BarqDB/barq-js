@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +19,7 @@
 
 // Our use of `exports` in `packages/barq/package.json` is not enabled by
 // default when using Metro and RN. In these cases, modules imported from
-// "realm/experimental" will search for the file in the same path, rather
+// "barq/experimental" will search for the file in the same path, rather
 // than what is pointed to under `exports`. Thus, we use this .js file to
 // in turn import the necessary module.
 

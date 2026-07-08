@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +24,7 @@ import { closeBarq, generateTempBarqPath } from "./utils";
 
 describe("List", () => {
   beforeEach(function (this: BarqContext) {
-    this.realm = new Barq({
+    this.barq = new Barq({
       path: generateTempBarqPath(),
       inMemory: true,
       schema: [
@@ -36,9 +37,9 @@ describe("List", () => {
   afterEach(closeBarq);
 
   it("supports managed object links when creating objects", function (this: BarqContext) {
-    this.realm.write(() => {
-      const cat = this.realm.create("Pet", { category: "Cat" });
-      this.realm.create("Person", {
+    this.barq.write(() => {
+      const cat = this.barq.create("Pet", { category: "Cat" });
+      this.barq.create("Person", {
         name: "Alice",
         age: 32,
         pets: [cat],
@@ -47,8 +48,8 @@ describe("List", () => {
   });
 
   it("supports unmanaged plain object when creating objects", function (this: BarqContext) {
-    this.realm.write(() => {
-      this.realm.create("Person", {
+    this.barq.write(() => {
+      this.barq.create("Person", {
         name: "Alice",
         age: 32,
         pets: [

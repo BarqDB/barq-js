@@ -4,16 +4,16 @@ import {SafeAreaView, StyleSheet} from 'react-native';
 import colors from './styles/colors';
 import {AppNonSync} from './AppNonSync';
 
-import {RealmProvider} from '@barq/react';
+import {BarqProvider} from '@barq/react';
 import {schemas} from './models';
 
 export const AppWrapperNonSync = () => {
   // If sync is disabled, setup the app without any sync functionality and return early
   return (
     <SafeAreaView style={styles.screen}>
-      <RealmProvider schema={schemas}>
+      <BarqProvider schema={schemas}>
         <AppNonSync />
-      </RealmProvider>
+      </BarqProvider>
     </SafeAreaView>
   );
 };

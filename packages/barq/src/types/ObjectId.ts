@@ -58,9 +58,6 @@ export class ObjectId {
     }
   }
 
-  get _bsontype(): "ObjectId" {
-    return "ObjectId";
-  }
 
   /** Generate the raw 12 bytes for an ObjectId, optionally at a given time (seconds). */
   static generate(time?: number): Uint8Array {

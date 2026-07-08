@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +23,7 @@ import { PropertyMap } from "./PropertyMap";
 import { KEY_ARRAY, KEY_SET, BarqObject } from "./Object";
 import { assert } from "./assert";
 import { getClassHelpers, setClassHelpers } from "./ClassHelpers";
-import { OBJECT_INTERNAL, OBJECT_REALM } from "./symbols";
+import { OBJECT_INTERNAL, OBJECT_BARQ } from "./symbols";
 
 /** @internal */
 export class ClassMap {
@@ -59,7 +60,7 @@ export class ClassMap {
     constructor: Constructor,
     schema: binding.ObjectSchema,
     propertyMap: PropertyMap,
-    realm: Barq,
+    barq: Barq,
   ) {
     // Create bound functions for getting and setting properties
     const properties = [...schema.persistedProperties, ...schema.computedProperties];
@@ -80,11 +81,11 @@ export class ClassMap {
       });
     }
 
-    Object.defineProperty(constructor.prototype, OBJECT_REALM, {
+    Object.defineProperty(constructor.prototype, OBJECT_BARQ, {
       enumerable: false,
       configurable: false,
       writable: false,
-      value: realm,
+      value: barq,
     });
     Object.defineProperty(constructor.prototype, KEY_ARRAY, {
       enumerable: false,
@@ -101,12 +102,12 @@ export class ClassMap {
   }
 
   constructor(
-    realm: Barq,
-    realmSchema: readonly binding.ObjectSchema[],
+    barq: Barq,
+    barqSchema: readonly binding.ObjectSchema[],
     canonicalBarqSchema: CanonicalObjectSchema[],
   ) {
     this.mapping = Object.fromEntries(
-      realmSchema.map((objectSchema, index) => {
+      barqSchema.map((objectSchema, index) => {
         const canonicalObjectSchema: CanonicalObjectSchema = canonicalBarqSchema[index];
         assert.object(canonicalObjectSchema);
         // Create the wrapping class first
@@ -131,9 +132,9 @@ export class ClassMap {
       }),
     );
 
-    this.nameByTableKey = Object.fromEntries(realmSchema.map(({ name, tableKey }) => [tableKey, name]));
+    this.nameByTableKey = Object.fromEntries(barqSchema.map(({ name, tableKey }) => [tableKey, name]));
 
-    for (const [index, objectSchema] of realmSchema.entries()) {
+    for (const [index, objectSchema] of barqSchema.entries()) {
       const canonicalObjectSchema = canonicalBarqSchema[index];
       const defaults = Object.fromEntries(
         Object.entries(canonicalObjectSchema.properties).map(([name, property]) => {
@@ -145,11 +146,11 @@ export class ClassMap {
       const { properties } = getClassHelpers(constructor as typeof BarqObject);
       // Initialize the property map, now that all classes have helpers set
       properties.initialize(objectSchema, canonicalObjectSchema, defaults, {
-        realm,
+        barq,
         getClassHelpers: (name: string) => this.getHelpers(name),
       });
       // Transfer property getters and setters onto the prototype of the class
-      ClassMap.defineProperties(constructor, objectSchema, properties, realm);
+      ClassMap.defineProperties(constructor, objectSchema, properties, barq);
     }
   }
 

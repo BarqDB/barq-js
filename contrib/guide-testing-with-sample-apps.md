@@ -7,7 +7,7 @@ This is one suggested workflow for testing your local changes to Barq JS against
 To test your changes on React Native you can clone this sample project:
 
 ```sh
-git clone https://github.com/cesarvr/react-native-realm sample-rn-project
+git clone https://github.com/cesarvr/react-native-barq sample-rn-project
 cd sample-rn-project
 npm install
 ```
@@ -27,7 +27,7 @@ Right now you should have three folders:
 ```sh
   barq-js  # barq-js source code.
 
-  hello-sync # Node.js project using realm.
+  hello-sync # Node.js project using barq.
   sample-rn-project # the sample react-native project.
 ```
 
@@ -60,9 +60,9 @@ Open ```nlk.js``` with your favourite text editor like ``vim``, go to the bottom
 
 ```js
 syncByAppend(
-  './react-native/android/build/realm-react-ndk/all', // Source folder...
-  '../sample-rn-project/node_modules/realm/android/src/main/jniLibs', // Target folder...
-  RegExp('librealmreact.so'))  // copy librealmreact.so if a change has been detected...
+  './react-native/android/build/barq-react-ndk/all', // Source folder...
+  '../sample-rn-project/node_modules/barq/android/src/main/jniLibs', // Target folder...
+  RegExp('libbarqreact.so'))  // copy libbarqreact.so if a change has been detected...
 ```
 
 > As you can see this is just a dumb script that copy files anytime they change... you can use [Regular Expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions) to handle more complex scenarios.
@@ -91,10 +91,10 @@ As soon as the compilation finish this module will be deployed into the React Na
 If you visit the script tab you will see the files that have been sync:
 
 ```sh
-sync done for: librealmreact.so.  11:54:30   # arm
-sync done for: librealmreact.so.  11:54:30   # x86
-sync done for: librealmreact.so.  11:54:30   # x64 ...
-sync done for: librealmreact.so.  11:54:30
+sync done for: libbarqreact.so.  11:54:30   # arm
+sync done for: libbarqreact.so.  11:54:30   # x86
+sync done for: libbarqreact.so.  11:54:30   # x64 ...
+sync done for: libbarqreact.so.  11:54:30
 
 ```
 > This will trigger any time a new binary object is created...
@@ -115,13 +115,13 @@ First as we did with the Android project we add a new entry to the script:
 
 ```js
 // Android
-syncByAppend('./react-native/android/build/realm-react-ndk/all',
-            '../sample-rn-project/node_modules/realm/android/src/main/jniLibs',
-            RegExp('librealmreact.so'))
+syncByAppend('./react-native/android/build/barq-react-ndk/all',
+            '../sample-rn-project/node_modules/barq/android/src/main/jniLibs',
+            RegExp('libbarqreact.so'))
 
 // iOS
 syncByAppend('./src',
-             '../sample-rn-project/node_modules/realm/src',
+             '../sample-rn-project/node_modules/barq/src',
              RegExp('.*'))
 ```
 
@@ -140,8 +140,8 @@ Now you can just open the xcode project in ```sample-rn-project``` by doing:
 cd sample-rn-project/ios/
 pod install # Install iOS dependencies
 
-open sample-rn-project/ios/MyAwesomeRealmApp.xcworkspace
-#or just open MyAwesomeRealmApp.xcworkspace if you are inside the folder
+open sample-rn-project/ios/MyAwesomeBarqApp.xcworkspace
+#or just open MyAwesomeBarqApp.xcworkspace if you are inside the folder
 ```
 
 After that you can press ```CMD + B``` and see your changes compiled, then you do ```CMD + R``` and you run the new code on the emulator.
@@ -155,7 +155,7 @@ Assuming we have the same folder structure:
 ```sh
   barq-js  # barq-js source code.
 
-  hello-sync # Node.js project using realm.
+  hello-sync # Node.js project using barq.
   sample-rn-project # the sample react-native project.
 ```
 
@@ -163,20 +163,20 @@ We jump to the ``barq-js`` root folder and open the ```nlk.js``` script, jump to
 
 ```js
 // Android
-syncByAppend('./react-native/android/build/realm-react-ndk/all',
-            '../sample-rn-project/node_modules/realm/android/src/main/jniLibs',
-            RegExp('librealmreact.so'))
+syncByAppend('./react-native/android/build/barq-react-ndk/all',
+            '../sample-rn-project/node_modules/barq/android/src/main/jniLibs',
+            RegExp('libbarqreact.so'))
 
 // iOS
 syncByAppend('./src',
-             '../sample-rn-project/node_modules/realm/src',
+             '../sample-rn-project/node_modules/barq/src',
              RegExp('.*'))
 
 
 // Node.js  [ New ]
 syncByAppend('./compiled',
-          '../hello-sync/node_modules/realm/compiled',
-          RegExp('realm.node'))
+          '../hello-sync/node_modules/barq/compiled',
+          RegExp('barq.node'))
 
 ```
 
@@ -191,11 +191,11 @@ node nlk.js
 Then once you are fine with changes, you just need to compile the Node.js module using:
 
 ```sh
-npm install --build-from-source=realm  # Take a coffee...
+npm install --build-from-source=barq  # Take a coffee...
 
 #... events from nlk ...
-#sync done for: realm.node.  13:8:26
-#sync done for: realm.node.  13:8:26
+#sync done for: barq.node.  13:8:26
+#sync done for: barq.node.  13:8:26
 
 ```
 

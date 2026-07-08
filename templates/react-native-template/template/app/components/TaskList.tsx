@@ -1,14 +1,14 @@
 import React from 'react';
 import {View, FlatList, StyleSheet} from 'react-native';
-import {Realm} from '@barq/react';
+import {Barq} from '@barq/react';
 
 import {Task} from '../models/Task';
 import {TaskItem} from './TaskItem';
 
 type TaskListProps = {
-  tasks: Realm.Results<Task & Realm.Object>;
-  onToggleTaskStatus: (task: Task & Realm.Object) => void;
-  onDeleteTask: (task: Task & Realm.Object) => void;
+  tasks: Barq.Results<Task & Barq.Object>;
+  onToggleTaskStatus: (task: Task & Barq.Object) => void;
+  onDeleteTask: (task: Task & Barq.Object) => void;
 };
 
 export const TaskList: React.FC<TaskListProps> = ({
@@ -26,7 +26,7 @@ export const TaskList: React.FC<TaskListProps> = ({
             task={item}
             onToggleStatus={() => onToggleTaskStatus(item)}
             onDelete={() => onDeleteTask(item)}
-            // Don't spread the Realm item as such: {...item}
+            // Don't spread the Barq item as such: {...item}
           />
         )}
       />

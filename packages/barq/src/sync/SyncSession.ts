@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -75,7 +76,7 @@ export enum ProgressMode {
 export type PartitionBasedSyncProgressNotificationCallback = (transferred: number, transferable: number) => void;
 
 /**
- * A progress notification callback for Atlas Device Sync.
+ * A progress notification callback for Barq sync.
  * @param estimate - An estimate between 0.0 and 1.0 of how much have been transferred.
  */
 export type EstimateProgressNotificationCallback = (estimate: number) => void;
@@ -101,11 +102,11 @@ export enum SessionState {
    */
   Invalid = "invalid",
   /**
-   * The sync session is actively communicating or attempting to communicate with Atlas App Services. A session may be considered active even if it is not currently connected. To find out if a session is online, check its connection state.
+   * The sync session is actively communicating or attempting to communicate with Barq. A session may be considered active even if it is not currently connected. To find out if a session is online, check its connection state.
    */
   Active = "active",
   /**
-   * The sync session is not attempting to communicate with Atlas App Services due to the user logging out or synchronization being paused.
+   * The sync session is not attempting to communicate with Barq due to the user logging out or synchronization being paused.
    */
   Inactive = "inactive",
 }
@@ -231,12 +232,12 @@ export function toBindingNotifyAfterClientResetWithFallback(
         new indirect.Barq(null, { internal: binding.Helpers.consumeThreadSafeReferenceToSharedBarq(tsr) }),
       );
     } else {
-      const realm = new indirect.Barq(null, {
+      const barq = new indirect.Barq(null, {
         internal: binding.Helpers.consumeThreadSafeReferenceToSharedBarq(tsr),
       });
       if (onFallback) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        onFallback(realm.syncSession!, realm.path);
+        onFallback(barq.syncSession!, barq.path);
       } else {
         throw new Error("onFallback is undefined");
       }
@@ -468,7 +469,7 @@ export class SyncSession {
   }
 
   /**
-   * Reconnects to Atlas Device Sync.
+   * Reconnects to Barq sync.
    *
    * This method is asynchronous so in order to know when the session has started you will need
    * to add a connection notification with {@link SyncSession.addConnectionNotification | addConnectionNotification}.

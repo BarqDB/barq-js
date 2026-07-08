@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2021 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -63,19 +64,19 @@ export function createUseObject(useBarq: UseBarqHook): UseObjectHook {
     primaryKey: T[keyof T],
     keyPaths?: string | string[],
   ): T | null {
-    const realm = useBarq();
+    const barq = useBarq();
 
     // Create a forceRerender function for the cachedObject to use as its updateCallback, so that
     // the cachedObject can force the component using this hook to re-render when a change occurs.
     const [, forceRerender] = useReducer((x) => x + 1, 0);
 
-    // Get the original object from the realm, so we can check if it exists
-    const originalObject = getObjectForPrimaryKey(realm, type, primaryKey);
+    // Get the original object from the barq, so we can check if it exists
+    const originalObject = getObjectForPrimaryKey(barq, type, primaryKey);
 
     // Store the primaryKey as a ref, since when it is an objectId or UUID, it will be a new instance on every render
     const primaryKeyRef = useRef(primaryKey);
 
-    const collectionRef = useRef(getObjects(realm, type));
+    const collectionRef = useRef(getObjects(barq, type));
 
     const objectRef = useRef<T & Barq.Object<T>>(null);
     const updatedRef = useRef(true);
@@ -96,7 +97,7 @@ export function createUseObject(useBarq: UseBarqHook): UseObjectHook {
     if (!cachedObjectRef.current) {
       cachedObjectRef.current = createCachedObject({
         object: originalObject ?? null,
-        realm,
+        barq,
         updateCallback: forceRerender,
         updatedRef,
         keyPaths: memoizedKeyPaths,
@@ -123,7 +124,7 @@ export function createUseObject(useBarq: UseBarqHook): UseObjectHook {
         ) {
           cachedObjectRef.current = createCachedObject({
             object: originalObject ?? null,
-            realm,
+            barq,
             updateCallback: forceRerender,
             updatedRef,
             keyPaths: memoizedKeyPaths,
@@ -137,7 +138,7 @@ export function createUseObject(useBarq: UseBarqHook): UseObjectHook {
         }
         return cachedObjectRef.current;
       },
-      [realm, originalObject, primaryKey, memoizedKeyPaths],
+      [barq, originalObject, primaryKey, memoizedKeyPaths],
     );
 
     // Invoke the tearDown of the cachedObject when useObject is unmounted
@@ -169,12 +170,12 @@ export function createUseObject(useBarq: UseBarqHook): UseObjectHook {
       }
 
       return () => {
-        // If the app is closing, the realm will be closed and the listener does not need to be removed if
-        if (!realm.isClosed && collection) {
+        // If the app is closing, the barq will be closed and the listener does not need to be removed if
+        if (!barq.isClosed && collection) {
           collection.removeListener(collectionListener);
         }
       };
-    }, [realm, type, forceRerender]);
+    }, [barq, type, forceRerender]);
 
     // If the object has been deleted or doesn't exist for the given primary key, just return null
     if (!object?.isValid()) {

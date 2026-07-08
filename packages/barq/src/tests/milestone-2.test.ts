@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,19 +27,19 @@ import { Results } from "../Results";
 import type { CanonicalObjectSchema } from "../schema";
 
 import type { BarqContext } from "./utils";
-import { REALMS_DIR, closeBarq, generateRandomInteger, generateTempBarqPath } from "./utils";
+import { BARQS_DIR, closeBarq, generateRandomInteger, generateTempBarqPath } from "./utils";
 
 type Person = { name: string; age?: number };
 type PersonWithFriend = { name: string; age?: number; bestFriend: Person | null };
 
-const SIMPLE_REALM_PATH = path.resolve(REALMS_DIR, "simple.realm");
+const SIMPLE_BARQ_PATH = path.resolve(BARQS_DIR, "simple.barq");
 
 describe("Milestone #2", () => {
   describe("Opening default local Barq", () => {
     it("can read schema from disk", () => {
-      const realm = new Barq({ path: SIMPLE_REALM_PATH });
+      const barq = new Barq({ path: SIMPLE_BARQ_PATH });
       try {
-        const schema = realm.schema;
+        const schema = barq.schema;
         const expectedSchema: CanonicalObjectSchema[] = [
           {
             ctor: undefined,
@@ -80,24 +81,24 @@ describe("Milestone #2", () => {
         ];
         expect(schema).deep.equals(expectedSchema);
       } finally {
-        realm.close();
+        barq.close();
       }
     });
   });
 
   describe("Reading an object by primary key", () => {
     before(function (this: BarqContext) {
-      this.realm = new Barq({ path: SIMPLE_REALM_PATH });
+      this.barq = new Barq({ path: SIMPLE_BARQ_PATH });
     });
     after(closeBarq);
 
     it("returns an instance of BarqObject", function (this: BarqContext) {
-      const alice = this.realm.objectForPrimaryKey("Person", "Alice");
+      const alice = this.barq.objectForPrimaryKey("Person", "Alice");
       expect(alice).instanceOf(BarqObject);
     });
 
     it("returns a spreadable object", function (this: BarqContext) {
-      const alice = this.realm.objectForPrimaryKey<PersonWithFriend>("Person", "Alice");
+      const alice = this.barq.objectForPrimaryKey<PersonWithFriend>("Person", "Alice");
       assert(alice);
       expect(alice.keys()).deep.equals(["name", "bestFriend", "age"]);
       const spread = { ...alice };
@@ -108,12 +109,12 @@ describe("Milestone #2", () => {
 
   describe("Reading a “string” property from an object", () => {
     before(function (this: BarqContext) {
-      this.realm = new Barq({ path: SIMPLE_REALM_PATH });
+      this.barq = new Barq({ path: SIMPLE_BARQ_PATH });
     });
     after(closeBarq);
 
     it("returns the correct string", function (this: BarqContext) {
-      const alice = this.realm.objectForPrimaryKey<Person>("Person", "Alice");
+      const alice = this.barq.objectForPrimaryKey<Person>("Person", "Alice");
       assert(alice);
       expect(alice.name).equals("Alice");
     });
@@ -121,12 +122,12 @@ describe("Milestone #2", () => {
 
   describe("Follow an object “link” from an object to another", () => {
     before(function (this: BarqContext) {
-      this.realm = new Barq({ path: SIMPLE_REALM_PATH });
+      this.barq = new Barq({ path: SIMPLE_BARQ_PATH });
     });
     after(closeBarq);
 
     it("returns the correct object", function (this: BarqContext) {
-      const alice = this.realm.objectForPrimaryKey<PersonWithFriend>("Person", "Alice");
+      const alice = this.barq.objectForPrimaryKey<PersonWithFriend>("Person", "Alice");
       assert(alice);
       assert(alice.bestFriend instanceof BarqObject);
       expect(alice.bestFriend.name).equals("Bob");
@@ -137,15 +138,15 @@ describe("Milestone #2", () => {
     before(function (this: BarqContext) {
       // Start from the simple file to avoid populating a schema nor updating the file
       const path = generateTempBarqPath();
-      fs.copyFileSync(SIMPLE_REALM_PATH, path);
-      this.realm = new Barq({ path });
+      fs.copyFileSync(SIMPLE_BARQ_PATH, path);
+      this.barq = new Barq({ path });
     });
     after(closeBarq);
 
     it("persists the value", function (this: BarqContext) {
-      const charlie = this.realm.objectForPrimaryKey<Person>("Person", "Charlie");
+      const charlie = this.barq.objectForPrimaryKey<Person>("Person", "Charlie");
       assert(charlie);
-      this.realm.write(() => {
+      this.barq.write(() => {
         charlie.age = 11;
         expect(charlie.age).equals(11);
         charlie.age = 10;
@@ -158,16 +159,16 @@ describe("Milestone #2", () => {
     before(function (this: BarqContext) {
       // Start from the simple file to avoid populating a schema nor updating the file
       const path = generateTempBarqPath();
-      fs.copyFileSync(SIMPLE_REALM_PATH, path);
-      this.realm = new Barq({ path });
+      fs.copyFileSync(SIMPLE_BARQ_PATH, path);
+      this.barq = new Barq({ path });
     });
     after(closeBarq);
 
     it("persists the value", function (this: BarqContext) {
-      const alice = this.realm.objectForPrimaryKey<PersonWithFriend>("Person", "Alice");
+      const alice = this.barq.objectForPrimaryKey<PersonWithFriend>("Person", "Alice");
       assert(alice);
-      const bob = this.realm.objectForPrimaryKey<PersonWithFriend>("Person", "Bob");
-      this.realm.write(() => {
+      const bob = this.barq.objectForPrimaryKey<PersonWithFriend>("Person", "Bob");
+      this.barq.write(() => {
         alice.bestFriend = null;
         expect(alice.bestFriend).equals(null);
         alice.bestFriend = bob;
@@ -182,15 +183,15 @@ describe("Milestone #2", () => {
     before(function (this: BarqContext) {
       // Start from the simple file to avoid populating a schema nor updating the file
       const path = generateTempBarqPath();
-      fs.copyFileSync(SIMPLE_REALM_PATH, path);
-      this.realm = new Barq({ path });
+      fs.copyFileSync(SIMPLE_BARQ_PATH, path);
+      this.barq = new Barq({ path });
     });
     after(closeBarq);
 
     it("persists the object and its value", function (this: BarqContext) {
       const name = "Darwin #" + generateRandomInteger();
-      const person = this.realm.write(() => {
-        return this.realm.create<Person>("Person", { name });
+      const person = this.barq.write(() => {
+        return this.barq.create<Person>("Person", { name });
       });
       expect(person.name).equals(name);
     });
@@ -201,22 +202,22 @@ describe("Milestone #2", () => {
 
     it("supports properties of type 'string'", function (this: BarqContext) {
       const path = generateTempBarqPath();
-      this.realm = new Barq({ path, schema: [{ name: "Person", properties: { name: "string" } }] });
-      const person = this.realm.write(() => {
-        return this.realm.create("Person", { name: "Alice" });
+      this.barq = new Barq({ path, schema: [{ name: "Person", properties: { name: "string" } }] });
+      const person = this.barq.write(() => {
+        return this.barq.create("Person", { name: "Alice" });
       });
       expect(person.name).equals("Alice");
     });
 
     it("supports properties of type 'link'", function (this: BarqContext) {
       const path = generateTempBarqPath();
-      this.realm = new Barq({
+      this.barq = new Barq({
         path,
         schema: [{ name: "Person", properties: { name: "string", bestFriend: "Person" } }],
       });
-      const { alice, bob } = this.realm.write(() => {
-        const alice = this.realm.create<PersonWithFriend>("Person", { name: "Alice", bestFriend: null });
-        const bob = this.realm.create<PersonWithFriend>("Person", { name: "Bob", bestFriend: alice });
+      const { alice, bob } = this.barq.write(() => {
+        const alice = this.barq.create<PersonWithFriend>("Person", { name: "Alice", bestFriend: null });
+        const bob = this.barq.create<PersonWithFriend>("Person", { name: "Bob", bestFriend: alice });
         return { alice, bob };
       });
       expect(alice.name).equals("Alice");
@@ -227,15 +228,15 @@ describe("Milestone #2", () => {
 
     it("supports properties of type 'list<link>'", function (this: BarqContext) {
       const path = generateTempBarqPath();
-      this.realm = new Barq({
+      this.barq = new Barq({
         path,
         schema: [{ name: "Person", properties: { name: "string", bestFriend: "Person", friends: "Person[]" } }],
       });
       // Actually, this part of the milestone doesn't entail reading lists from the database
       /*
-      const { alice, bob } = this.realm.write(() => {
-        const alice = this.realm.create<PersonWithFriends>("Person", { name: "Alice", bestFriend: null, friends: [] });
-        const bob = this.realm.create<PersonWithFriends>("Person", {
+      const { alice, bob } = this.barq.write(() => {
+        const alice = this.barq.create<PersonWithFriends>("Person", { name: "Alice", bestFriend: null, friends: [] });
+        const bob = this.barq.create<PersonWithFriends>("Person", {
           name: "Bob",
           bestFriend: alice,
           friends: [alice],
@@ -253,12 +254,12 @@ describe("Milestone #2", () => {
 
   describe("Querying database for objects of a specific type", () => {
     before(function (this: BarqContext) {
-      this.realm = new Barq({ path: SIMPLE_REALM_PATH });
+      this.barq = new Barq({ path: SIMPLE_BARQ_PATH });
     });
     after(closeBarq);
 
     it("return Results", function (this: BarqContext) {
-      const persons = this.realm.objects("Person");
+      const persons = this.barq.objects("Person");
       expect(persons).instanceOf(Results);
       expect(persons.length).greaterThan(0);
       expect(persons.length).equals([...persons.keys()].length);
@@ -271,14 +272,14 @@ describe("Milestone #2", () => {
     });
 
     it("allows random index access", function (this: BarqContext) {
-      const persons = this.realm.objects("Person");
+      const persons = this.barq.objects("Person");
       expect(persons).instanceOf(Results);
       expect(persons.length).greaterThan(0);
       expect(persons[0]).instanceOf(BarqObject);
     });
 
     it("allows object spreads", function (this: BarqContext) {
-      const persons = this.realm.objects("Person");
+      const persons = this.barq.objects("Person");
       expect(persons).instanceOf(Results);
       expect(persons.length).greaterThan(0);
       const spread = { ...persons };

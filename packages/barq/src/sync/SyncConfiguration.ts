@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -207,7 +208,7 @@ export type SyncProxyConfig = {
 };
 
 /**
- * This describes the different options used to create a {@link Barq} instance with Atlas App Services synchronization.
+ * This describes the different options used to create a {@link Barq} instance with Barq synchronization.
  */
 export type BaseSyncConfiguration = {
   /**
@@ -271,7 +272,7 @@ export type InitialSubscriptions = {
    * A callback to make changes to a SubscriptionSet.
    * @see {@link SubscriptionSet.update} for more information.
    */
-  update: (mutableSubscriptions: MutableSubscriptionSet, realm: Barq) => void;
+  update: (mutableSubscriptions: MutableSubscriptionSet, barq: Barq) => void;
   /**
    * If `true`, the {@link InitialSubscriptions.update} callback will be rerun every time the Barq is
    * opened (e.g. every time a user opens your app), otherwise (by default) it
@@ -294,15 +295,15 @@ export type FlexibleSyncConfiguration = BaseSyncConfiguration & {
    *     user,
    *     flexible: true,
    *     initialSubscriptions: {
-   *       update: (subs, realm) => {
-   *         subs.add(realm.objects('Task'));
+   *       update: (subs, barq) => {
+   *         subs.add(barq.objects('Task'));
    *       },
    *       rerunOnOpen: true,
    *     },
    *   },
    *   // ... rest of config ...
    * };
-   * const realm = await Barq.open(config);
+   * const barq = await Barq.open(config);
    *
    * // At this point, the Barq will be open with the data for the initial set
    * // subscriptions fully synchronised.
@@ -454,11 +455,11 @@ function parseSyncProxyConfig(syncProxyConfig: SyncProxyConfig) {
 }
 
 /**
- * Validate the fields of a user-provided realm sync configuration.
+ * Validate the fields of a user-provided barq sync configuration.
  * @internal
  */
 export function validateSyncConfiguration(config: unknown): asserts config is SyncConfiguration {
-  assert.object(config, "'sync' on realm configuration", { allowArrays: false });
+  assert.object(config, "'sync' on barq configuration", { allowArrays: false });
   const {
     user,
     newBarqFileBehavior,
@@ -471,7 +472,7 @@ export function validateSyncConfiguration(config: unknown): asserts config is Sy
     cancelWaitOnNonFatalError: cancelWaitsOnNonFatalError,
   } = config;
 
-  assert.instanceOf(user, User, "'user' on realm sync configuration");
+  assert.instanceOf(user, User, "'user' on barq sync configuration");
   if (cancelWaitsOnNonFatalError !== undefined) {
     assert.boolean(cancelWaitsOnNonFatalError, "'cancelWaitOnNonFatalError' on sync configuration");
   }
@@ -482,12 +483,12 @@ export function validateSyncConfiguration(config: unknown): asserts config is Sy
     validateOpenBarqBehaviorConfiguration(existingBarqFileBehavior, "existingBarqFileBehavior");
   }
   if (onError !== undefined) {
-    assert.function(onError, "'onError' on realm sync configuration");
+    assert.function(onError, "'onError' on barq sync configuration");
   }
   if (customHttpHeaders !== undefined) {
-    assert.object(customHttpHeaders, "'customHttpHeaders' on realm sync configuration", { allowArrays: false });
+    assert.object(customHttpHeaders, "'customHttpHeaders' on barq sync configuration", { allowArrays: false });
     for (const key in customHttpHeaders) {
-      assert.string(customHttpHeaders[key], "all property values of 'customHttpHeaders' on realm sync configuration");
+      assert.string(customHttpHeaders[key], "all property values of 'customHttpHeaders' on barq sync configuration");
     }
   }
   if (ssl !== undefined) {
@@ -505,25 +506,25 @@ export function validateSyncConfiguration(config: unknown): asserts config is Sy
 }
 
 /**
- * Validate the fields of a user-provided open realm behavior configuration.
+ * Validate the fields of a user-provided open barq behavior configuration.
  */
 function validateOpenBarqBehaviorConfiguration(
   config: unknown,
   target: string,
 ): asserts config is OpenBarqBehaviorConfiguration {
-  assert.object(config, `'${target}' on realm sync configuration`, { allowArrays: false });
+  assert.object(config, `'${target}' on barq sync configuration`, { allowArrays: false });
   assert(
     config.type === OpenBarqBehaviorType.DownloadBeforeOpen || config.type === OpenBarqBehaviorType.OpenImmediately,
-    `'${target}.type' on realm sync configuration must be either '${OpenBarqBehaviorType.DownloadBeforeOpen}' or '${OpenBarqBehaviorType.OpenImmediately}'.`,
+    `'${target}.type' on barq sync configuration must be either '${OpenBarqBehaviorType.DownloadBeforeOpen}' or '${OpenBarqBehaviorType.OpenImmediately}'.`,
   );
   if (config.timeOut !== undefined) {
-    assert.number(config.timeOut, `'${target}.timeOut' on realm sync configuration`);
+    assert.number(config.timeOut, `'${target}.timeOut' on barq sync configuration`);
   }
   if (config.timeOutBehavior !== undefined) {
     assert(
       config.timeOutBehavior === OpenBarqTimeOutBehavior.OpenLocalBarq ||
         config.timeOutBehavior === OpenBarqTimeOutBehavior.ThrowException,
-      `'${target}.timeOutBehavior' on realm sync configuration must be either '${OpenBarqTimeOutBehavior.OpenLocalBarq}' or '${OpenBarqTimeOutBehavior.ThrowException}'.`,
+      `'${target}.timeOutBehavior' on barq sync configuration must be either '${OpenBarqTimeOutBehavior.OpenLocalBarq}' or '${OpenBarqTimeOutBehavior.ThrowException}'.`,
     );
   }
 }
@@ -532,15 +533,15 @@ function validateOpenBarqBehaviorConfiguration(
  * Validate the fields of a user-provided SSL configuration.
  */
 function validateSSLConfiguration(config: unknown): asserts config is SSLConfiguration {
-  assert.object(config, "'ssl' on realm sync configuration");
+  assert.object(config, "'ssl' on barq sync configuration");
   if (config.validate !== undefined) {
-    assert.boolean(config.validate, "'ssl.validate' on realm sync configuration");
+    assert.boolean(config.validate, "'ssl.validate' on barq sync configuration");
   }
   if (config.certificatePath !== undefined) {
-    assert.string(config.certificatePath, "'ssl.certificatePath' on realm sync configuration");
+    assert.string(config.certificatePath, "'ssl.certificatePath' on barq sync configuration");
   }
   if (config.validateCertificates !== undefined) {
-    assert.function(config.validateCertificates, "'ssl.validateCertificates' on realm sync configuration");
+    assert.function(config.validateCertificates, "'ssl.validateCertificates' on barq sync configuration");
   }
 }
 
@@ -548,28 +549,28 @@ function validateSSLConfiguration(config: unknown): asserts config is SSLConfigu
  * Validate the fields of a user-provided client reset configuration.
  */
 function validateClientResetConfiguration(config: unknown): asserts config is ClientResetConfig {
-  assert.object(config, "'clientReset' on realm sync configuration", { allowArrays: false });
+  assert.object(config, "'clientReset' on barq sync configuration", { allowArrays: false });
   const modes = Object.values(ClientResetMode);
   assert(
     modes.includes(config.mode as ClientResetMode),
-    `'clientReset' on realm sync configuration must be one of the following: '${modes.join("', '")}'`,
+    `'clientReset' on barq sync configuration must be one of the following: '${modes.join("', '")}'`,
   );
   if (config.onManual !== undefined) {
-    assert.function(config.onManual, "'clientReset.onManual' on realm sync configuration");
+    assert.function(config.onManual, "'clientReset.onManual' on barq sync configuration");
   }
   if (config.onAfter !== undefined) {
-    assert.function(config.onAfter, "'clientReset.onAfter' on realm sync configuration");
+    assert.function(config.onAfter, "'clientReset.onAfter' on barq sync configuration");
   }
   if (config.onBefore !== undefined) {
-    assert.function(config.onBefore, "'clientReset.onBefore' on realm sync configuration");
+    assert.function(config.onBefore, "'clientReset.onBefore' on barq sync configuration");
   }
   if (config.onFallback !== undefined) {
-    assert.function(config.onFallback, "'clientReset.onFallback' on realm sync configuration");
+    assert.function(config.onFallback, "'clientReset.onFallback' on barq sync configuration");
   }
 }
 
 /**
- * Validate the fields of a user-provided realm flexible sync configuration.
+ * Validate the fields of a user-provided barq flexible sync configuration.
  */
 function validateFlexibleSyncConfiguration(
   config: Record<string, unknown>,
@@ -578,15 +579,15 @@ function validateFlexibleSyncConfiguration(
 
   assert(
     flexible === true,
-    "'flexible' must always be true for realms using flexible sync. To enable partition-based sync, remove 'flexible' and specify 'partitionValue'.",
+    "'flexible' must always be true for barqs using flexible sync. To enable partition-based sync, remove 'flexible' and specify 'partitionValue'.",
   );
   if (initialSubscriptions !== undefined) {
-    assert.object(initialSubscriptions, "'initialSubscriptions' on realm sync configuration", { allowArrays: false });
-    assert.function(initialSubscriptions.update, "'initialSubscriptions.update' on realm sync configuration");
+    assert.object(initialSubscriptions, "'initialSubscriptions' on barq sync configuration", { allowArrays: false });
+    assert.function(initialSubscriptions.update, "'initialSubscriptions.update' on barq sync configuration");
     if (initialSubscriptions.rerunOnOpen !== undefined) {
       assert.boolean(
         initialSubscriptions.rerunOnOpen,
-        "'initialSubscriptions.rerunOnOpen' on realm sync configuration",
+        "'initialSubscriptions.rerunOnOpen' on barq sync configuration",
       );
     }
   }
@@ -597,7 +598,7 @@ function validateFlexibleSyncConfiguration(
 }
 
 /**
- * Validate the fields of a user-provided realm partition sync configuration.
+ * Validate the fields of a user-provided barq partition sync configuration.
  */
 function validatePartitionSyncConfiguration(
   config: Record<string, unknown>,
@@ -619,18 +620,18 @@ function validatePartitionSyncConfiguration(
 }
 
 /**
- * Validate the user-provided partition value of a realm sync configuration.
+ * Validate the user-provided partition value of a barq sync configuration.
  */
 function validatePartitionValue(value: unknown): asserts value is PartitionValue {
   if (typeof value === "number") {
     assert(
       Number.isSafeInteger(value),
-      `Expected 'partitionValue' on realm sync configuration to be an integer, got ${value}.`,
+      `Expected 'partitionValue' on barq sync configuration to be an integer, got ${value}.`,
     );
   } else {
     assert(
       typeof value === "string" || value instanceof ObjectId || value instanceof UUID || value === null,
-      `Expected 'partitionValue' on realm sync configuration to be an integer, string, ObjectId, UUID, or null, got ${TypeAssertionError.deriveType(
+      `Expected 'partitionValue' on barq sync configuration to be an integer, string, ObjectId, UUID, or null, got ${TypeAssertionError.deriveType(
         value,
       )}.`,
     );

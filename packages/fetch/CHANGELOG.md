@@ -13,7 +13,7 @@
 ### Compatibility
 * React Native >= v0.71.4
 * Barq Studio v14.0.0.
-* File format: generates Realms with format v23 (reads and upgrades file format v5 or later for non-synced Barq, upgrades file format v10 or later for synced Realms).
+* File format: generates Barqs with format v23 (reads and upgrades file format v5 or later for non-synced Barq, upgrades file format v10 or later for synced Barqs).
 
 ### Internal
 <!-- * Either mention core version or upgrade -->

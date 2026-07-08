@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,7 +27,7 @@ import { createSetAccessor } from "../collection-accessors/Set";
 /** @internal */
 export function createSetPropertyAccessor({
   columnKey,
-  realm,
+  barq,
   name,
   type,
   optional,
@@ -35,7 +36,7 @@ export function createSetPropertyAccessor({
 }: PropertyOptions): PropertyAccessor {
   const itemType = toItemType(type);
   const itemHelpers = getTypeHelpers(itemType, {
-    realm,
+    barq,
     name: `value in ${name}`,
     getClassHelpers,
     objectType,
@@ -43,17 +44,17 @@ export function createSetPropertyAccessor({
     objectSchemaName: undefined,
   });
   assert.string(objectType);
-  const setAccessor = createSetAccessor({ realm, typeHelpers: itemHelpers, itemType });
+  const setAccessor = createSetAccessor({ barq, typeHelpers: itemHelpers, itemType });
 
   return {
     get(obj) {
-      const internal = binding.Set.make(realm.internal, obj, columnKey);
-      return new BarqSet(realm, internal, setAccessor, itemHelpers);
+      const internal = binding.Set.make(barq.internal, obj, columnKey);
+      return new BarqSet(barq, internal, setAccessor, itemHelpers);
     },
     set(obj, value) {
-      assert.inTransaction(realm);
+      assert.inTransaction(barq);
 
-      const internal = binding.Set.make(realm.internal, obj, columnKey);
+      const internal = binding.Set.make(barq.internal, obj, columnKey);
       // Clear the set before adding new values
       internal.removeAll();
       assert.array(value, "values");

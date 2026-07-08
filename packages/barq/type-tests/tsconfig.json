@@ -9,8 +9,8 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "realm": ["../../.."],
-      "next-realm": [".."],
+      "barq": ["../../.."],
+      "next-barq": [".."],
     }
   },
   "exclude": [],

@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,7 +39,7 @@ import type { Barq } from "./Barq";
 import type { Results } from "./Results";
 import type { TypeHelpers } from "./TypeHelpers";
 import { flags } from "./flags";
-import { OBJECT_HELPERS, OBJECT_INTERNAL, OBJECT_REALM } from "./symbols";
+import { OBJECT_HELPERS, OBJECT_INTERNAL, OBJECT_BARQ } from "./symbols";
 import { createResultsAccessor } from "./collection-accessors/Results";
 
 /**
@@ -177,17 +178,17 @@ export class BarqObject<T = DefaultObject, RequiredProperties extends keyof Omit
    * @internal
    */
   public static create(
-    realm: Barq,
+    barq: Barq,
     values: Record<string, unknown>,
     mode: UpdateMode,
     context: CreationContext,
   ): BarqObject {
-    assert.inTransaction(realm);
+    assert.inTransaction(barq);
     if (Array.isArray(values)) {
       if (flags.ALLOW_VALUES_ARRAYS) {
         const { persistedProperties } = context.helpers.objectSchema;
         return BarqObject.create(
-          realm,
+          barq,
           Object.fromEntries(
             values.map((value, index) => {
               const property = persistedProperties[index];
@@ -212,7 +213,7 @@ export class BarqObject<T = DefaultObject, RequiredProperties extends keyof Omit
     } = context;
 
     // Create the underlying object
-    const [obj, created] = createObj ? createObj() : this.createObj(realm, values, mode, context);
+    const [obj, created] = createObj ? createObj() : this.createObj(barq, values, mode, context);
     const result = wrapObject(obj);
     assert(result);
     // Persist any values provided
@@ -254,7 +255,7 @@ export class BarqObject<T = DefaultObject, RequiredProperties extends keyof Omit
    * @internal
    */
   private static createObj(
-    realm: Barq,
+    barq: Barq,
     values: DefaultObject,
     mode: UpdateMode,
     context: CreationContext,
@@ -267,7 +268,7 @@ export class BarqObject<T = DefaultObject, RequiredProperties extends keyof Omit
     } = context;
 
     // Create the underlying object
-    const table = binding.Helpers.getTable(realm.internal, tableKey);
+    const table = binding.Helpers.getTable(barq.internal, tableKey);
     if (primaryKey) {
       const primaryKeyHelpers = properties.get(primaryKey);
       let primaryKeyValue = values[primaryKey];
@@ -315,11 +316,11 @@ export class BarqObject<T = DefaultObject, RequiredProperties extends keyof Omit
 
   /**
    * Create a `BarqObject` wrapping an `Obj` from the binding.
-   * @param realm - The Barq managing the object.
+   * @param barq - The Barq managing the object.
    * @param values - The values of the object's properties at creation.
    */
-  public constructor(realm: Barq, values: Unmanaged<T, RequiredProperties>) {
-    return realm.create(this.constructor as BarqObjectConstructor, values) as unknown as this;
+  public constructor(barq: Barq, values: Unmanaged<T, RequiredProperties>) {
+    return barq.create(this.constructor as BarqObjectConstructor, values) as unknown as this;
   }
 
   /**
@@ -327,7 +328,7 @@ export class BarqObject<T = DefaultObject, RequiredProperties extends keyof Omit
    * Note: this is on the injected prototype from ClassMap.defineProperties().
    * @internal
    */
-  public declare readonly [OBJECT_REALM]: Barq;
+  public declare readonly [OBJECT_BARQ]: Barq;
 
   /**
    * The object's representation in the binding.
@@ -422,7 +423,7 @@ export class BarqObject<T = DefaultObject, RequiredProperties extends keyof Omit
    * @returns The {@link CanonicalObjectSchema} that describes this object.
    */
   objectSchema(): CanonicalObjectSchema<T> {
-    return this[OBJECT_REALM].getClassHelpers(this).canonicalObjectSchema as CanonicalObjectSchema<T>;
+    return this[OBJECT_BARQ].getClassHelpers(this).canonicalObjectSchema as CanonicalObjectSchema<T>;
   }
 
   /**
@@ -435,8 +436,8 @@ export class BarqObject<T = DefaultObject, RequiredProperties extends keyof Omit
   linkingObjects<T = DefaultObject>(objectType: string, propertyName: string): Results<BarqObject<T> & T>;
   linkingObjects<T extends AnyBarqObject>(objectType: Constructor<T>, propertyName: string): Results<T>;
   linkingObjects<T extends AnyBarqObject>(objectType: string | Constructor<T>, propertyName: string): Results<T> {
-    const realm = this[OBJECT_REALM];
-    const targetClassHelpers = realm.getClassHelpers(objectType);
+    const barq = this[OBJECT_BARQ];
+    const targetClassHelpers = barq.getClassHelpers(objectType);
     const { objectSchema: targetObjectSchema, properties, wrapObject } = targetClassHelpers;
     const targetProperty = properties.get(propertyName);
     const originObjectSchema = this.objectSchema();
@@ -456,14 +457,14 @@ export class BarqObject<T = DefaultObject, RequiredProperties extends keyof Omit
         return wrapObject(value) as T;
       },
     };
-    const accessor = createResultsAccessor<T>({ realm, typeHelpers, itemType: binding.PropertyType.Object });
+    const accessor = createResultsAccessor<T>({ barq, typeHelpers, itemType: binding.PropertyType.Object });
 
     // Create the Result for the backlink view.
-    const tableRef = binding.Helpers.getTable(realm.internal, targetObjectSchema.tableKey);
+    const tableRef = binding.Helpers.getTable(barq.internal, targetObjectSchema.tableKey);
     const tableView = this[OBJECT_INTERNAL].getBacklinkView(tableRef, targetProperty.columnKey);
-    const results = binding.Results.fromTableView(realm.internal, tableView);
+    const results = binding.Results.fromTableView(barq.internal, tableView);
 
-    return new indirect.Results<T>(realm, results, accessor, typeHelpers);
+    return new indirect.Results<T>(barq, results, accessor, typeHelpers);
   }
 
   /**
@@ -516,7 +517,7 @@ export class BarqObject<T = DefaultObject, RequiredProperties extends keyof Omit
   addListener(callback: ObjectChangeCallback<T>, keyPaths?: string | string[]): void {
     assert.function(callback);
     if (!this[INTERNAL_LISTENERS]) {
-      this[INTERNAL_LISTENERS] = new ObjectListeners<T>(this[OBJECT_REALM].internal, this);
+      this[INTERNAL_LISTENERS] = new ObjectListeners<T>(this[OBJECT_BARQ].internal, this);
     }
     this[INTERNAL_LISTENERS].addListener(callback, typeof keyPaths === "string" ? [keyPaths] : keyPaths);
   }
@@ -547,7 +548,7 @@ export class BarqObject<T = DefaultObject, RequiredProperties extends keyof Omit
    * @returns Underlying type of the property value.
    */
   getPropertyType(propertyName: string): string {
-    const { properties } = this[OBJECT_REALM].getClassHelpers(this);
+    const { properties } = this[OBJECT_BARQ].getClassHelpers(this);
     const { type, objectType, columnKey } = properties.get(propertyName);
     const typeName = getTypeName(type, objectType);
     if (typeName === "mixed") {
@@ -562,10 +563,10 @@ export class BarqObject<T = DefaultObject, RequiredProperties extends keyof Omit
       } else if (value instanceof binding.Timestamp) {
         return "date";
       } else if (value instanceof binding.Obj) {
-        const { objectSchema } = this[OBJECT_REALM].getClassHelpers(value.table.key);
+        const { objectSchema } = this[OBJECT_BARQ].getClassHelpers(value.table.key);
         return `<${objectSchema.name}>`;
       } else if (value instanceof binding.ObjLink) {
-        const { objectSchema } = this[OBJECT_REALM].getClassHelpers(value.tableKey);
+        const { objectSchema } = this[OBJECT_BARQ].getClassHelpers(value.tableKey);
         return `<${objectSchema.name}>`;
       } else if (value instanceof ArrayBuffer) {
         return "data";

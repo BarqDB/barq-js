@@ -1,6 +1,6 @@
 # How to Debug using React Native Examples
 
-## Steps to link local `realm` and `@barq/react` to examples
+## Steps to link local `barq` and `@barq/react` to examples
 
 ### 1. Add example to `workspaces` in `package.json`
 For example, to add `rn-todo-list` one would add it to the root `package.json` file like so:
@@ -82,7 +82,7 @@ const config = {
 
 
 ### 4. Install dependencies fresh and rebuild the application
-Now the app should be using `realm` and `@barq/react` from source.
+Now the app should be using `barq` and `@barq/react` from source.
 
 ```bash
 npm install
@@ -105,9 +105,9 @@ Make sure to build binaries for Android and iOS in packages/barq by running:
 
 ```sh
 # Android
-npm run prebuild-android --workspace realm
+npm run prebuild-android --workspace barq
 # Apple / iOS
-npm run prebuild-apple --workspace realm
+npm run prebuild-apple --workspace barq
 ```
 
 ### Building failed

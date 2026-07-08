@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,7 +28,7 @@ import type { PropertySchema, PropertyTypeName } from "../schema";
 import type { BarqContext } from "./utils";
 import { closeBarq, generateTempBarqPath } from "./utils";
 
-type ValueFunction<T = unknown> = (realm: Barq) => T;
+type ValueFunction<T = unknown> = (barq: Barq) => T;
 type TestFunction<T = unknown> = (result: unknown, input: T) => boolean;
 type PropertyTest<T = unknown> = [T | ValueFunction<T>, T | TestFunction<T>];
 type PropertySuite = [PropertyTypeName | PropertySchema, (unknown | PropertyTest)[]];
@@ -182,7 +183,7 @@ const TESTS: PropertySuite[] = [
   ],
   ["double", [0, 123, -123, [Number.MIN_VALUE, testNumber], [Number.MAX_VALUE - 1, testNumber]]],
   // We're testing objects extensively in previous milestones (and its hard to fit into this "framework")
-  [{ type: "object", objectType: "MyObject" }, [[(realm: Barq) => realm.create("MyObject", {}), testObject]]],
+  [{ type: "object", objectType: "MyObject" }, [[(barq: Barq) => barq.create("MyObject", {}), testObject]]],
   // TODO: We should add some tests for 👇
   ["linkingObjects", []],
   ["objectId", [[new ObjectId(ObjectId.generate()), testObjectId]]],
@@ -219,7 +220,7 @@ const TESTS: PropertySuite[] = [
       [10n, 10], // bigint is coerced to number when read from the binding
       [Number.MIN_VALUE, testNumber],
       [Number.MAX_VALUE, testNumber],
-      [(realm: Barq) => realm.create("MyObject", {}), testObject],
+      [(barq: Barq) => barq.create("MyObject", {}), testObject],
       [new ObjectId(ObjectId.generate()), testObjectId],
       [new UUID(UUID.generate()), testUUID],
       [new Decimal128("123"), testDecimal128],
@@ -231,7 +232,7 @@ const TESTS: PropertySuite[] = [
   [{ type: "list", objectType: "string" }, [[["hi", "💣💥"], testList]]],
   [{ type: "list", objectType: "string", optional: true }, [[["hi", "💣💥", null], testList]]],
   [{ type: "list", objectType: "data" }, [[() => [createArrayBuffer(), createEmptyArrayBuffer()], testDataList]]],
-  [{ type: "list", objectType: "MyObject" }, [[(realm: Barq) => [realm.create("MyObject", {})], testObjectList]]],
+  [{ type: "list", objectType: "MyObject" }, [[(barq: Barq) => [barq.create("MyObject", {})], testObjectList]]],
 ];
 
 type PropertyTestContext = BarqContext & { value: unknown };
@@ -245,30 +246,30 @@ describe("Milestone #5", () => {
           after(closeBarq);
 
           it("is supported when declaring schema", function (this: PropertyTestContext) {
-            this.realm = new Barq({
+            this.barq = new Barq({
               path: generateTempBarqPath(),
               inMemory: true,
               schema: [{ name: "MyObject", properties: { prop: type } }],
             });
           });
 
-          it("is supported via realm.create", function (this: PropertyTestContext) {
-            this.realm.write(() => {
-              this.value = typeof valueArg === "function" ? (valueArg as ValueFunction)(this.realm) : valueArg;
-              this.realm.create("MyObject", { prop: this.value });
+          it("is supported via barq.create", function (this: PropertyTestContext) {
+            this.barq.write(() => {
+              this.value = typeof valueArg === "function" ? (valueArg as ValueFunction)(this.barq) : valueArg;
+              this.barq.create("MyObject", { prop: this.value });
             });
           });
 
           it("is supported via property set", function (this: PropertyTestContext) {
-            const [obj] = this.realm.objects("MyObject");
+            const [obj] = this.barq.objects("MyObject");
             expect(obj).instanceOf(BarqObject);
-            this.realm.write(() => {
+            this.barq.write(() => {
               obj.prop = this.value;
             });
           });
 
           it("is supported via property get", function (this: PropertyTestContext) {
-            const [obj] = this.realm.objects("MyObject");
+            const [obj] = this.barq.objects("MyObject");
             expect(obj).instanceOf(BarqObject);
             if (typeof expected === "function") {
               const result = expected(obj.prop, this.value);
@@ -288,20 +289,20 @@ describe("Milestone #5", () => {
     type MyClass = { numbers: List<number> };
 
     beforeEach(function (this: BarqContext) {
-      this.realm = new Barq({
+      this.barq = new Barq({
         path: generateTempBarqPath(),
         inMemory: true,
         schema: [{ name: "MyClass", properties: { numbers: "int[]" } }],
       });
-      this.realm.write(() => {
-        this.realm.create("MyClass", { numbers: [10, 20, 30] });
+      this.barq.write(() => {
+        this.barq.create("MyClass", { numbers: [10, 20, 30] });
       });
     });
 
     afterEach(closeBarq);
 
     it("enables index access", function (this: BarqContext) {
-      const [obj] = this.realm.objects<MyClass>("MyClass");
+      const [obj] = this.barq.objects<MyClass>("MyClass");
       expect(obj.numbers[0]).equals(10);
       expect(obj.numbers[1]).equals(20);
       expect(obj.numbers[2]).equals(30);

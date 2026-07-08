@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,7 +29,7 @@ import type { PropertyAccessor, PropertyOptions } from "./types";
 
 /** @internal */
 export function createArrayPropertyAccessor({
-  realm,
+  barq,
   type,
   name,
   columnKey,
@@ -38,10 +39,10 @@ export function createArrayPropertyAccessor({
   getClassHelpers,
   optional,
 }: PropertyOptions): PropertyAccessor {
-  const realmInternal = realm.internal;
+  const barqInternal = barq.internal;
   const itemType = toItemType(type);
   const itemHelpers = getTypeHelpers(itemType, {
-    realm,
+    barq,
     name: `element of ${name}`,
     optional,
     getClassHelpers,
@@ -60,36 +61,36 @@ export function createArrayPropertyAccessor({
     // TODO: Check if we want to match with the `p.name` or `p.publicName` here
     const targetProperty = persistedProperties.find((p) => p.name === linkOriginPropertyName);
     assert(targetProperty, `Expected a '${linkOriginPropertyName}' property on ${objectType}`);
-    const tableRef = binding.Helpers.getTable(realmInternal, tableKey);
-    const resultsAccessor = createResultsAccessor({ realm, typeHelpers: itemHelpers, itemType });
+    const tableRef = binding.Helpers.getTable(barqInternal, tableKey);
+    const resultsAccessor = createResultsAccessor({ barq, typeHelpers: itemHelpers, itemType });
 
     return {
       get(obj: binding.Obj) {
         const tableView = obj.getBacklinkView(tableRef, targetProperty.columnKey);
-        const results = binding.Results.fromTableView(realmInternal, tableView);
-        return new Results(realm, results, resultsAccessor, itemHelpers);
+        const results = binding.Results.fromTableView(barqInternal, tableView);
+        return new Results(barq, results, resultsAccessor, itemHelpers);
       },
       set() {
         throw new Error("Not supported");
       },
     };
   } else {
-    const listAccessor = createListAccessor({ realm, typeHelpers: itemHelpers, itemType, isEmbedded: embedded });
+    const listAccessor = createListAccessor({ barq, typeHelpers: itemHelpers, itemType, isEmbedded: embedded });
 
     return {
       listAccessor,
       get(obj: binding.Obj) {
-        const internal = binding.List.make(realm.internal, obj, columnKey);
+        const internal = binding.List.make(barq.internal, obj, columnKey);
         assert.instanceOf(internal, binding.List);
-        return new List(realm, internal, listAccessor, itemHelpers);
+        return new List(barq, internal, listAccessor, itemHelpers);
       },
       set(obj, values) {
-        assert.inTransaction(realm);
+        assert.inTransaction(barq);
         assert.iterable(values);
 
         // Taking a snapshot in case we're iterating the list we're mutating
         const valuesSnapshot = values instanceof List ? values.snapshot() : values;
-        const internal = binding.List.make(realm.internal, obj, columnKey);
+        const internal = binding.List.make(barq.internal, obj, columnKey);
         internal.removeAll();
         let index = 0;
         try {

@@ -65,7 +65,7 @@ This will periodically save a snapshot of the heap to disk in the current workin
 You can use the `pprof` CLI to generate an output (the example below outputs a `perf.svg` SVG) between a `base` snapshot (`heapprof.0001.heap` below) and a later snapshot `heapprof.0002.heap`.
 
 ```
-pprof --svg --base=heapprof.0001.heap --add_lib=node_modules/realm/compiled/napi-v4_darwin_x64/realm.node $(which node) heapprof.0002.heap > perf.svg
+pprof --svg --base=heapprof.0001.heap --add_lib=node_modules/barq/compiled/napi-v4_darwin_x64/barq.node $(which node) heapprof.0002.heap > perf.svg
 ```
 
 Note: You might need to install the Graphviz tool as well (running `brew install gv` on macOS).

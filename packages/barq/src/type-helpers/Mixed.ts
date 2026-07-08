@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,7 +32,7 @@ import {
 } from "../GeoSpatial";
 import { Counter } from "../Counter";
 import { getTypeHelpers } from "../TypeHelpers";
-import { OBJECT_INTERNAL, OBJECT_REALM } from "../symbols";
+import { OBJECT_INTERNAL, OBJECT_BARQ } from "../symbols";
 import { TYPED_ARRAY_CONSTRUCTORS } from "./array-buffer";
 import type { TypeHelpers, TypeOptions } from "./types";
 
@@ -40,7 +41,7 @@ import type { TypeHelpers, TypeOptions } from "./types";
 // instead of relying on the binding to throw.
 /**
  * Convert an SDK value to a Binding value representation.
- * @param realm The Barq used.
+ * @param barq The Barq used.
  * @param value The value to convert.
  * @param options Options needed.
  * @param options.isQueryArg Whether the value to convert is a query argument used
@@ -49,7 +50,7 @@ import type { TypeHelpers, TypeOptions } from "./types";
  * @internal
  */
 export function mixedToBinding(
-  realm: binding.Barq,
+  barq: binding.Barq,
   value: unknown,
   { isQueryArg } = { isQueryArg: false },
 ): binding.MixedArg {
@@ -65,8 +66,8 @@ export function mixedToBinding(
     if (value.objectSchema().embedded) {
       throw new Error(`Using an embedded object (${value.constructor.name}) as ${displayedType} is not supported.`);
     }
-    const otherBarq = value[OBJECT_REALM].internal;
-    assert.isSameBarq(realm, otherBarq, "Barq object is from another Barq");
+    const otherBarq = value[OBJECT_BARQ].internal;
+    assert.isSameBarq(barq, otherBarq, "Barq object is from another Barq");
     return value[OBJECT_INTERNAL];
   } else if (value instanceof indirect.Set || value instanceof Set) {
     throw new Error(`Using a ${value.constructor.name} as ${displayedType} is not supported.`);
@@ -106,7 +107,7 @@ export function mixedToBinding(
 
 /** @internal */
 function mixedFromBinding(options: TypeOptions, value: binding.MixedArg): unknown {
-  const { realm, getClassHelpers } = options;
+  const { barq, getClassHelpers } = options;
   if (binding.Int64.isInt(value)) {
     return binding.Int64.intToNum(value);
   } else if (value instanceof binding.Timestamp) {
@@ -114,7 +115,7 @@ function mixedFromBinding(options: TypeOptions, value: binding.MixedArg): unknow
   } else if (value instanceof binding.Float) {
     return value.value;
   } else if (value instanceof binding.ObjLink) {
-    const table = binding.Helpers.getTable(realm.internal, value.tableKey);
+    const table = binding.Helpers.getTable(barq.internal, value.tableKey);
     const linkedObj = table.getObject(value.objKey);
     const { wrapObject } = getClassHelpers(value.tableKey);
     return wrapObject(linkedObj);
@@ -122,18 +123,18 @@ function mixedFromBinding(options: TypeOptions, value: binding.MixedArg): unknow
     const mixedType = binding.PropertyType.Mixed;
     const typeHelpers = getTypeHelpers(mixedType, options);
     return new indirect.List(
-      realm,
+      barq,
       value,
-      createListAccessor({ realm, typeHelpers, itemType: mixedType }),
+      createListAccessor({ barq, typeHelpers, itemType: mixedType }),
       typeHelpers,
     );
   } else if (value instanceof binding.Dictionary) {
     const mixedType = binding.PropertyType.Mixed;
     const typeHelpers = getTypeHelpers(mixedType, options);
     return new indirect.Dictionary(
-      realm,
+      barq,
       value,
-      createDictionaryAccessor({ realm, typeHelpers, itemType: mixedType }),
+      createDictionaryAccessor({ barq, typeHelpers, itemType: mixedType }),
       typeHelpers,
     );
   } else {
@@ -144,7 +145,7 @@ function mixedFromBinding(options: TypeOptions, value: binding.MixedArg): unknow
 /** @internal */
 export function createMixedTypeHelpers(options: TypeOptions): TypeHelpers {
   return {
-    toBinding: mixedToBinding.bind(null, options.realm.internal),
+    toBinding: mixedToBinding.bind(null, options.barq.internal),
     fromBinding: mixedFromBinding.bind(null, options),
   };
 }

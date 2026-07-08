@@ -64,7 +64,7 @@ jobs:
           find core-build -name 'libStorage*' -exec ls -lh {} \;
 
   # Type-checks and runs the Barq value types (our own ObjectId / UUID /
-  # Decimal128 / Binary / EJSON that replace the bson dependency).
+  # Decimal128 / Binary / EJSON that replace the types dependency).
   datatypes:
     name: Barq value types
     runs-on: ubuntu-latest

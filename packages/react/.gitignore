@@ -1,6 +1,6 @@
 dist/
-default.realm.*
+default.barq.*
 testArtifacts/
-mongodb-realm/
+barq-barq/
 
 node_modules

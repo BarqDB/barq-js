@@ -18,7 +18,7 @@
 //
 // Modifications Copyright (c) 2026 the Barq authors
 // Part of Barq (https://github.com/BarqDB/barq-js), a modified fork of Barq JS.
-// Reshaped from an Atlas App Services user into Barq's token-based sync user
+// Reshaped from an Barq user into Barq's token-based sync user
 // (see barq-core `barq_sync_user_*`). Licensed under the Apache License,
 // Version 2.0. See the top-level NOTICE file for fork attribution and
 // trademark notices.
@@ -72,7 +72,7 @@ export type UserTokenOptions = {
 /**
  * Representation of a synchronizing user of a Barq server.
  *
- * Unlike Atlas App Services, Barq does not perform authentication itself: your
+ * Unlike Barq, Barq does not perform authentication itself: your
  * application obtains a signed access token from your own identity provider and
  * hands it to Barq via {@link User.fromToken}. Barq validates the token's
  * signature and claims (tenant/owner) on the server and scopes all synced data

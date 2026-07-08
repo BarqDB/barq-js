@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-#ifndef REALM_JNI_UTIL_JNI_UTILS_HPP
-#define REALM_JNI_UTIL_JNI_UTILS_HPP
+#ifndef BARQ_JNI_UTIL_JNI_UTILS_HPP
+#define BARQ_JNI_UTIL_JNI_UTILS_HPP
 
 #include <jni.h>
 
 #include <vector>
 
-namespace realm {
+namespace barq {
 namespace jni_util {
 
 // Util functions for JNI.
@@ -52,6 +52,6 @@ private:
 };
 
 } // namespace jni_util
-} // namespace realm
+} // namespace barq
 
-#endif // REALM_JNI_UTIL_JNI_UTILS_HPP
+#endif // BARQ_JNI_UTIL_JNI_UTILS_HPP

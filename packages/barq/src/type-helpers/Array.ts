@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +23,7 @@ import { indirect } from "../indirect";
 import type { TypeHelpers, TypeOptions } from "./types";
 
 /** @internal */
-export function createArrayTypeHelpers({ realm, getClassHelpers, name, objectSchemaName }: TypeOptions): TypeHelpers {
+export function createArrayTypeHelpers({ barq, getClassHelpers, name, objectSchemaName }: TypeOptions): TypeHelpers {
   assert.string(objectSchemaName, "objectSchemaName");
   const classHelpers = getClassHelpers(objectSchemaName);
 
@@ -32,7 +33,7 @@ export function createArrayTypeHelpers({ realm, getClassHelpers, name, objectSch
       const propertyHelpers = classHelpers.properties.get(name);
       const { listAccessor } = propertyHelpers;
       assert.object(listAccessor);
-      return new indirect.List(realm, value, listAccessor, propertyHelpers);
+      return new indirect.List(barq, value, listAccessor, propertyHelpers);
     },
     toBinding() {
       throw new Error("Not supported");

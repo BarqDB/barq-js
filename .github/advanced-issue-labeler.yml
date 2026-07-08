@@ -1,4 +1,4 @@
-# NOTE: This is a common file that is overwritten by realm/ci-actions sync service
+# NOTE: This is a common file that is overwritten by barq/ci-actions sync service
 # and should only be modified in that repository.
 
 # syntax - https://github.com/redhat-plumbers-in-action/advanced-issue-labeler#policy
@@ -35,11 +35,11 @@ policy:
           - name: 'SDK-Use:Local'
             keys: ['Local Database only']
           - name: 'SDK-Use:Sync'
-            keys: ['Atlas Device Sync']
+            keys: ['Barq sync']
           - name: 'SDK-Use:Services'
-            keys: ['Atlas App Services: Function or GraphQL or DataAPI etc']
+            keys: ['Barq: Function or GraphQL or DataAPI etc']
           - name: ['SDK-Use:All']
-            keys: ['Both Atlas Device Sync and Atlas App Services']
+            keys: ['Both Barq sync and Barq']
 
       - id: [encryption]
         block-list: []

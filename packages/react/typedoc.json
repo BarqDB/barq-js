@@ -1,5 +1,5 @@
 {
-  "name": "Realm React",
+  "name": "Barq React",
   "entryPoints": ["src/index.tsx"],
   "tsconfig": "./tsconfig.json",
   "excludeInternal": true,

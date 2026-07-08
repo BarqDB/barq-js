@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -85,7 +86,7 @@ type OmittedBarqTypesWithRequired<T, RequiredProperties extends keyof OmittedBar
   RequiredProperties
 >;
 
-/** Remaps realm types to "simpler" types (arrays and objects) */
+/** Remaps barq types to "simpler" types (arrays and objects) */
 type RemappedBarqTypes<T> = BarqListRemappedModelPart<T> &
   BarqDictionaryRemappedModelPart<T> &
   BarqSetRemappedModelPart<T> &

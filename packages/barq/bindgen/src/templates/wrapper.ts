@@ -35,8 +35,6 @@ const PRIMITIVES_MAPPING: Record<string, string | undefined> = {
   EJson: "EJson",
   EJsonArray: "EJson[]",
   EJsonObj: "Record<string, EJson>",
-  "bson::BsonDocument": "Record<string, EJson>",
-  "bson::BsonArray": "EJson[]",
   QueryArg: "(MixedArg | MixedArg[])",
   "std::uint_fast16_t": "number",
 };
@@ -337,7 +335,7 @@ export function generate({ spec: boundSpec, rawSpec, file }: TemplateContext): v
 
     if (!cls.base) {
       // Only root classes get symbols and constructors
-      out(`const ${symbolName} = Symbol("Realm.${cls.jsName}.external_pointer");`);
+      out(`const ${symbolName} = Symbol("Barq.${cls.jsName}.external_pointer");`);
       bodyLines.push(`${cls.subclasses.length === 0 ? "private" : "protected"} declare [${symbolName}]: unknown;`);
       bodyLines.push(
         `${cls.subclasses.length === 0 ? "private" : "protected"} constructor(ptr: unknown) { this[${symbolName}] = ptr};`,

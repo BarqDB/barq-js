@@ -41,7 +41,7 @@ if [ ! -d "$documents_path" ]; then
 fi
 
 # Run xattr on all files in the directory
-for file in "$documents_path"/icloud-backup-tests/*.realm; do
+for file in "$documents_path"/icloud-backup-tests/*.barq; do
     if [ -e "$file" ]; then
         filename=$(basename "$file")
         attrs=$(xattr "$file" 2>/dev/null)

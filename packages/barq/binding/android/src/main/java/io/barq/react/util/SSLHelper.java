@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.realm.react.util;
+package io.barq.react.util;
 
 import android.util.Log;
 
@@ -38,7 +38,7 @@ import javax.net.ssl.X509TrustManager;
 import okhttp3.internal.tls.OkHostnameVerifier;
 
 public class SSLHelper {
-    private final static String TAG = "REALM SSLHelper";
+    private final static String TAG = "BARQ SSLHelper";
     // Holds the certificate chain (per hostname). We need to keep the order of each certificate
     // according to it's depth in the chain. The depth of the last
     // certificate is 0. The depth of the first certificate is chain

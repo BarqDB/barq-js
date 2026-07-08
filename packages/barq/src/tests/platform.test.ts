@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,15 +26,15 @@ import { Barq } from "../Barq";
 describe("platform specifics", () => {
   describe("default path", () => {
     it("is absolute", () => {
-      const realm = new Barq();
-      const realmPath = realm.path;
+      const barq = new Barq();
+      const barqPath = barq.path;
       try {
-        expect(realmPath).satisfies(isAbsolute);
-        expect(realmPath).satisfies(existsSync);
+        expect(barqPath).satisfies(isAbsolute);
+        expect(barqPath).satisfies(existsSync);
         Barq.deleteFile({});
-        expect(realmPath).not.satisfies(existsSync);
+        expect(barqPath).not.satisfies(existsSync);
       } finally {
-        realm.close();
+        barq.close();
       }
     });
   });

@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -161,7 +162,7 @@ export abstract class OrderedCollection<
   >
   implements Omit<ReadonlyArray<T>, "entries">
 {
-  /** @internal */ protected declare realm: Barq;
+  /** @internal */ protected declare barq: Barq;
 
   /**
    * The representation in the binding of the underlying collection.
@@ -172,7 +173,7 @@ export abstract class OrderedCollection<
   /** @internal */ protected declare results: binding.Results;
 
   /** @internal */
-  constructor(realm: Barq, results: binding.Results, accessor: Accessor, typeHelpers: TypeHelpers<T>) {
+  constructor(barq: Barq, results: binding.Results, accessor: Accessor, typeHelpers: TypeHelpers<T>) {
     if (arguments.length === 0) {
       throw new IllegalConstructorError("OrderedCollection");
     }
@@ -202,13 +203,13 @@ export abstract class OrderedCollection<
 
     // Get the class helpers for later use, if available
     const { objectType } = results;
-    const classHelpers = typeof objectType === "string" && objectType !== "" ? realm.getClassHelpers(objectType) : null;
+    const classHelpers = typeof objectType === "string" && objectType !== "" ? barq.getClassHelpers(objectType) : null;
     // Make the internal properties non-enumerable
-    Object.defineProperty(this, "realm", {
+    Object.defineProperty(this, "barq", {
       enumerable: false,
       configurable: false,
       writable: false,
-      value: realm,
+      value: barq,
     });
     Object.defineProperty(this, "results", {
       enumerable: false,
@@ -226,7 +227,7 @@ export abstract class OrderedCollection<
       enumerable: false,
       configurable: false,
       writable: false,
-      value: mixedToBinding.bind(undefined, realm.internal),
+      value: mixedToBinding.bind(undefined, barq.internal),
     });
     // See https://tc39.es/ecma262/multipage/indexed-collections.html#sec-array.prototype-@@unscopables
     Object.defineProperty(this, Symbol.unscopables, {
@@ -819,16 +820,16 @@ export abstract class OrderedCollection<
    * let merlots = wines.filtered('variety == "Merlot" && vintage <= $0', maxYear);
    */
   filtered(queryString: string, ...args: unknown[]): Results<T> {
-    const { results: parent, realm } = this;
-    const kpMapping = binding.Helpers.getKeypathMapping(realm.internal);
+    const { results: parent, barq } = this;
+    const kpMapping = binding.Helpers.getKeypathMapping(barq.internal);
     const bindingArgs = args.map((arg) => this.queryArgToBinding(arg));
     const newQuery = parent.query.table.query(queryString, bindingArgs, kpMapping);
     const results = binding.Helpers.resultsAppendQuery(parent, newQuery);
 
     const itemType = toItemType(results.type);
     const typeHelpers = this[TYPE_HELPERS];
-    const accessor = createResultsAccessor({ realm, typeHelpers, itemType });
-    return new indirect.Results(realm, results, accessor, typeHelpers);
+    const accessor = createResultsAccessor({ barq, typeHelpers, itemType });
+    return new indirect.Results(barq, results, accessor, typeHelpers);
   }
 
   /** @internal */
@@ -899,7 +900,7 @@ export abstract class OrderedCollection<
   sorted(arg0: boolean | SortDescriptor[] | string = "self", arg1?: boolean): Results<T> {
     if (Array.isArray(arg0)) {
       assert.undefined(arg1, "second 'argument'");
-      const { results: parent, realm } = this;
+      const { results: parent, barq } = this;
       // Map optional "reversed" to "ascending" (expected by the binding)
       const descriptors = arg0.map<[string, boolean]>((arg, i) => {
         if (typeof arg === "string") {
@@ -917,8 +918,8 @@ export abstract class OrderedCollection<
       const results = parent.sortByNames(descriptors);
       const itemType = toItemType(results.type);
       const typeHelpers = this[TYPE_HELPERS];
-      const accessor = createResultsAccessor({ realm, typeHelpers, itemType });
-      return new indirect.Results(realm, results, accessor, typeHelpers);
+      const accessor = createResultsAccessor({ barq, typeHelpers, itemType });
+      return new indirect.Results(barq, results, accessor, typeHelpers);
     } else if (typeof arg0 === "string") {
       return this.sorted([[arg0, arg1 === true]]);
     } else if (typeof arg0 === "boolean") {
@@ -943,12 +944,12 @@ export abstract class OrderedCollection<
    * @returns Results which will **not** live update.
    */
   snapshot(): Results<T> {
-    const { realm, internal } = this;
+    const { barq, internal } = this;
     const snapshot = internal.snapshot();
     const itemType = toItemType(snapshot.type);
     const typeHelpers = this[TYPE_HELPERS];
-    const accessor = createResultsAccessor({ realm, typeHelpers, itemType });
-    return new indirect.Results(realm, snapshot, accessor, typeHelpers);
+    const accessor = createResultsAccessor({ barq, typeHelpers, itemType });
+    return new indirect.Results(barq, snapshot, accessor, typeHelpers);
   }
 
   /** @internal */
@@ -965,7 +966,7 @@ export abstract class OrderedCollection<
 
   /** @internal */
   private mapKeyPaths(keyPaths: string[]) {
-    return this.realm.internal.createKeyPathArray(this.results.objectType, keyPaths);
+    return this.barq.internal.createKeyPathArray(this.results.objectType, keyPaths);
   }
 }
 

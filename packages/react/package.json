@@ -1,7 +1,7 @@
 {
   "name": "@barq/react",
   "version": "1.11.0",
-  "description": "React specific hooks and implementation helpers for Realm",
+  "description": "React specific hooks and implementation helpers for Barq",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -84,14 +84,14 @@
     "src"
   ],
   "keywords": [
-    "realm",
+    "barq",
     "react",
     "hooks"
   ],
   "author": {
-    "name": "MongoDB",
-    "email": "help@realm.io",
-    "url": "https://www.mongodb.com/docs/realm/"
+    "name": "Barq",
+    "email": "help@barq.io",
+    "url": "https://www.barq.com/docs/barq/"
   },
   "repository": {
     "type": "git",

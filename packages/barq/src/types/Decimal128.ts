@@ -91,9 +91,6 @@ export class Decimal128 {
     }
   }
 
-  get _bsontype(): "Decimal128" {
-    return "Decimal128";
-  }
 
   static isValid(value: string): boolean {
     try {

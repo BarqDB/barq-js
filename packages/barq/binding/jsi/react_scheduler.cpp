@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,20 +19,20 @@
 
 #include "react_scheduler.h"
 
-#include <realm/object-store/util/scheduler.hpp>
+#include <barq/object-store/util/scheduler.hpp>
 
 #include <ReactCommon/CallInvoker.h>
 #include <ReactCommon/SchedulerPriority.h>
 
 #include <thread>
 
-using Scheduler = realm::util::Scheduler;
+using Scheduler = barq::util::Scheduler;
 
 namespace {
 
 std::shared_ptr<Scheduler> scheduler_{};
 
-class ReactScheduler : public realm::util::Scheduler {
+class ReactScheduler : public barq::util::Scheduler {
 public:
     ReactScheduler(std::shared_ptr<facebook::react::CallInvoker> js_call_invoker)
         : m_js_call_invoker(js_call_invoker)
@@ -54,13 +55,13 @@ public:
         return true;
     }
 
-    void invoke(realm::util::UniqueFunction<void()>&& func) override
+    void invoke(barq::util::UniqueFunction<void()>&& func) override
     {
         // TODO: We could pass `facebook::react::SchedulerPriority::NormalPriority` as first argument
         // TODO: We could pass a callback taking a `jsi::Runtime` as first argument
         // Doing either would require our peer dependency on `react-native` to be >= 0.75.0
         m_js_call_invoker->invokeAsync([ptr = func.release()] {
-            (realm::util::UniqueFunction<void()>(ptr))();
+            (barq::util::UniqueFunction<void()>(ptr))();
         });
     }
 
@@ -72,7 +73,7 @@ private:
 std::shared_ptr<Scheduler> get_scheduler()
 {
     if (scheduler_) {
-        REALM_ASSERT(scheduler_->is_on_thread());
+        BARQ_ASSERT(scheduler_->is_on_thread());
         return scheduler_;
     }
     else {
@@ -82,7 +83,7 @@ std::shared_ptr<Scheduler> get_scheduler()
 
 } // namespace
 
-namespace realm::js::react_scheduler {
+namespace barq::js::react_scheduler {
 
 
 void create_scheduler(std::shared_ptr<facebook::react::CallInvoker> js_call_invoker)
@@ -96,4 +97,4 @@ void reset_scheduler()
     scheduler_.reset();
 }
 
-} // namespace realm::js::react_scheduler
+} // namespace barq::js::react_scheduler

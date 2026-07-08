@@ -6,11 +6,11 @@
 * [Debugging C++](#debugging-c)
 * [Quick start](#quick-start)
    * [Setup](#setup)
-   * [Debugging Barq Integration Tests Through Example](#debugging-realm-integration-tests-through-example)
+   * [Debugging Barq Integration Tests Through Example](#debugging-barq-integration-tests-through-example)
 * [Details on debugging C++](#details-on-debugging-c)
    * [Visual Studio Code configurations](#visual-studio-code-configurations)
       * [Configuration: LLDB & Node: Integration tests](#configuration-lldb-node-integration-tests)
-      * [Configuration: LLDB & Node: @barq/react](#configuration-lldb-node-realmreact-tests)
+      * [Configuration: LLDB & Node: @barq/react](#configuration-lldb-node-barqreact-tests)
       * [Configuration: LLDB: Node REPL](#configuration-lldb-node-repl)
       * [Configuration: LLDB: Attach to Process](#configuration-lldb-attach-to-process)
    * [Working with lldb in VS Code](#working-with-lldb-in-vs-code)
@@ -20,8 +20,8 @@
    * [Using a debug version of Node](#using-a-debug-version-of-node)
       * [Compiling a debug version of Node](#compiling-a-debug-version-of-node)
       * [Using a debug version of Node](#using-a-debug-version-of-node-1)
-   * [Debugging Barq C++ in an iOS app using Xcode](#debugging-realm-c-in-an-ios-app-using-xcode)
-   * [Debugging Barq C++ in an Android app using Android Studio](#debugging-realm-c-in-an-android-app-using-android-studio)
+   * [Debugging Barq C++ in an iOS app using Xcode](#debugging-barq-c-in-an-ios-app-using-xcode)
+   * [Debugging Barq C++ in an Android app using Android Studio](#debugging-barq-c-in-an-android-app-using-android-studio)
    * [Other C++ debugging tricks](#other-c-debugging-tricks)
       * [Inspecting the type of an auto variable](#inspecting-the-type-of-an-auto-variable)
       * [Using Instruments to profile Node code](#using-instruments-to-profile-node-code)
@@ -49,7 +49,7 @@ First let's take a look at [.vscode/launch.json](https://github.com/BarqDB/barq-
 {
     "name": "LLDB & Node: Integration tests",
     "presentation": {
-        "group": "realm",
+        "group": "barq",
         "order": 1
     },
     "configurations": [
@@ -69,7 +69,7 @@ We can see that it in turn uses two other configurations: `Node: Attach to proce
     "program": "node",
     "cwd": "${workspaceRoot}/integration-tests/tests",
     "env": {
-        "CONTEXT": "appTemplatesPath=../realm-apps"
+        "CONTEXT": "appTemplatesPath=../barq-apps"
     },
     "args": [
         "--inspect",
@@ -91,7 +91,7 @@ We can see that it in turn uses two other configurations: `Node: Attach to proce
 
 This shows that the launch type is `lldb` provided by the CodeLLDB extension, and it is using the `node` command to invoke the `mocha` test framework with our test entry point file `src/index.ts`. The `${input:integrationTestFilter}` will prompt us for a string to use as filter to avoid running all tests every time.
 
-We will soon run a test that will create a Barq object, so let's put a breakpoint in Core's `Table::create_object` method (`packages/barq/bindgen/vendor/barq-core/src/realm/table.cpp`) by clicking to the left of the desired line number (see the :red_circle: circle below):
+We will soon run a test that will create a Barq object, so let's put a breakpoint in Core's `Table::create_object` method (`packages/barq/bindgen/vendor/barq-core/src/barq/table.cpp`) by clicking to the left of the desired line number (see the :red_circle: circle below):
 
 ![Breakpoint in Code](./assets/core-breakpoint.png)
 
@@ -174,7 +174,7 @@ Note that this might not always work, e.g. sometimes it can crash when trying to
 ### Advanced features
 
 There are many useful advanced `lldb` features, for example:
-- you can add a breakpoint whenever a named method is called, even if you can't locate it in the source, with `br s -M method_name`, e.g. `br s -M ~realm::js::MyClass` to break whenever `realm::js::MyClass`'s destructor is called
+- you can add a breakpoint whenever a named method is called, even if you can't locate it in the source, with `br s -M method_name`, e.g. `br s -M ~barq::js::MyClass` to break whenever `barq::js::MyClass`'s destructor is called
 - you can print the memory address of a variable with `expr --raw -- &variable_name`, which can be useful when trying to work out if you are accidentally working with a copy of an object
 - you can make it break whenever a certain variable is read or modified, by right clicking on it in the Variables pane and clicking "Break on Value Read/Change/Access".
 
@@ -224,7 +224,7 @@ To debug Barq C++ in an iOS app using Xcode:
 
 ```sh
 # Run from the root directory:
-npm run build:ios:debug:simulator --workspace realm
+npm run build:ios:debug:simulator --workspace barq
 ```
 
 You should now be able to navigate to Barq C++ source files and add breakpoints by navigating to the source files in the Project navigator.
@@ -238,7 +238,7 @@ To debug Barq C++ in an Android app using Android Studio (the integration test i
    ```
    // Do not strip debug symbols from the Barq library
    packagingOptions {
-         jniLibs.keepDebugSymbols += "**/librealm.so"
+         jniLibs.keepDebugSymbols += "**/libbarq.so"
    }
    ```
 3. Add the source paths for Barq to the project by adding the paths (which can be relative to the `build.gradle` file) to your `app/build.gradle` in the `android` section:
@@ -265,7 +265,7 @@ You can also start `lldb-server` on the Android emulator and connect to it direc
 3. Run `adb shell` to open a shell on the emulator
 4. Run `su` to become root
 5. Run `ps -A | grep com.yourapp`, replacing `com.yourapp` with your app's bundle ID, to get the PID (you can also see this in the Android Studio Debug tab)
-5. Run `/data/data/com.yourapp/lldb/bin/lldb-server platform --server --listen "*:9123"`, replacing `com.yourapp` with your app's bundle ID (e.g. `com.realmreactnativetests`) This will start `lldb-server` running over TCP so you can connect to it.
+5. Run `/data/data/com.yourapp/lldb/bin/lldb-server platform --server --listen "*:9123"`, replacing `com.yourapp` with your app's bundle ID (e.g. `com.barqreactnativetests`) This will start `lldb-server` running over TCP so you can connect to it.
 6. In a separate local shell, run `adb forward tcp:9123 tcp:9123` to forward the `lldb-server` port to your local machine
 
 If you would like to make this happen on every startup, you can modify the script which Android Studio installs on to the device to always start `lldb-server` in TCP mode:
@@ -297,7 +297,7 @@ Sometimes it can be non-obvious what type an `auto` variable has. The debugger c
 
 2. Add `TD<decltype(variable_name)> td;` after the variable (`variable_name`) who's type you want to inspect.
 
-3. Now when you compile, you will get an error like `error: implicit instantiation of undefined template 'realm::js::TD<const realm::ObjectSchema &>'` – the type parameter of `TD` is the type of the variable in question, in this case `const realm::ObjectSchema &`.
+3. Now when you compile, you will get an error like `error: implicit instantiation of undefined template 'barq::js::TD<const barq::ObjectSchema &>'` – the type parameter of `TD` is the type of the variable in question, in this case `const barq::ObjectSchema &`.
 
 ### Using Instruments to profile Node code
 

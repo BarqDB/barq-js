@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2021 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -64,33 +65,33 @@ describe("BarqProvider", () => {
   describe("with a Barq Configuration", () => {
     const { BarqProvider, useBarq } = withConfigBarqContext;
 
-    it("returns the configured realm with useBarq", async () => {
+    it("returns the configured barq with useBarq", async () => {
       const wrapper = ({ children }: { children: React.ReactNode }) => <BarqProvider>{children}</BarqProvider>;
       const { result } = renderHook(() => useBarq(), { wrapper });
       await waitFor(() => expect(result.current).not.toBe(null));
-      const realm = result.current;
-      expect(realm).toBeInstanceOf(Barq);
-      expect(realm.schema[0].name).toBe("dog");
+      const barq = result.current;
+      expect(barq).toBeInstanceOf(Barq);
+      expect(barq.schema[0].name).toBe("dog");
     });
 
-    it("closes realm on unmount by default", async () => {
+    it("closes barq on unmount by default", async () => {
       const wrapper = ({ children }: { children: React.ReactNode }) => <BarqProvider>{children}</BarqProvider>;
       const { result, unmount } = renderHook(() => useBarq(), { wrapper });
       await waitFor(() => expect(result.current).not.toBe(null));
-      const realm = result.current;
+      const barq = result.current;
       unmount();
-      expect(realm.isClosed).toBe(true);
+      expect(barq.isClosed).toBe(true);
     });
 
-    it("does not close realm on unmount if closeOnUnmount is false", async () => {
+    it("does not close barq on unmount if closeOnUnmount is false", async () => {
       const wrapper = ({ children }: { children: React.ReactNode }) => (
         <BarqProvider closeOnUnmount={false}>{children}</BarqProvider>
       );
       const { result, unmount } = renderHook(() => useBarq(), { wrapper });
       await waitFor(() => expect(result.current).not.toBe(null));
-      const realm = result.current;
+      const barq = result.current;
       unmount();
-      expect(realm.isClosed).toBe(false);
+      expect(barq.isClosed).toBe(false);
     });
 
     it("will override the configuration provided in createBarqContext", async () => {
@@ -99,21 +100,21 @@ describe("BarqProvider", () => {
       );
       const { result } = renderHook(() => useBarq(), { wrapper });
       await waitFor(() => expect(result.current).not.toBe(null));
-      const realm = result.current;
-      expect(realm).toBeInstanceOf(Barq);
-      expect(realm.schema[0].name).toBe("cat");
+      const barq = result.current;
+      expect(barq).toBeInstanceOf(Barq);
+      expect(barq.schema[0].name).toBe("cat");
     });
 
     it("can be provided in multiple parts of an application", async () => {
       const BarqComponent = () => {
-        const realm = useBarq();
+        const barq = useBarq();
         return (
           <Button
             testID="action"
             title="toggle"
             onPress={() =>
-              realm.write(() => {
-                realm.create("dog", { _id: new Date().getTime(), name: "Rex" });
+              barq.write(() => {
+                barq.create("dog", { _id: new Date().getTime(), name: "Rex" });
               })
             }
           />
@@ -156,14 +157,14 @@ describe("BarqProvider", () => {
 
       // This is actually a bug that we need to fix on a deeper level
       await act(async () => {
-        expect(() => fireEvent.press(actionComponent)).toThrow("Cannot access realm that has been closed.");
+        expect(() => fireEvent.press(actionComponent)).toThrow("Cannot access barq that has been closed.");
       });
     });
 
     it("handles state changes to its configuration", async () => {
       const BarqComponent = () => {
-        const realm = useBarq();
-        return <Text testID="schemaName">{realm.schema[0].name}</Text>;
+        const barq = useBarq();
+        return <Text testID="schemaName">{barq.schema[0].name}</Text>;
       };
       const App = () => {
         const [schema, setSchema] = useState(dogSchema);
@@ -189,34 +190,34 @@ describe("BarqProvider", () => {
         await new Promise<void>((resolve) => setTimeout(resolve, 0));
       });
 
-      // Changing the realm provider configuration will cause a comlete new remount
+      // Changing the barq provider configuration will cause a comlete new remount
       // of the child component.  Therefore it must be retreived again
       const newSchemaNameContainer = getByTestId("schemaName");
 
       expect(newSchemaNameContainer).toHaveTextContent("cat");
     });
 
-    it("can access realm through realmRef as a forwarded ref", async () => {
+    it("can access barq through barqRef as a forwarded ref", async () => {
       const BarqComponent = () => {
-        const realm = useBarq();
-        return <Text testID="schemaName">{realm.schema[0].name}</Text>;
+        const barq = useBarq();
+        return <Text testID="schemaName">{barq.schema[0].name}</Text>;
       };
       const App = () => {
-        const realmRef = useRef<Barq | null>(null);
+        const barqRef = useRef<Barq | null>(null);
         const [path, setPath] = useState("");
         return (
           <>
             <View testID="firstBarqProvider">
-              <BarqProvider realmRef={realmRef} schema={[dogSchema]} path="testPath.realm">
+              <BarqProvider barqRef={barqRef} schema={[dogSchema]} path="testPath.barq">
                 <BarqComponent />
               </BarqProvider>
             </View>
             <Button
               testID="toggleRefPath"
               title="toggle ref path"
-              onPress={() => setPath(realmRef?.current?.path ?? "")}
+              onPress={() => setPath(barqRef?.current?.path ?? "")}
             />
-            {realmRef.current && <Text testID="realmRefPath">{path}</Text>}
+            {barqRef.current && <Text testID="barqRefPath">{path}</Text>}
           </>
         );
       };
@@ -230,14 +231,14 @@ describe("BarqProvider", () => {
         fireEvent.press(toggleRefPath);
       });
 
-      const realmRefPathText = await waitFor(() => queryByTestId("realmRefPath"));
+      const barqRefPathText = await waitFor(() => queryByTestId("barqRefPath"));
 
-      expect(realmRefPathText).toHaveTextContent("testPath.realm", { exact: false });
+      expect(barqRefPathText).toHaveTextContent("testPath.barq", { exact: false });
     });
 
-    // TODO: Now that local realm is immediately set, the fallback never renders.
-    // We need to test synced realm in order to produce the fallback
-    describe("initially renders a fallback, until realm exists", () => {
+    // TODO: Now that local barq is immediately set, the fallback never renders.
+    // We need to test synced barq in order to produce the fallback
+    describe("initially renders a fallback, until barq exists", () => {
       afterEach(() => {
         jest.restoreAllMocks();
       });
@@ -320,7 +321,7 @@ describe("BarqProvider", () => {
 
   describe("with an existing Barq instance", () => {
     let existingBarqInstance: Barq;
-    let realmContextWithBarqInstance: BarqContext<BarqProviderFromBarq>;
+    let barqContextWithBarqInstance: BarqContext<BarqProviderFromBarq>;
 
     beforeEach(() => {
       existingBarqInstance = new Barq({
@@ -329,40 +330,40 @@ describe("BarqProvider", () => {
         path: randomBarqPath(),
       });
 
-      realmContextWithBarqInstance = createBarqContext(existingBarqInstance);
+      barqContextWithBarqInstance = createBarqContext(existingBarqInstance);
     });
 
-    it("returns the given realm with useBarq", async () => {
-      const { BarqProvider, useBarq } = realmContextWithBarqInstance;
+    it("returns the given barq with useBarq", async () => {
+      const { BarqProvider, useBarq } = barqContextWithBarqInstance;
 
       const wrapper = ({ children }: { children: React.ReactNode }) => <BarqProvider>{children}</BarqProvider>;
       const { result } = renderHook(() => useBarq(), { wrapper });
       await waitFor(() => expect(result.current).not.toBe(null));
-      const realm = result.current;
+      const barq = result.current;
 
-      expect(realm).toStrictEqual(existingBarqInstance);
+      expect(barq).toStrictEqual(existingBarqInstance);
     });
 
     it("does not need a BarqProvider to be wrapped", async () => {
-      const { useBarq } = realmContextWithBarqInstance;
+      const { useBarq } = barqContextWithBarqInstance;
 
       const wrapper = ({ children }: { children: React.ReactNode }) => <>{children}</>;
       const { result } = renderHook(() => useBarq(), { wrapper });
       await waitFor(() => expect(result.current).not.toBe(null));
-      const realm = result.current;
+      const barq = result.current;
 
-      expect(realm).toStrictEqual(existingBarqInstance);
+      expect(barq).toStrictEqual(existingBarqInstance);
     });
 
-    it("does not close realm on unmount by default", async () => {
-      const { BarqProvider, useBarq } = realmContextWithBarqInstance;
+    it("does not close barq on unmount by default", async () => {
+      const { BarqProvider, useBarq } = barqContextWithBarqInstance;
 
       const wrapper = ({ children }: { children: React.ReactNode }) => <BarqProvider>{children}</BarqProvider>;
       const { result, unmount } = renderHook(() => useBarq(), { wrapper });
       await waitFor(() => expect(result.current).not.toBe(null));
-      const realm = result.current;
+      const barq = result.current;
       unmount();
-      expect(realm.isClosed).toBe(false);
+      expect(barq.isClosed).toBe(false);
       expect(existingBarqInstance.isClosed).toBe(false);
     });
   });
@@ -370,7 +371,7 @@ describe("BarqProvider", () => {
   describe("with an initially empty context", () => {
     const emptyBarqContext = createBarqContext();
 
-    it("should use Barq instance if realm prop is passed", () => {
+    it("should use Barq instance if barq prop is passed", () => {
       const existingBarq = new Barq({
         schema: [dogSchema],
         inMemory: true,
@@ -379,7 +380,7 @@ describe("BarqProvider", () => {
       const { BarqProvider, useBarq } = emptyBarqContext;
 
       const wrapper = ({ children }: { children: React.ReactNode }) => (
-        <BarqProvider realm={existingBarq}>{children}</BarqProvider>
+        <BarqProvider barq={existingBarq}>{children}</BarqProvider>
       );
       const { result, unmount } = renderHook(() => useBarq(), { wrapper });
 
@@ -387,7 +388,7 @@ describe("BarqProvider", () => {
       expect(result.current).toStrictEqual(existingBarq);
 
       unmount();
-      // Closing a realm should not be managed by the provider if an existing instance was given
+      // Closing a barq should not be managed by the provider if an existing instance was given
       expect(result.current.isClosed).toBe(false);
     });
 
@@ -404,7 +405,7 @@ describe("BarqProvider", () => {
 
       expect(result.current.isClosed).toBe(false);
       unmount();
-      // Closing a realm should be managed by the provider by default if an existing instance was given
+      // Closing a barq should be managed by the provider by default if an existing instance was given
       expect(result.current.isClosed).toBe(true);
     });
 
@@ -418,15 +419,15 @@ describe("BarqProvider", () => {
 
       expect(result.current.isClosed).toBe(false);
       unmount();
-      // Closing a realm should be managed by the provider by default if an existing instance was given
+      // Closing a barq should be managed by the provider by default if an existing instance was given
       expect(result.current.isClosed).toBe(true);
     });
 
-    it("throws an error when both realm and configuration props are provided", () => {
+    it("throws an error when both barq and configuration props are provided", () => {
       expect(() =>
         render(
-          // @ts-expect-error The realm and configuration props should be mutually exclusive
-          <BarqProvider realm={new Barq()} schema={[]}>
+          // @ts-expect-error The barq and configuration props should be mutually exclusive
+          <BarqProvider barq={new Barq()} schema={[]}>
             ...
           </BarqProvider>,
         ),
@@ -436,17 +437,17 @@ describe("BarqProvider", () => {
 
   describe("with multiple providers", () => {
     const createBarqObjectCreator =
-      (realmContext: BarqContext<unknown>) =>
+      (barqContext: BarqContext<unknown>) =>
       ({ testID }: { testID: string }) => {
-        const { useBarq } = realmContext;
-        const realm = useBarq();
+        const { useBarq } = barqContext;
+        const barq = useBarq();
         return (
           <Button
             testID={testID}
             title="toggle"
             onPress={() =>
-              realm.write(() => {
-                realm.create("dog", { _id: new Date().getTime(), name: "Rex" });
+              barq.write(() => {
+                barq.create("dog", { _id: new Date().getTime(), name: "Rex" });
               })
             }
           />
@@ -455,7 +456,7 @@ describe("BarqProvider", () => {
 
     const WithConfig = withConfigBarqContext;
 
-    it("can have multiple providers with config and with realm", async () => {
+    it("can have multiple providers with config and with barq", async () => {
       const existingBarqInstance = new Barq({
         schema: [dogSchema],
         inMemory: true,
@@ -482,7 +483,7 @@ describe("BarqProvider", () => {
         <View testID="secondBarqProvider">
           <WithBarqInstance.BarqProvider>
             {children}
-            <WithBarqObjectCreator testID="with-realm-action" />
+            <WithBarqObjectCreator testID="with-barq-action" />
           </WithBarqInstance.BarqProvider>
         </View>
       );
@@ -524,7 +525,7 @@ describe("BarqProvider", () => {
 
       await act(async () => {
         // Create a new Barq object using the existing Barq instance provider.
-        await pressButton("with-realm-action");
+        await pressButton("with-barq-action");
         expect(existingBarqInstance.objects(dogSchema.name).length).toEqual(1);
         expect(withBarqInstanceBarq.objects(dogSchema.name).length).toEqual(1);
         expect(withBarqInstanceBarq.objects(dogSchema.name)[0]).toStrictEqual(
@@ -541,7 +542,7 @@ describe("BarqProvider", () => {
       });
     });
 
-    it("can have nested generalized providers with config and with realm", async () => {
+    it("can have nested generalized providers with config and with barq", async () => {
       const { BarqProvider, useBarq } = createBarqContext();
 
       const customBarq = new Barq({ schema: [dogSchema], inMemory: true, path: randomBarqPath() });
@@ -549,7 +550,7 @@ describe("BarqProvider", () => {
       const InstanceFirstWrapper = ({ children }: React.PropsWithChildren) => {
         return (
           <BarqProvider schema={[catSchema]} inMemory={true}>
-            <BarqProvider realm={customBarq}>{children}</BarqProvider>
+            <BarqProvider barq={customBarq}>{children}</BarqProvider>
           </BarqProvider>
         );
       };
@@ -561,7 +562,7 @@ describe("BarqProvider", () => {
       const ConfigFirstWrapper = ({ children }: React.PropsWithChildren) => {
         return (
           <>
-            <BarqProvider realm={customBarq}>
+            <BarqProvider barq={customBarq}>
               <BarqProvider schema={[catSchema]} inMemory={true}>
                 {children}
               </BarqProvider>
@@ -578,7 +579,7 @@ describe("BarqProvider", () => {
   });
 
   describe("mergeBarqConfiguration", () => {
-    it("merges two realm configurations", () => {
+    it("merges two barq configurations", () => {
       const configA: Barq.Configuration = { schema: [catSchema], deleteBarqIfMigrationNeeded: true };
       const configB: Barq.Configuration = { sync: { user: {} as User, partitionValue: "someValue" } };
 
@@ -592,7 +593,7 @@ describe("BarqProvider", () => {
 
       expect(result).toMatchObject(expectedResult);
     });
-    it("merge updates to realm configuration", () => {
+    it("merge updates to barq configuration", () => {
       let configA: Barq.Configuration = { schema: [catSchema], deleteBarqIfMigrationNeeded: true };
       let configB: Barq.Configuration = { schema: [dogSchema], deleteBarqIfMigrationNeeded: undefined };
 

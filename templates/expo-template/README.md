@@ -1,4 +1,4 @@
-# Expo Template Realm TypeScript
+# Expo Template Barq TypeScript
 <p>
   <!-- iOS -->
   <img alt="Supports Expo iOS" longdesc="Supports Expo iOS" src="https://img.shields.io/badge/iOS-4630EB.svg?style=flat-square&logo=APPLE&labelColor=999999&logoColor=fff" />
@@ -6,14 +6,14 @@
   <img alt="Supports Expo Android" longdesc="Supports Expo Android" src="https://img.shields.io/badge/Android-4630EB.svg?style=flat-square&logo=ANDROID&labelColor=A4C639&logoColor=fff" />
 </p>
 
-Simple Expo template to quickly get started with Realm.
+Simple Expo template to quickly get started with Barq.
 
 ## 🚀 How to use
 
 Use the following command to generate your template:
 
 ```
-npx create-expo-app MyAwesomeRealmApp --template @barq/expo-template
+npx create-expo-app MyAwesomeBarqApp --template @barq/expo-template
 ```
 
 NOTE: version of `npm` before v9 may cause problems when initializing the template.  If the initialization fails, please upgrade to the latest `npm` and try again.
@@ -60,6 +60,6 @@ See https://github.com/BarqDB/barq-js/blob/master/templates/docs/sync-setup.md f
 ## 📝 Notes
 - [React Native docs](https://reactnative.dev/docs/getting-started)
 - [React Hooks](https://reactjs.org/docs/hooks-intro.html)
-- [Setting Up Realm Sync](https://docs.mongodb.com/realm/sdk/react-native/quick-start/)
-- [Realm JS Documentation](https://docs.mongodb.com/realm/sdk/react-native/)
+- [Setting Up Barq Sync](https://docs.barq.com/barq/sdk/react-native/quick-start/)
+- [Barq JS Documentation](https://docs.barq.com/barq/sdk/react-native/)
 - [@barq/react Readme](https://github.com/BarqDB/barq-js/tree/master/packages/react#readme)

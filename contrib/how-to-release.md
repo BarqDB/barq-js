@@ -1,6 +1,6 @@
 # How to release Barq JavaScript (with Actions)
 
-In order to release Barq JavaScript, you need to be member of the [Barq organization at Github](https://github.com/realm).
+In order to release Barq JavaScript, you need to be member of the [Barq organization at Github](https://github.com/barq).
 
 It is possible to add a specific tag for the release on npm, for example to release a `beta` version without affecting the `latest` version users will install by default.
 
@@ -10,9 +10,9 @@ The procedure is:
     - You can edit it directly on github [CHANGELOG.md](https://github.com/BarqDB/barq-js/edit/main/CHANGELOG.md) or you can check out the latest main and edit it locally.
     - Verify that all fixes are linked to the associated pull request or issue.
     - If the release upgrades `barq-core`, review the `barq-core` release notes and copy over any relevant notes (edited to be JS-specific if appropriate) into our `CHANGELOG.md`.
-        - Format the link as such: `([realm/barq-core#XXXX](https://github.com/BarqDB/barq-core/issues/XXXX), since vX.Y.Z)` where the `since` version refers to the Barq JS version.
+        - Format the link as such: `([barq/barq-core#XXXX](https://github.com/BarqDB/barq-core/issues/XXXX), since vX.Y.Z)` where the `since` version refers to the Barq JS version.
     - Make sure the "Breaking Changes" and "Enhancements" sections are present if appropriate. These will be used to set the new version number, following [semantic versioning](https://semver.org/).
-    - NOTE: If the new version requires an update to React Native, then make sure it is at least a minor release, as to not unintentionally break realm for current users.
+    - NOTE: If the new version requires an update to React Native, then make sure it is at least a minor release, as to not unintentionally break barq for current users.
 - If you made changes: add, commit, and push the changes to the changelog:
     - `git add CHANGELOG.md`
     - `git commit -m "Reviewed changelog"`
@@ -46,7 +46,7 @@ The procedure is:
 
 ## I accidentally published a release as `latest` when it should have been a tagged release
 
-- Reset the `latest` tag to point to the correct version (the last published version): `npm dist-tag add realm@X.Y.Z latest`, e.g. `npm dist-tag add realm@10.11.0 latest`
-- Set the tag to point to your version: `npm dist-tag add realm@X.Y.Z-tag.n <tag_name>`, e.g. `npm dist-tag add realm@10.12.0-beta.0 beta`
+- Reset the `latest` tag to point to the correct version (the last published version): `npm dist-tag add barq@X.Y.Z latest`, e.g. `npm dist-tag add barq@10.11.0 latest`
+- Set the tag to point to your version: `npm dist-tag add barq@X.Y.Z-tag.n <tag_name>`, e.g. `npm dist-tag add barq@10.12.0-beta.0 beta`
 
 Note that npm caches versions for a short period of time so you may need to wait a minute for your changes to take effect.

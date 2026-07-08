@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2016 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +21,7 @@
 
 #include <string>
 
-namespace realm {
+namespace barq {
 //
 // These methods are used internally and must be implemented
 // separately for each platform
@@ -28,20 +29,20 @@ namespace realm {
 
 class JsPlatformHelpers {
 public:
-    // set the directory where realm files should be stored
-    static void set_default_realm_file_directory(std::string dir);
+    // set the directory where barq files should be stored
+    static void set_default_barq_file_directory(std::string dir);
 
-    // return the directory in which realm files can/should be written to
-    static std::string default_realm_file_directory();
+    // return the directory in which barq files can/should be written to
+    static std::string default_barq_file_directory();
 
     // create the directories for the given filename
     static void ensure_directory_exists_for_file(const std::string& file);
 
-    // copy all realm files from resources directory to default realm dir
-    static void copy_bundled_realm_files();
+    // copy all barq files from resources directory to default barq dir
+    static void copy_bundled_barq_files();
 
-    // remove all realm files in the given directory
-    static void remove_realm_files_from_directory(const std::string& directory);
+    // remove all barq files in the given directory
+    static void remove_barq_files_from_directory(const std::string& directory);
 
     // remove file at the given path
     static void remove_file(const std::string& path);
@@ -58,4 +59,4 @@ public:
     // excludes the path from icloud backup on iOS and no-op on other platforms
     static void exclude_from_icloud_backup(const std::string& path, bool value);
 };
-} // namespace realm
+} // namespace barq

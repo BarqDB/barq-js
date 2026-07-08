@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -57,11 +58,11 @@ export class Results<T = unknown> extends OrderedCollection<
    * Create a `Results` wrapping a set of query `Results` from the binding.
    * @internal
    */
-  constructor(realm: Barq, internal: binding.Results, accessor: ResultsAccessor<T>, typeHelpers: TypeHelpers<T>) {
+  constructor(barq: Barq, internal: binding.Results, accessor: ResultsAccessor<T>, typeHelpers: TypeHelpers<T>) {
     if (arguments.length === 0 || !(internal instanceof binding.Results)) {
       throw new IllegalConstructorError("Results");
     }
-    super(realm, internal, accessor, typeHelpers);
+    super(barq, internal, accessor, typeHelpers);
 
     Object.defineProperty(this, "internal", {
       enumerable: false,
@@ -69,11 +70,11 @@ export class Results<T = unknown> extends OrderedCollection<
       writable: false,
       value: internal,
     });
-    Object.defineProperty(this, "realm", {
+    Object.defineProperty(this, "barq", {
       enumerable: false,
       configurable: false,
       writable: false,
-      value: realm,
+      value: barq,
     });
     Object.defineProperty(this, "subscriptionName", {
       enumerable: false,
@@ -136,7 +137,7 @@ export class Results<T = unknown> extends OrderedCollection<
    * @experimental This API is experimental and may change or be removed.
    */
   async subscribe(options: SubscriptionOptions = { behavior: WaitForSync.FirstTime }): Promise<this> {
-    const subs = this.realm.subscriptions;
+    const subs = this.barq.subscriptions;
     const shouldWait =
       options.behavior === WaitForSync.Always || (options.behavior === WaitForSync.FirstTime && !subs.exists(this));
     if (shouldWait) {
@@ -164,7 +165,7 @@ export class Results<T = unknown> extends OrderedCollection<
    * @experimental This API is experimental and may change or be removed.
    */
   unsubscribe(): void {
-    this.realm.subscriptions.updateNoWait((mutableSubs) => {
+    this.barq.subscriptions.updateNoWait((mutableSubs) => {
       if (this.subscriptionName) {
         mutableSubs.removeByName(this.subscriptionName);
       } else {

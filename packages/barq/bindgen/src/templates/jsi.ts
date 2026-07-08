@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -95,10 +96,10 @@ class JsiAddon extends CppClass {
   props = new Set<string>();
 
   constructor() {
-    super("RealmAddon");
+    super("BarqAddon");
 
     this.members.push(new CppVar("std::deque<std::string>", "m_string_bufs"));
-    this.members.push(new CppVar("std::unique_ptr<RealmAddon>", "self", { static: true }));
+    this.members.push(new CppVar("std::unique_ptr<BarqAddon>", "self", { static: true }));
 
     this.members.push(new CppVar("jsi::Runtime&", "m_rt"));
     this.mem_inits.push(new CppMemInit("m_rt", "_env"));
@@ -179,7 +180,7 @@ class JsiAddon extends CppClass {
                 std::bind(&${this.name}::injectInjectables, this, _1, _2, _3, _4)
             ));
 
-            _env.global().setProperty(_env, "__RealmFuncs", exports);
+            _env.global().setProperty(_env, "__BarqFuncs", exports);
             `,
       }),
     );
@@ -289,10 +290,6 @@ function convertPrimToJsi(addon: JsiAddon, type: string, expr: string): string {
     case "EJsonObj":
     case "EJsonArray":
       return `${addon.accessCtor("EJSON_parse")}.call(_env, {${convertPrimToJsi(addon, "std::string", expr)}})`;
-
-    case "bson::BsonArray":
-    case "bson::BsonDocument":
-      return convertPrimToJsi(addon, "EJsonObj", `bson::Bson(${expr}).to_string()`);
 
     case "AppError":
       // This matches old JS SDK. The C++ type will be changing as part of the unify error handleing project.
@@ -407,10 +404,6 @@ function convertPrimFromJsi(addon: JsiAddon, type: string, expr: string): string
         `${addon.accessCtor("EJSON_stringify")}.call(_env, {FWD_OR_COPY(${expr})})`,
       );
 
-    case "bson::BsonArray":
-    case "bson::BsonDocument":
-      return `${type}(bson::parse(${convertPrimFromJsi(addon, "EJsonObj", expr)}))`;
-
     case "AppError":
       assert.fail("Cannot convert AppError to C++, only from C++.");
   }
@@ -425,7 +418,7 @@ function convertToJsi(addon: JsiAddon, type: Type, expr: string): string {
     case "Pointer":
       return `[&] (const auto& ptr){
           if constexpr(requires{ bool(ptr); }) { // support claiming that always-valid iterators are pointers.
-              REALM_ASSERT(bool(ptr) && "Must mark nullable pointers with Nullable<> in spec");
+              BARQ_ASSERT(bool(ptr) && "Must mark nullable pointers with Nullable<> in spec");
           }
           return ${c(type.type, "*ptr")};
       } (${expr})`;
@@ -509,14 +502,14 @@ function convertToJsi(addon: JsiAddon, type: Type, expr: string): string {
       return `
           [&] (auto&& cb) -> jsi::Value {
               if constexpr(std::is_constructible_v<bool, decltype(cb)>) {
-                  REALM_ASSERT(bool(cb) && "Must mark nullable callbacks with Nullable<> in spec");
+                  BARQ_ASSERT(bool(cb) && "Must mark nullable callbacks with Nullable<> in spec");
               }
               return jsi::Function::createFromHostFunction(_env, ${addon.getPropId("callback")}, ${type.args.length},
                   [cb = MakeCopyable(FWD(cb))]
                   (jsi::Runtime& _env, const jsi::Value&, const jsi::Value* args, size_t count) -> jsi::Value
                   {
                       const auto callBlock = ${addon.get()}->startCall();
-                      REALM_ASSERT_3(count, ==, ${type.args.length}u);
+                      BARQ_ASSERT_3(count, ==, ${type.args.length}u);
                       ${tryWrap(`
                           return ${c(
                             type.ret,
@@ -562,7 +555,7 @@ function convertFromJsi(addon: JsiAddon, type: Type, expr: string): string {
       // and B) other things may use lambdas which cause compile failures with our `auto(expr)`
       // emulation until C++20.
       const inner = c(type.type, expr);
-      return type.type.kind == "Class" ? `REALM_DECAY_COPY(${inner})` : inner;
+      return type.type.kind == "Class" ? `BARQ_DECAY_COPY(${inner})` : inner;
     }
 
     case "Template":
@@ -870,7 +863,7 @@ class JsiCppDecls extends CppDecls {
       );
 
       const nullCheck = cls.sharedPtrWrapped
-        ? 'REALM_ASSERT(bool(val) && "Must mark nullable pointers with Nullable<> in spec");'
+        ? 'BARQ_ASSERT(bool(val) && "Must mark nullable pointers with Nullable<> in spec");'
         : "";
 
       if (!cls.abstract) {
@@ -919,18 +912,18 @@ class JsiCppDecls extends CppDecls {
           // We are returning sentinel values for lists and dictionaries in the
           // form of Symbol singletons. This is due to not being able to construct
           // the actual list or dictionary in the current context.
-          case realm::type_List:
-            return ${this.addon.accessCtor("Symbol_for")}.call(_env, "Realm.List");
+          case barq::type_List:
+            return ${this.addon.accessCtor("Symbol_for")}.call(_env, "Barq.List");
 
-          case realm::type_Dictionary:
-            return ${this.addon.accessCtor("Symbol_for")}.call(_env, "Realm.Dictionary");
+          case barq::type_Dictionary:
+            return ${this.addon.accessCtor("Symbol_for")}.call(_env, "Barq.Dictionary");
 
           #pragma GCC diagnostic pop
 
           // The remaining cases are never stored in a Mixed.
           ${spec.mixedInfo.unusedDataTypes.map((t) => `case DataType::Type::${t}: break;`).join("\n")}
           }
-          REALM_UNREACHABLE();
+          BARQ_UNREACHABLE();
         `,
       }),
       new CppFunc("JS_TO_Mixed", "Mixed", [new CppVar("jsi::Runtime&", env), new CppVar("auto&&", "val")], {
@@ -968,7 +961,7 @@ class JsiCppDecls extends CppDecls {
                       }`,
                   )
                   .join(" ")
-              } else if (obj.instanceOf(_env,  (*RealmAddon::self->m_cls_Geospatial_ctor))) {
+              } else if (obj.instanceOf(_env,  (*BarqAddon::self->m_cls_Geospatial_ctor))) {
                 //This needs its own case because the constructor of Mixed for Geospatial requires a pointer
                 return &JS_TO_CLASS_Geospatial(_env, jsi::Value(std::move(obj)));
               } else if (obj.isFunction(_env)) {
@@ -1037,7 +1030,7 @@ class JsiCppDecls extends CppDecls {
     );
 
     // Hermes doesn't (always?) have WeakRef support so expose some helpers to let us emulate it.
-    // If we remove this, also remove the WeakObjectWrapper in realm_js_jsi_helpers.h
+    // If we remove this, also remove the WeakObjectWrapper in barq_js_jsi_helpers.h
     {
       this.free_funcs.push(
         this.addon.addFunc("createWeakRef", {
@@ -1091,10 +1084,10 @@ export function generate({ rawSpec, spec, file: makeFile }: TemplateContext): vo
   out(`
       #include <jsi/jsi.h>
       #include <chrono>
-      #include <realm_js_jsi_helpers.h>
+      #include <barq_js_jsi_helpers.h>
 
       // Using all-caps JSI to avoid risk of conflicts with jsi namespace from fb.
-      namespace realm::js::JSI {
+      namespace barq::js::JSI {
       namespace {
     `);
 
@@ -1104,29 +1097,28 @@ export function generate({ rawSpec, spec, file: makeFile }: TemplateContext): vo
         } // namespace
 
         extern "C" {
-        void realm_jsi_invalidate_caches() {
+        void barq_jsi_invalidate_caches() {
             // Clear the default logger, to prevent it from holding on to a pointer that was released
-            realm::util::LogCategory::get_category(realm::util::LogCategory::realm.get_name()).set_default_level_threshold(realm::util::Logger::Level::off);
-            realm::util::Logger::set_default_logger(nullptr);
-            // Close all cached Realms
-            realm::_impl::RealmCoordinator::clear_all_caches();
-            // Clear the Object Store App cache, to prevent instances from using a context that was released
-            realm::app::App::clear_cached_apps();
+            barq::util::LogCategory::get_category(barq::util::LogCategory::barq.get_name()).set_default_level_threshold(barq::util::Logger::Level::off);
+            barq::util::Logger::set_default_logger(nullptr);
+            // Close all cached Barqs
+            barq::_impl::BarqCoordinator::clear_all_caches();
             // Blow away the addon state.
-            RealmAddon::self.reset();
+            BarqAddon::self.reset();
         }
-        void realm_jsi_init(jsi::Runtime& rt, jsi::Object& exports) {
-            realm_jsi_invalidate_caches();
-            RealmAddon::self = std::make_unique<RealmAddon>(rt, exports);
+        void barq_jsi_init(jsi::Runtime& rt, jsi::Object& exports) {
+            barq_jsi_invalidate_caches();
+            BarqAddon::self = std::make_unique<BarqAddon>(rt, exports);
         }
-        void realm_jsi_close_sync_sessions() {
+        void barq_jsi_close_sync_sessions() {
             // Force all sync sessions to close immediately. This prevents the new JS thread
             // from opening a new sync session while the old one is still active when reloading
             // in dev mode.
-            realm::app::App::close_all_sync_sessions();
+
+            // No global app in Barq (token model); sessions close with their SyncUser.
         }
         } // extern "C"
 
-        } // namespace realm::js::JSI
+        } // namespace barq::js::JSI
     `);
 }

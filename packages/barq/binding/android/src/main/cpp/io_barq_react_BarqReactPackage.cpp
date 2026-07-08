@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2016 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,20 +24,20 @@
 #include <android/asset_manager_jni.h>
 #include <jsi/jsi.h>
 
-#include "CxxRealmModule.hpp"
+#include "CxxBarqModule.hpp"
 #include "jsi_init.h"
 #include "react_scheduler.h"
 #include "platform.hpp"
 #include "jni_utils.hpp"
 
-using namespace realm::jni_util;
+using namespace barq::jni_util;
 
 jclass ssl_helper_class;
 
-namespace realm {
+namespace barq {
 // set the AssetManager used to access bundled files within the APK
 void set_asset_manager(AAssetManager* assetManager);
-} // namespace realm
+} // namespace barq
 
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void*)
@@ -51,11 +52,11 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void*)
 
     // We do lookup the class in this Thread, since FindClass sometimes fails
     // when issued from the sync client thread
-    ssl_helper_class = reinterpret_cast<jclass>(env->NewGlobalRef(env->FindClass("io/realm/react/util/SSLHelper")));
+    ssl_helper_class = reinterpret_cast<jclass>(env->NewGlobalRef(env->FindClass("io/barq/react/util/SSLHelper")));
 
     facebook::react::registerCxxModuleToGlobalModuleMap(
-        realm::js::CxxRealmModule::kModuleName, [](std::shared_ptr<facebook::react::CallInvoker> jsInvoker) {
-            return std::make_shared<realm::js::CxxRealmModule>(jsInvoker);
+        barq::js::CxxBarqModule::kModuleName, [](std::shared_ptr<facebook::react::CallInvoker> jsInvoker) {
+            return std::make_shared<barq::js::CxxBarqModule>(jsInvoker);
         });
 
     return JNI_VERSION_1_6;
@@ -73,23 +74,23 @@ JNIEXPORT void JNI_OnUnload(JavaVM* vm, void*)
     }
 }
 
-extern "C" JNIEXPORT void JNICALL Java_io_realm_react_RealmReactPackage_setDefaultRealmFileDirectoryImpl(
+extern "C" JNIEXPORT void JNICALL Java_io_barq_react_BarqReactPackage_setDefaultBarqFileDirectoryImpl(
     JNIEnv* env, jobject thiz, jstring file_dir, jobject asset_manager)
 {
-    __android_log_print(ANDROID_LOG_VERBOSE, "Realm", "setDefaultRealmFileDirectory");
+    __android_log_print(ANDROID_LOG_VERBOSE, "Barq", "setDefaultBarqFileDirectory");
 
     // Get the assetManager in case we want to copy files from the APK (assets)
     AAssetManager* assetManager = AAssetManager_fromJava(env, asset_manager);
     if (assetManager == NULL) {
-        __android_log_print(ANDROID_LOG_ERROR, "Realm", "Error loading the AssetManager");
+        __android_log_print(ANDROID_LOG_ERROR, "Barq", "Error loading the AssetManager");
     }
-    realm::set_asset_manager(assetManager);
+    barq::set_asset_manager(assetManager);
 
     // Setting the internal storage path for the application
     const char* file_dir_utf = env->GetStringUTFChars(file_dir, NULL);
-    realm::JsPlatformHelpers::set_default_realm_file_directory(file_dir_utf);
+    barq::JsPlatformHelpers::set_default_barq_file_directory(file_dir_utf);
     env->ReleaseStringUTFChars(file_dir, file_dir_utf);
 
-    __android_log_print(ANDROID_LOG_DEBUG, "Realm", "Absolute path: %s",
-                        realm::JsPlatformHelpers::default_realm_file_directory().c_str());
+    __android_log_print(ANDROID_LOG_DEBUG, "Barq", "Absolute path: %s",
+                        barq::JsPlatformHelpers::default_barq_file_directory().c_str());
 }

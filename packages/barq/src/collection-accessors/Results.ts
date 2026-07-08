@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,7 +30,7 @@ export type ResultsAccessor<T = unknown> = {
 };
 
 type ResultsAccessorFactoryOptions<T> = {
-  realm: Barq;
+  barq: Barq;
   typeHelpers: TypeHelpers<T>;
   itemType: binding.PropertyType;
 };
@@ -42,7 +43,7 @@ export function createResultsAccessor<T>(options: ResultsAccessorFactoryOptions<
 }
 
 function createResultsAccessorForMixed<T>({
-  realm,
+  barq,
   typeHelpers,
 }: Omit<ResultsAccessorFactoryOptions<T>, "itemType">): ResultsAccessor<T> {
   return {
@@ -50,12 +51,12 @@ function createResultsAccessorForMixed<T>({
       const value = results.getAny(index);
       switch (value) {
         case binding.ListSentinel: {
-          const accessor = createListAccessor<T>({ realm, typeHelpers, itemType: binding.PropertyType.Mixed });
-          return new indirect.List<T>(realm, results.getList(index), accessor, typeHelpers) as T;
+          const accessor = createListAccessor<T>({ barq, typeHelpers, itemType: binding.PropertyType.Mixed });
+          return new indirect.List<T>(barq, results.getList(index), accessor, typeHelpers) as T;
         }
         case binding.DictionarySentinel: {
-          const accessor = createDictionaryAccessor<T>({ realm, typeHelpers, itemType: binding.PropertyType.Mixed });
-          return new indirect.Dictionary<T>(realm, results.getDictionary(index), accessor, typeHelpers) as T;
+          const accessor = createDictionaryAccessor<T>({ barq, typeHelpers, itemType: binding.PropertyType.Mixed });
+          return new indirect.Dictionary<T>(barq, results.getDictionary(index), accessor, typeHelpers) as T;
         }
         default:
           return typeHelpers.fromBinding(value);
@@ -67,7 +68,7 @@ function createResultsAccessorForMixed<T>({
 function createResultsAccessorForKnownType<T>({
   typeHelpers,
   itemType,
-}: Omit<ResultsAccessorFactoryOptions<T>, "realm">): ResultsAccessor<T> {
+}: Omit<ResultsAccessorFactoryOptions<T>, "barq">): ResultsAccessor<T> {
   return {
     get: createDefaultGetter({ fromBinding: typeHelpers.fromBinding, itemType }),
   };

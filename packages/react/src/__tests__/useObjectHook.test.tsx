@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2021 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -51,11 +52,11 @@ const testDataSet = [
 
 describe("useObject", () => {
   beforeEach(() => {
-    const realm = context.openBarq();
-    realm.write(() => {
-      realm.deleteAll();
+    const barq = context.openBarq();
+    barq.write(() => {
+      barq.deleteAll();
       testDataSet.forEach((data) => {
-        realm.create("dog", data);
+        barq.create("dog", data);
       });
     });
   });
@@ -78,12 +79,12 @@ describe("useObject", () => {
     });
 
     it("rerenders and return object once created", () => {
-      const { write, realm } = context;
+      const { write, barq } = context;
       const { result, renders } = profileHook(() => useObject<IDog>("dog", 12));
       expect(renders).toHaveLength(1);
       expect(result.current).toEqual(null);
       write(() => {
-        realm.create<IDog>("dog", { _id: 12, name: "Lassie", age: 32 });
+        barq.create<IDog>("dog", { _id: 12, name: "Lassie", age: 32 });
       });
       expect(renders).toHaveLength(2);
       expect(result.current?.name).toEqual("Lassie");
@@ -136,9 +137,9 @@ describe("useObject", () => {
 
   describe("passing options object as argument", () => {
     it("rerenders on updates", () => {
-      const { write, realm } = context;
+      const { write, barq } = context;
 
-      const vincent = realm.objectForPrimaryKey("dog", 4);
+      const vincent = barq.objectForPrimaryKey("dog", 4);
       assert(vincent);
 
       const { result, renders } = profileHook(() => useObject<IDog>({ type: "dog", primaryKey: 4, keyPaths: "name" }));

@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,7 +32,7 @@ export type DictionaryAccessor<T = unknown> = {
 };
 
 type DictionaryAccessorFactoryOptions<T> = {
-  realm: Barq;
+  barq: Barq;
   typeHelpers: TypeHelpers<T>;
   itemType: binding.PropertyType;
   isEmbedded?: boolean;
@@ -45,28 +46,28 @@ export function createDictionaryAccessor<T>(options: DictionaryAccessorFactoryOp
 }
 
 function createDictionaryAccessorForMixed<T>({
-  realm,
+  barq,
   typeHelpers,
-}: Pick<DictionaryAccessorFactoryOptions<T>, "realm" | "typeHelpers">): DictionaryAccessor<T> {
+}: Pick<DictionaryAccessorFactoryOptions<T>, "barq" | "typeHelpers">): DictionaryAccessor<T> {
   const { toBinding, fromBinding } = typeHelpers;
   return {
     get(dictionary, key) {
       const value = dictionary.tryGetAny(key);
       switch (value) {
         case binding.ListSentinel: {
-          const accessor = createListAccessor<T>({ realm, itemType: binding.PropertyType.Mixed, typeHelpers });
-          return new indirect.List<T>(realm, dictionary.getList(key), accessor, typeHelpers) as T;
+          const accessor = createListAccessor<T>({ barq, itemType: binding.PropertyType.Mixed, typeHelpers });
+          return new indirect.List<T>(barq, dictionary.getList(key), accessor, typeHelpers) as T;
         }
         case binding.DictionarySentinel: {
-          const accessor = createDictionaryAccessor<T>({ realm, itemType: binding.PropertyType.Mixed, typeHelpers });
-          return new indirect.Dictionary<T>(realm, dictionary.getDictionary(key), accessor, typeHelpers) as T;
+          const accessor = createDictionaryAccessor<T>({ barq, itemType: binding.PropertyType.Mixed, typeHelpers });
+          return new indirect.Dictionary<T>(barq, dictionary.getDictionary(key), accessor, typeHelpers) as T;
         }
         default:
           return fromBinding(value) as T;
       }
     },
     set(dictionary, key, value) {
-      assert.inTransaction(realm);
+      assert.inTransaction(barq);
 
       if (isJsOrBarqList(value)) {
         dictionary.insertCollection(key, binding.CollectionType.List);
@@ -82,7 +83,7 @@ function createDictionaryAccessorForMixed<T>({
 }
 
 function createDictionaryAccessorForKnownType<T>({
-  realm,
+  barq,
   typeHelpers,
   isEmbedded,
 }: Omit<DictionaryAccessorFactoryOptions<T>, "itemType">): DictionaryAccessor<T> {
@@ -92,7 +93,7 @@ function createDictionaryAccessorForKnownType<T>({
       return fromBinding(dictionary.tryGetAny(key));
     },
     set(dictionary, key, value) {
-      assert.inTransaction(realm);
+      assert.inTransaction(barq);
 
       if (isEmbedded) {
         toBinding(value, { createObj: () => [dictionary.insertEmbedded(key), true] });

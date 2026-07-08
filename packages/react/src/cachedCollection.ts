@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,7 +39,7 @@ type CachedCollectionArgs<T> = {
   /**
    * The {@link Barq} instance
    */
-  realm: Barq;
+  barq: Barq;
 
   /**
    * Callback which is called whenever an object in the collection changes
@@ -85,7 +86,7 @@ type CachedCollectionArgs<T> = {
  */
 export function createCachedCollection<T extends Barq.Object<any>>({
   collection,
-  realm,
+  barq,
   updateCallback,
   updatedRef,
   objectCache = new Map(),
@@ -102,7 +103,7 @@ export function createCachedCollection<T extends Barq.Object<any>>({
             const col: Barq.Results<T & Barq.Object> = Reflect.apply(value, target, args);
             const { collection: newCol } = createCachedCollection({
               collection: col,
-              realm,
+              barq,
               updateCallback,
               updatedRef,
               objectCache,
@@ -186,7 +187,7 @@ export function createCachedCollection<T extends Barq.Object<any>>({
   if (!isDerived) {
     // If we are in a transaction, then push adding the listener to the event loop.  This will allow the write transaction to finish.
     // see https://github.com/BarqDB/barq-js/issues/4375
-    if (realm.isInTransaction) {
+    if (barq.isInTransaction) {
       setImmediateId = setImmediate(() => {
         collection.addListener(listenerCallback, keyPaths);
       });

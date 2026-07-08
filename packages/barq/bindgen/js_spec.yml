@@ -7,11 +7,11 @@ classes:
   JsPlatformHelpers:
     abstract: true
     staticMethods:
-      set_default_realm_file_directory: '(dir: std::string)'
-      default_realm_file_directory: () -> std::string
+      set_default_barq_file_directory: '(dir: std::string)'
+      default_barq_file_directory: () -> std::string
       ensure_directory_exists_for_file: '(file: const std::string&)'
-      copy_bundled_realm_files: ()
-      remove_realm_files_from_directory: '(directory: const std::string&)'
+      copy_bundled_barq_files: ()
+      remove_barq_files_from_directory: '(directory: const std::string&)'
       remove_file: '(path: const std::string&)'
       remove_directory: '(path: const std::string&)'
       exclude_from_icloud_backup: '(path: const std::string&, value: bool)'

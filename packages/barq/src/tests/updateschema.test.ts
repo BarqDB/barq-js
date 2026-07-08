@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,9 +26,9 @@ import { type BarqContext, closeBarq, generateTempBarqPath } from "./utils";
 const oldSchema: ObjectSchema[] = [{ name: "Person", properties: { name: "string", age: "int" } }];
 const newSchema: ObjectSchema[] = [{ name: "Person2", properties: { title: "string", friends: "int" } }];
 
-describe("realm._updateSchema", () => {
+describe("barq._updateSchema", () => {
   beforeEach(function (this: BarqContext) {
-    this.realm = new Barq({
+    this.barq = new Barq({
       path: generateTempBarqPath(),
       inMemory: true,
       schema: oldSchema,
@@ -36,12 +37,12 @@ describe("realm._updateSchema", () => {
   afterEach(closeBarq);
 
   it("can add new schema classes", function (this: BarqContext) {
-    this.realm.write(() => {
-      this.realm._updateSchema(newSchema);
-      this.realm.create("Person2", { title: "Good", friends: 3 });
+    this.barq.write(() => {
+      this.barq._updateSchema(newSchema);
+      this.barq.create("Person2", { title: "Good", friends: 3 });
     });
   });
   it("can only be called in a transaction", function (this: BarqContext) {
-    expect(() => this.realm._updateSchema(newSchema)).throw("Can only create object schema within a transaction.");
+    expect(() => this.barq._updateSchema(newSchema)).throw("Can only create object schema within a transaction.");
   });
 });

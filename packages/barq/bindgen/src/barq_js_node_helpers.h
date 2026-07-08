@@ -1,9 +1,13 @@
 #pragma once
 
 #include <napi.h>
-#include <realm_helpers.h>
+#include <barq_helpers.h>
 
-namespace realm::js::node {
+#ifndef BARQ_DECAY_COPY
+#define BARQ_DECAY_COPY(x) (::std::decay_t<decltype(x)>(x))
+#endif
+
+namespace barq::js::node {
 namespace {
 
 // TODO consider allowing Number (double) with (u)int64_t.
@@ -30,16 +34,16 @@ inline Napi::Function bindFunc(Napi::Function func, Napi::Object self, Args... a
     return func.Get("bind").As<Napi::Function>().Call(func, {self, args...}).template As<Napi::Function>();
 }
 
-REALM_NOINLINE inline Napi::Object toNodeErrorCode(Napi::Env& env, const std::error_code& e) noexcept
+BARQ_NOINLINE inline Napi::Object toNodeErrorCode(Napi::Env& env, const std::error_code& e) noexcept
 {
-    REALM_ASSERT_RELEASE(e);
+    BARQ_ASSERT_RELEASE(e);
     auto out = Napi::Error::New(env, e.message()).Value();
     out.Set("code", e.value());
     out.Set("category", e.category().name());
     return out;
 }
 
-REALM_NOINLINE inline Napi::Object toNodeException(Napi::Env& env, const std::exception_ptr& e) noexcept
+BARQ_NOINLINE inline Napi::Object toNodeException(Napi::Env& env, const std::exception_ptr& e) noexcept
 {
     try {
         std::rethrow_exception(e);
@@ -55,7 +59,7 @@ REALM_NOINLINE inline Napi::Object toNodeException(Napi::Env& env, const std::ex
     }
 }
 
-[[noreturn]] REALM_NOINLINE inline void throwNodeException(Napi::Env& env, const std::exception& e)
+[[noreturn]] BARQ_NOINLINE inline void throwNodeException(Napi::Env& env, const std::exception& e)
 {
     if (dynamic_cast<const Napi::Error*>(&e))
         throw; // Just allow exception propagation to continue
@@ -64,11 +68,11 @@ REALM_NOINLINE inline Napi::Object toNodeException(Napi::Env& env, const std::ex
     throw Napi::Error::New(env, e.what());
 }
 
-[[noreturn]] REALM_NOINLINE inline void throwNullSharedPtrError(Napi::Env& env, const char* clsName)
+[[noreturn]] BARQ_NOINLINE inline void throwNullSharedPtrError(Napi::Env& env, const char* clsName)
 {
     throw Napi::Error::New(env, util::format("Attempting to use an instanace of %1 holding a null shared_ptr. "
                                              "Did you call $resetSharedPtr on it already?",
                                              clsName));
 }
 } // namespace
-} // namespace realm::js::node
+} // namespace barq::js::node

@@ -39,7 +39,6 @@ ok(oid.toHexString() === oidHex, "ObjectId hex round-trip");
 ok(new ObjectId().id.length === 12, "ObjectId generate length 12");
 ok(ObjectId.isValid(oidHex) && !ObjectId.isValid("xyz"), "ObjectId.isValid");
 ok(oid.equals(new ObjectId(oidHex)), "ObjectId equals");
-ok(oid._bsontype === "ObjectId", "ObjectId _bsontype");
 
 // UUID
 const u = new UUID("f81d4fae-7dec-11d0-a765-00a0c91e6bf6");

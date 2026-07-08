@@ -27,15 +27,15 @@ We provide an easy script to do so:
 Before starting the testing process, you need to configure your Barq database to either include or exclude files from iCloud backup. This is done by setting the `excludeFromIcloudBackup` property in your Barq configuration. Here is an example of how to set this property:
 
 ```javascript
-const realmConfig = {
+const barqConfig = {
   schema: [
     /* your schema */
   ],
-  path: "default.realm",
+  path: "default.barq",
   excludeFromIcloudBackup: true, // Set to true to exclude from iCloud backup, false to include, defaults to false
 };
 
-const realm = new Barq(realmConfig);
+const barq = new Barq(barqConfig);
 ```
 
 Make sure to replace the schema and path with your actual Barq schema and desired file path. Once you have configured this property, you can proceed with the following steps to test if the exclusion from iCloud backup is working correctly.
@@ -49,7 +49,7 @@ open `xcrun simctl get_app_container booted com.your.app.bundleId data`/Document
 This will open a Finder window with the files. Drag and drop each file to the terminal after adding `xattr`:
 
 ```sh
-xattr <realm file simulator path>
+xattr <barq file simulator path>
 ```
 
 If this command returns:

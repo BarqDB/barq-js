@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2023 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -79,12 +80,12 @@ describe("useProgress", () => {
       [ProgressMode.ForCurrentlyOutstandingWork, ProgressDirection.Upload],
     ] as const) {
       it(`should provide correct progress with ${mode} and ${direction}`, async () => {
-        const realm = mockSyncedBarqWithProgress();
+        const barq = mockSyncedBarqWithProgress();
 
         const renderedProgressValues: (number | null)[] = [];
 
         const BarqProviderWrapper = ({ children }: PropsWithChildren) => {
-          return <BarqProvider realm={realm}>{children}</BarqProvider>;
+          return <BarqProvider barq={barq}>{children}</BarqProvider>;
         };
 
         const ProgressText: React.FC = () => {
@@ -104,12 +105,12 @@ describe("useProgress", () => {
     }
 
     it("should handle multiple useProgress hooks with different options", async () => {
-      const realm = mockSyncedBarqWithProgress();
+      const barq = mockSyncedBarqWithProgress();
 
       const renderedProgressValues: [number | null, number | null][] = [];
 
       const BarqProviderWrapper = ({ children }: PropsWithChildren) => {
-        return <BarqProvider realm={realm}>{children}</BarqProvider>;
+        return <BarqProvider barq={barq}>{children}</BarqProvider>;
       };
 
       const ProgressText: React.FC = () => {

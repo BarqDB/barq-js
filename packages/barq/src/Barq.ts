@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -64,7 +65,7 @@ import { SubscriptionSet } from "./sync/SubscriptionSet";
 import { SyncSession } from "./sync/SyncSession";
 import type { TypeHelpers } from "./TypeHelpers";
 import { toArrayBuffer } from "./type-helpers/array-buffer";
-import { OBJECT_INTERNAL, OBJECT_REALM } from "./symbols";
+import { OBJECT_INTERNAL, OBJECT_BARQ } from "./symbols";
 import { createResultsAccessor } from "./collection-accessors/Results";
 
 const debug = extendDebug("Barq");
@@ -97,14 +98,14 @@ function assertBarqEvent(name: BarqEventName): asserts name is BarqEvent {
 type InternalConfig = {
   internal?: binding.Barq;
   schemaExtras?: BarqSchemaExtra;
-  realmExists?: boolean;
+  barqExists?: boolean;
 };
 
 /**
  * The Barq database.
  */
 export class Barq {
-  public static defaultPath = Barq.normalizePath("default.realm");
+  public static defaultPath = Barq.normalizePath("default.barq");
 
   private static internals = new Set<binding.WeakRef<binding.Barq>>();
 
@@ -158,11 +159,11 @@ export class Barq {
    * Call this method to free up the event loop and allow Node.js to perform a graceful exit.
    */
   public static shutdown() {
-    // Close any realms not already closed
-    for (const realmRef of Barq.internals) {
-      const realm = realmRef.deref();
-      if (realm && !realm.isClosed) {
-        realm.close();
+    // Close any barqs not already closed
+    for (const barqRef of Barq.internals) {
+      const barq = barqRef.deref();
+      if (barq && !barq.isClosed) {
+        barq.close();
       }
     }
     Barq.internals.clear();
@@ -326,7 +327,7 @@ export class Barq {
   }
 
   /**
-   * Copy any Barq files  (i.e. `*.realm`) bundled with the application from the application
+   * Copy any Barq files  (i.e. `*.barq`) bundled with the application from the application
    * directory into the application's documents directory, so that they can be opened and used
    * by Barq. If the file already exists in the documents directory, it will not be
    * overwritten, so this can safely be called multiple times.
@@ -335,14 +336,14 @@ export class Barq {
    * files into a place where they can be written to.
    * @example
    * ```
-   * // Given a bundled file, example.realm, this will copy example.realm (and any other .realm files)
+   * // Given a bundled file, example.barq, this will copy example.barq (and any other .barq files)
    * // from the app bundle into the app's documents directory. If the file already exists, it will
    * // not be overwritten, so it is safe to call this every time the app starts.
    * Barq.copyBundledBarqFiles();
    *
-   * const realm = await Barq.open({
-   * // This will open example.realm from the documents directory, with the bundled data in.
-   * path: "example.realm"
+   * const barq = await Barq.open({
+   * // This will open example.barq from the documents directory, with the bundled data in.
+   * path: "example.barq"
    * });
    * ```
    *
@@ -354,7 +355,7 @@ export class Barq {
   }
 
   /**
-   * TODO: Consider breaking this by ensuring a ".realm" suffix (coordinating with other SDK teams in the process)
+   * TODO: Consider breaking this by ensuring a ".barq" suffix (coordinating with other SDK teams in the process)
    */
   private static normalizePath(path: string | undefined): string {
     if (typeof path === "undefined") {
@@ -370,7 +371,7 @@ export class Barq {
 
   /**
    * @note When the path is relative and the config contains a sync object, Core will replace any existing file extension
-   * or add the ".realm" suffix.
+   * or add the ".barq" suffix.
    */
   private static determinePath(config: Configuration): string {
     if (config.sync && !config.openSyncedBarqLocally) {
@@ -542,8 +543,8 @@ export class Barq {
     const config = typeof arg === "string" ? { path: arg } : arg || {};
     // Calling `Barq.exists()` before `binding.Barq.getSharedBarq()` is necessary to capture
     // the correct value when this constructor was called since `binding.Barq.getSharedBarq()`
-    // will open the realm. This is needed when deciding whether to update initial subscriptions.
-    const realmExists = internalConfig.realmExists ?? Barq.exists(config);
+    // will open the barq. This is needed when deciding whether to update initial subscriptions.
+    const barqExists = internalConfig.barqExists ?? Barq.exists(config);
     if (arg !== null) {
       assert(!internalConfig.schemaExtras, "Expected either a configuration or schemaExtras");
       validateConfiguration(config);
@@ -582,9 +583,9 @@ export class Barq {
     // Optionally: Exclude or include Barq files from iCloud backup
     const { excludeFromIcloudBackup } = config;
     if (typeof excludeFromIcloudBackup === "boolean") {
-      const realmPath = this.internal.config.path;
+      const barqPath = this.internal.config.path;
       for (const fileNameSuffix of ["", ".lock", ".note", ".management"]) {
-        const filePath = realmPath + fileNameSuffix;
+        const filePath = barqPath + fileNameSuffix;
         binding.JsPlatformHelpers.excludeFromIcloudBackup(filePath, excludeFromIcloudBackup);
       }
     }
@@ -607,8 +608,8 @@ export class Barq {
 
     const initialSubscriptions = config.sync?.initialSubscriptions;
     if (initialSubscriptions && !config.openSyncedBarqLocally) {
-      // Do not call `Barq.exists()` here in case the realm has been opened by this point in time.
-      this.handleInitialSubscriptions(initialSubscriptions, realmExists);
+      // Do not call `Barq.exists()` here in case the barq has been opened by this point in time.
+      this.handleInitialSubscriptions(initialSubscriptions, barqExists);
     }
   }
 
@@ -780,7 +781,7 @@ export class Barq {
     } else if (mode === false) {
       mode = UpdateMode.Never;
     }
-    // Implements https://github.com/BarqDB/barq-js/blob/v11/src/js_realm.hpp#L1260-L1321
+    // Implements https://github.com/BarqDB/barq-js/blob/v11/src/js_barq.hpp#L1260-L1321
     if (values instanceof BarqObject && !values[OBJECT_INTERNAL]) {
       throw new Error("Cannot create an object from a detached BarqObject instance");
     }
@@ -793,14 +794,14 @@ export class Barq {
     const helpers = this.classes.getHelpers(type);
 
     this.currentUpdateMode = mode;
-    let realmObject: BarqObject;
+    let barqObject: BarqObject;
     try {
-      realmObject = BarqObject.create(this, values, mode, { helpers });
+      barqObject = BarqObject.create(this, values, mode, { helpers });
     } finally {
       this.currentUpdateMode = undefined;
     }
 
-    return isAsymmetric(helpers.objectSchema) ? undefined : realmObject;
+    return isAsymmetric(helpers.objectSchema) ? undefined : barqObject;
   }
 
   //FIXME: any should not be used, but we are staying compatible with previous versions
@@ -813,7 +814,7 @@ export class Barq {
     assert.inTransaction(this, "Can only delete objects within a transaction.");
     assert.object(subject, "subject");
     if (subject instanceof BarqObject) {
-      assert.isSameBarq(subject[OBJECT_REALM].internal, this.internal, "Can't delete an object from another Barq");
+      assert.isSameBarq(subject[OBJECT_BARQ].internal, this.internal, "Can't delete an object from another Barq");
       const { objectSchema } = this.classes.getHelpers(subject);
       const obj = subject[OBJECT_INTERNAL];
       assert.isValid(
@@ -830,7 +831,7 @@ export class Barq {
       //@ts-expect-error the above check is good enough
       for (const object of subject) {
         assert.instanceOf(object, BarqObject);
-        assert.isSameBarq(object[OBJECT_REALM].internal, this.internal, "Can't delete an object from another Barq");
+        assert.isSameBarq(object[OBJECT_BARQ].internal, this.internal, "Can't delete an object from another Barq");
         const { objectSchema } = this.classes.getHelpers(object);
         const table = binding.Helpers.getTable(this.internal, objectSchema.tableKey);
         table.removeObject(object[OBJECT_INTERNAL].key);
@@ -883,7 +884,7 @@ export class Barq {
   objectForPrimaryKey<T = DefaultObject>(type: string, primaryKey: T[keyof T]): (BarqObject<T> & T) | null;
   objectForPrimaryKey<T extends AnyBarqObject>(type: Constructor<T>, primaryKey: T[keyof T]): T | null;
   objectForPrimaryKey<T extends AnyBarqObject>(type: string | Constructor<T>, primaryKey: unknown): T | null {
-    // Implements https://github.com/BarqDB/barq-js/blob/v11/src/js_realm.hpp#L1240-L1258
+    // Implements https://github.com/BarqDB/barq-js/blob/v11/src/js_barq.hpp#L1240-L1258
     const { objectSchema, properties, wrapObject } = this.classes.getHelpers(type);
     if (!objectSchema.primaryKey) {
       throw new Error(`Expected a primary key on '${objectSchema.name}'`);
@@ -974,7 +975,7 @@ export class Barq {
         return value[OBJECT_INTERNAL];
       },
     };
-    const accessor = createResultsAccessor<T>({ realm: this, typeHelpers, itemType: binding.PropertyType.Object });
+    const accessor = createResultsAccessor<T>({ barq: this, typeHelpers, itemType: binding.PropertyType.Object });
     return new Results<T>(this, results, accessor, typeHelpers);
   }
 
@@ -1081,13 +1082,13 @@ export class Barq {
    * @see {@link cancelTransaction}
    * @see {@link commitTransaction}
    * @example
-   * realm.beginTransaction();
+   * barq.beginTransaction();
    * try {
-   *   realm.create('Person', { name: 'Arthur Dent',  origin: 'Earth' });
-   *   realm.create('Person', { name: 'Ford Prefect', origin: 'Betelgeuse Five' });
-   *   realm.commitTransaction();
+   *   barq.create('Person', { name: 'Arthur Dent',  origin: 'Earth' });
+   *   barq.create('Person', { name: 'Ford Prefect', origin: 'Betelgeuse Five' });
+   *   barq.commitTransaction();
    * } catch (e) {
-   *   realm.cancelTransaction();
+   *   barq.cancelTransaction();
    *   throw e;
    * }
    */
@@ -1141,7 +1142,7 @@ export class Barq {
    *
    * Note that if this method is called from within a write transaction, the current data is written,
    * not the data from the point when the previous write transaction was committed.
-   * @param config - Barq configuration that describes the output realm.
+   * @param config - Barq configuration that describes the output barq.
    */
   writeCopyTo(config: Configuration): void {
     assert.outTransaction(this, "Can only convert Barqs outside a transaction.");
@@ -1186,12 +1187,12 @@ export class Barq {
   /**
    * Update subscriptions with the initial subscriptions if needed.
    * @param initialSubscriptions The initial subscriptions.
-   * @param realmExists Whether the realm already exists.
+   * @param barqExists Whether the barq already exists.
    */
-  private handleInitialSubscriptions(initialSubscriptions: InitialSubscriptions, realmExists: boolean): void {
-    const shouldUpdateSubscriptions = initialSubscriptions.rerunOnOpen || !realmExists;
+  private handleInitialSubscriptions(initialSubscriptions: InitialSubscriptions, barqExists: boolean): void {
+    const shouldUpdateSubscriptions = initialSubscriptions.rerunOnOpen || !barqExists;
     if (shouldUpdateSubscriptions) {
-      debug("handling initial subscriptions, %O", { rerunOnOpen: initialSubscriptions.rerunOnOpen, realmExists });
+      debug("handling initial subscriptions, %O", { rerunOnOpen: initialSubscriptions.rerunOnOpen, barqExists });
       this.subscriptions.updateNoWait(initialSubscriptions.update);
     }
   }

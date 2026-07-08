@@ -74,9 +74,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.realmtemplate"
+    namespace "com.barqtemplate"
     defaultConfig {
-        applicationId "com.realmtemplate"
+        applicationId "com.barqtemplate"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

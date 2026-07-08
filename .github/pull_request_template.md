@@ -1,6 +1,6 @@
 ## What, How & Why?
 <!-- Describe the changes and give some hints to guide your reviewers if possible. -->
-<!-- E.g. reference to other repos: This closes realm/realm-sync#??? -->
+<!-- E.g. reference to other repos: This closes barq/barq-sync#??? -->
 <!-- Please read CONTRIBUTING.md -->
 
 This closes # ??? <!-- link to an existing issue -->

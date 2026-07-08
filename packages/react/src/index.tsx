@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2021 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,7 +38,7 @@ const defaultContext = createBarqContext();
  *   };
  *
  *   return (
- *     <BarqProvider schema={[Task, User]} path={"data.realm"} sync={syncConfig}>
+ *     <BarqProvider schema={[Task, User]} path={"data.barq"} sync={syncConfig}>
  *       <App/>
  *     </BarqProvider>
  *   )
@@ -48,7 +49,7 @@ const defaultContext = createBarqContext();
  *     flexible: true,
  *     user: currentUser
  *   };
- *  const realm = new Barq(schema:[Task, User], path:"data.realm", sync: syncConfig);
+ *  const barq = new Barq(schema:[Task, User], path:"data.barq", sync: syncConfig);
  *  ...
  *  const AppRoot = () => {
  *   return (
@@ -65,9 +66,9 @@ export const BarqProvider = defaultContext.BarqProvider;
  * Returns the instance of the {@link Barq} opened by the `BarqProvider`.
  * @example
  * ```
- * const realm = useBarq();
+ * const barq = useBarq();
  * ```
- * @returns a realm instance
+ * @returns a barq instance
  */
 export const useBarq = defaultContext.useBarq;
 
@@ -101,7 +102,7 @@ export const useBarq = defaultContext.useBarq;
  * @param options.query - A function that takes a {@link Barq.Collection} and returns a {@link Barq.Collection} of the same type. This allows for filtering and sorting of the collection, before it is returned.
  * @param options.keyPaths - Indicates a lower bound on the changes relevant for the hook. This is a lower bound, since if multiple hooks add listeners (each with their own `keyPaths`) the union of these key-paths will determine the changes that are considered relevant for all listeners registered on the collection. In other words: A listener might fire and cause a re-render more than the key-paths specify, if other listeners with different key-paths are present.
  * @param deps - An array of dependencies that will be passed to {@link React.useMemo}
- * @returns a collection of realm objects or an empty array
+ * @returns a collection of barq objects or an empty array
  */
 export const useQuery = defaultContext.useQuery;
 

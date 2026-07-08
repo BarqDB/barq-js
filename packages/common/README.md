@@ -1,4 +1,4 @@
-# realm-common
+# barq-common
 
 A place for common code to be shared between Barq JS and Barq Web.
 

@@ -52,7 +52,7 @@ if(CCACHE_PROGRAM)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
 endif()
 
-# Copied from Realm Core's CMakeList.txt
+# Copied from Barq Core's CMakeList.txt
 function(add_cxx_flag_if_supported flag)
     if(flag MATCHES "^-Wno-")
         # Compilers ignore unknown -Wno-foo flags, so look for -Wfoo instead.
@@ -87,14 +87,14 @@ if(CMAKE_GENERATOR MATCHES "^Ninja")
     endif()
 endif()
 
-set(REALM_BUILD_LIB_ONLY ON)
-set(REALM_ENABLE_SYNC ON)
+set(BARQ_BUILD_LIB_ONLY ON)
+set(BARQ_ENABLE_SYNC ON)
 
 add_subdirectory(${BINDGEN_DIR}/vendor/barq-core barq-core EXCLUDE_FROM_ALL)
 
 add_library(barq-js OBJECT)
 
-target_link_libraries(barq-js Realm::ObjectStore)
+target_link_libraries(barq-js Barq::ObjectStore)
 
 #############################################################
 # The rest of this file is custom to the binding generator. #

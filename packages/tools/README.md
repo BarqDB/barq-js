@@ -32,12 +32,12 @@ npm run build
 You can run the transpiled tools directly e.g.,
 
 ```sh
-node dist/realm-schema.js -h
+node dist/barq-schema.js -h
 ```
 
-## `realm-schema`
+## `barq-schema`
 
-The `realm-schema` can read a local Barq file and export the schema. The support output formats are:
+The `barq-schema` can read a local Barq file and export the schema. The support output formats are:
 
 * JSON
 * [Mermaid](https://mermaid-js.github.io/mermaid/#/) compatible class diagram
@@ -45,7 +45,7 @@ The `realm-schema` can read a local Barq file and export the schema. The support
 Example:
 
 ```sh
-npx realm-schema -i samples/default.realm -o MyClasses.mmd -f mermaid
+npx barq-schema -i samples/default.barq -o MyClasses.mmd -f mermaid
 ```
 
 The output will look like

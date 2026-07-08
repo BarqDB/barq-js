@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.realm.react;
+package io.barq.react;
 
 import android.content.res.AssetManager;
 
@@ -30,9 +30,9 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-public class RealmReactPackage implements ReactPackage {
+public class BarqReactPackage implements ReactPackage {
   static {
-    SoLoader.loadLibrary("realm");
+    SoLoader.loadLibrary("barq");
   }
 
   /**
@@ -49,7 +49,7 @@ public class RealmReactPackage implements ReactPackage {
     // Tell the native module where to store database files and from where to load bundled database files
     assetManager = context.getResources().getAssets();
     try {
-      setDefaultRealmFileDirectoryImpl(context.getFilesDir().getCanonicalPath(), assetManager);
+      setDefaultBarqFileDirectoryImpl(context.getFilesDir().getCanonicalPath(), assetManager);
     } catch (IOException e) {
       throw new IllegalStateException(e);
     }
@@ -66,5 +66,5 @@ public class RealmReactPackage implements ReactPackage {
    * @param fileDir Path of the internal storage of the application
    * @param assetManager Manager used when restoring database files from the application assets
    */
-  private native void setDefaultRealmFileDirectoryImpl(String fileDir, AssetManager assetManager);
+  private native void setDefaultBarqFileDirectoryImpl(String fileDir, AssetManager assetManager);
 }

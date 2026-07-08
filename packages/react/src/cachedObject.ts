@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,7 +32,7 @@ type CachedObjectArgs = {
   /**
    * The {@link Barq} instance
    */
-  realm: Barq;
+  barq: Barq;
   /**
    * Callback function called whenver the object changes. Used to force a component
    * using the {@link useObject} hook to re-render.
@@ -69,7 +70,7 @@ export type CachedObject = {
  */
 export function createCachedObject({
   object,
-  realm,
+  barq,
   updateCallback,
   updatedRef,
   keyPaths,
@@ -88,7 +89,7 @@ export function createCachedObject({
     const value = object[key];
     if (value instanceof Barq.List && value.type === "object") {
       const updatedRef = { current: true };
-      const { collection, tearDown } = createCachedCollection({ collection: value, realm, updateCallback, updatedRef });
+      const { collection, tearDown } = createCachedCollection({ collection: value, barq, updateCallback, updatedRef });
       listCaches.set(key, { collection, updatedRef });
       listTearDowns.push(tearDown);
     }
@@ -144,7 +145,7 @@ export function createCachedObject({
   if (object.isValid()) {
     // If we are in a transaction, then push adding the listener to the event loop.  This will allow the write transaction to finish.
     // see https://github.com/BarqDB/barq-js/issues/4375
-    if (realm.isInTransaction) {
+    if (barq.isInTransaction) {
       setImmediate(() => {
         object.addListener(listenerCallback, keyPaths);
       });

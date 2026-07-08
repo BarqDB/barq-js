@@ -1,7 +1,7 @@
 {
   "name": "@barq/expo-template",
   "version": "0.7.0",
-  "description": "Realm Template for Expo",
+  "description": "Barq Template for Expo",
   "scripts": {
     "start": "expo start --dev-client",
     "android": "expo run:android",

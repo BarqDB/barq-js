@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -81,7 +82,7 @@ function getPropertyHelpers(type: binding.PropertyType, options: PropertyOptions
 export function createPropertyHelpers(property: PropertyContext, options: HelperOptions): PropertyHelpers {
   const collectionType = property.type & binding.PropertyType.Collection;
   const typeOptions: TypeOptions = {
-    realm: options.realm,
+    barq: options.barq,
     name: property.publicName || property.name,
     getClassHelpers: options.getClassHelpers,
     objectType: property.objectType,

@@ -19,5 +19,4 @@ src/object-store/**/.ninja*
 src/object-store/**/cmake_install.cmake
 src/object-store/**/CMakeFiles/
 src/object-store/**/Makefile
-src/object-store/src/librealm-object-store.*
 src/object-store/tests/tests

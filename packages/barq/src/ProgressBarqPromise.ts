@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,12 +36,12 @@ type OpenBehavior = {
   timeOutBehavior?: OpenBarqTimeOutBehavior;
 };
 
-function determineBehavior(config: Configuration, realmExists: boolean): OpenBehavior {
+function determineBehavior(config: Configuration, barqExists: boolean): OpenBehavior {
   const { sync, openSyncedBarqLocally } = config;
   if (!sync || openSyncedBarqLocally) {
     return { openBehavior: OpenBarqBehaviorType.OpenImmediately };
   } else {
-    const configProperty = realmExists ? "existingBarqFileBehavior" : "newBarqFileBehavior";
+    const configProperty = barqExists ? "existingBarqFileBehavior" : "newBarqFileBehavior";
     const configBehavior = sync[configProperty];
     if (configBehavior) {
       const { type, timeOut, timeOutBehavior } = configBehavior;
@@ -94,12 +95,12 @@ export class ProgressBarqPromise implements Promise<Barq> {
       validateConfiguration(config);
       // Calling `Barq.exists()` before `binding.Barq.getSynchronizedBarq()` is necessary to capture
       // the correct value when this constructor was called since `binding.Barq.getSynchronizedBarq()`
-      // will open the realm. This is needed when calling the Barq constructor.
-      const realmExists = indirect.Barq.exists(config);
-      const { openBehavior, timeOut, timeOutBehavior } = determineBehavior(config, realmExists);
+      // will open the barq. This is needed when calling the Barq constructor.
+      const barqExists = indirect.Barq.exists(config);
+      const { openBehavior, timeOut, timeOutBehavior } = determineBehavior(config, barqExists);
       if (openBehavior === OpenBarqBehaviorType.OpenImmediately) {
-        const realm = new indirect.Barq(config);
-        this.handle.resolve(realm);
+        const barq = new indirect.Barq(config);
+        this.handle.resolve(barq);
       } else if (openBehavior === OpenBarqBehaviorType.DownloadBeforeOpen) {
         const { bindingConfig } = indirect.Barq.transformConfig(config);
 
@@ -114,18 +115,18 @@ export class ProgressBarqPromise implements Promise<Barq> {
         this.task
           .start()
           .then(async (tsr) => {
-            const realm = new indirect.Barq(config, {
+            const barq = new indirect.Barq(config, {
               internal: binding.Helpers.consumeThreadSafeReferenceToSharedBarq(tsr),
-              // Do not call `Barq.exists()` here in case the realm has been opened by this point in time.
-              realmExists,
+              // Do not call `Barq.exists()` here in case the barq has been opened by this point in time.
+              barqExists,
             });
             if (config.sync?.flexible && !config.openSyncedBarqLocally) {
-              const { subscriptions } = realm;
+              const { subscriptions } = barq;
               if (subscriptions.state === SubscriptionSetState.Pending) {
                 await subscriptions.waitForSynchronization();
               }
             }
-            return realm;
+            return barq;
           })
           .then(this.handle.resolve, (err) => {
             assert.undefined(err.code, "Update this to use the error code instead of matching on message");
@@ -204,7 +205,7 @@ export class ProgressBarqPromise implements Promise<Barq> {
   private createTimeoutPromise(config: Configuration, { timeOut, timeOutBehavior }: OpenBehavior) {
     if (typeof timeOut === "number") {
       this.timeoutPromise = new TimeoutPromise(
-        this.handle.promise, // Ensures the timeout gets cancelled when the realm opens
+        this.handle.promise, // Ensures the timeout gets cancelled when the barq opens
         {
           ms: timeOut,
           message: `Barq could not be downloaded in the allocated time: ${timeOut} ms.`,
@@ -218,8 +219,8 @@ export class ProgressBarqPromise implements Promise<Barq> {
         this.timeoutPromise.catch((err) => {
           if (err instanceof TimeoutError) {
             this.cancelAndResetTask();
-            const realm = new indirect.Barq(config);
-            this.handle.resolve(realm);
+            const barq = new indirect.Barq(config);
+            this.handle.resolve(barq);
           } else {
             this.handle.reject(err);
           }

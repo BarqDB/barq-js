@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -374,7 +375,7 @@ describe("Babel plugin", () => {
       expect((parsedSchema?.properties.name as PropertySchema).indexed).toEqual(true);
     });
 
-    it("ignores `@index` decorators not imported from `realm`", () => {
+    it("ignores `@index` decorators not imported from `barq`", () => {
       const transformCode = transform({
         source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barq/barq";
         export class Person extends Barq.Object { @index name: Barq.Types.String; }`,
@@ -407,7 +408,7 @@ describe("Babel plugin", () => {
       expect((parsedSchema?.properties.name as PropertySchema).indexed).toEqual("full-text");
     });
 
-    it('ignores `@index("full-text")` decorators not imported from `realm`', () => {
+    it('ignores `@index("full-text")` decorators not imported from `barq`', () => {
       const transformCode = transform({
         source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barq/barq";
         export class Person extends Barq.Object { @index("full-text") name: Barq.Types.String; }`,
@@ -450,7 +451,7 @@ describe("Babel plugin", () => {
       expect((parsedSchema?.properties.name as PropertySchema).mapTo).toEqual("rename");
     });
 
-    it("ignores `@mapTo` decorators not imported from `realm`", () => {
+    it("ignores `@mapTo` decorators not imported from `barq`", () => {
       const transformCode = transform({
         source: `import Barq, { Types, List, Set, Dictionary, Mixed } from "@barq/barq";
         export class Person extends Barq.Object { @mapTo("rename") name: Barq.Types.String; }`,

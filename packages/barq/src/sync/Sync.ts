@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -82,7 +83,7 @@ export class Sync {
   // TODO: Consider breaking the API, turning this into an instance method
   /**
    * Enable multiplexing multiple sync sessions over a single connection for a Barq app.
-   * When having a lot of synchronized realms open the system might run out of file
+   * When having a lot of synchronized barqs open the system might run out of file
    * descriptors because of all the open sockets to the server. Session multiplexing
    * is designed to alleviate that, but it might not work with a server configured with
    * fail-over. Only use if you're seeing errors about reaching the file descriptor limit
@@ -96,14 +97,14 @@ export class Sync {
   /**
    * Initiate a client reset. The Barq must be closed prior to the reset.
    *
-   * A synced Barq may need to be reset if the communications with the Atlas Device Sync Server
+   * A synced Barq may need to be reset if the communications with the Barq sync Server
    * indicate an unrecoverable error that prevents continuing with normal synchronization. The
    * most common reason for this is if a client has been disconnected for too long.
    *
    * The local copy of the Barq is moved into a recovery directory
    * for safekeeping.
    *
-   * Local writes that were not successfully synchronized to Atlas
+   * Local writes that were not successfully synchronized to Barq
    * will be present in the local recovery copy of the Barq file. The re-downloaded Barq will
    * initially contain only the data present at the time the Barq was synchronized up on the server.
    * @deprecated
@@ -111,7 +112,7 @@ export class Sync {
    * @example
    * {
    *   // Once you have opened your Barq, you will have to keep a reference to it.
-   *   // In the error handler, this reference is called `realm`
+   *   // In the error handler, this reference is called `barq`
    *   const config = {
    *     // schema, etc.
    *     sync: {
@@ -119,8 +120,8 @@ export class Sync {
    *       partitionValue,
    *       error: (session, error) => {
    *         if (error.name === 'ClientReset') {
-   *           let path = realm.path; // realm.path will no be accessible after realm.close()
-   *           realm.close();
+   *           let path = barq.path; // barq.path will no be accessible after barq.close()
+   *           barq.close();
    *           Barq.User.Sync.initiateClientReset(app, path);
    *           // - open Barq at `error.config.path` (oldBarq)
    *           // - open Barq with `config` (newBarq)

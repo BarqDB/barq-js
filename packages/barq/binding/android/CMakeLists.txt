@@ -12,16 +12,16 @@ if(NOT REACT_NATIVE_ROOT_DIR)
 endif()
 
 add_library(barq-js-android-binding SHARED
-    ../jsi/CxxRealmModule.cpp
+    ../jsi/CxxBarqModule.cpp
     ../jsi/jsi_init.cpp
     ../jsi/react_scheduler.cpp
     src/main/cpp/platform.cpp
     src/main/cpp/jni_utils.cpp
-    src/main/cpp/io_realm_react_RealmReactPackage.cpp
+    src/main/cpp/io_barq_react_BarqReactPackage.cpp
 )
 
 set_target_properties(barq-js-android-binding PROPERTIES
-    OUTPUT_NAME "realm"
+    OUTPUT_NAME "barq"
     PREFIX "lib"
     SUFFIX ".so"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}"
@@ -51,16 +51,16 @@ find_library(log-lib log)
 find_package(fbjni REQUIRED CONFIG)
 find_package(ReactAndroid REQUIRED CONFIG)
 
-set(Realm_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../prebuilds/android/${ANDROID_ABI}/share/cmake/Realm")
-find_package(Realm REQUIRED CONFIG)
+set(Barq_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../prebuilds/android/${ANDROID_ABI}/share/cmake/Barq")
+find_package(Barq REQUIRED CONFIG)
 
 target_link_libraries(barq-js-android-binding
     ${android-lib}
     ${log-lib}
-    Realm::Storage
-    Realm::QueryParser
-    Realm::ObjectStore
-    Realm::Sync
+    Barq::Storage
+    Barq::QueryParser
+    Barq::ObjectStore
+    Barq::Sync
     ReactAndroid::jsi
     fbjni::fbjni
 )

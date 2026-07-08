@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2023 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -99,7 +100,7 @@ export class MutableSubscriptionSet extends BaseSubscriptionSet {
    * an `OR` operator with any existing queries for the same type.
    *
    * A query is represented by a {@link Results} instance returned from {@link Barq.objects},
-   * for example: `mutableSubs.add(realm.objects("Cat").filtered("age > 10"));`.
+   * for example: `mutableSubs.add(barq.objects("Cat").filtered("age > 10"));`.
    * @param query - A {@link Results} instance representing the query to subscribe to.
    * @param options - An optional {@link SubscriptionOptions} object containing options to
    * use when adding this subscription (e.g. to give the subscription a name).

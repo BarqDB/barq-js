@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,15 +29,15 @@ type Person = { name: string; age: number; bestFriend: Person | null };
 
 describe("Milestone #4", () => {
   beforeEach(function (this: BarqContext) {
-    this.realm = new Barq({
+    this.barq = new Barq({
       path: generateTempBarqPath(),
       inMemory: true,
       schema: [{ name: "Person", properties: { name: "string", age: "int", bestFriend: "Person" } }],
     });
-    this.realm.write(() => {
-      const alice = this.realm.create<Person>("Person", { name: "Alice", age: 21, bestFriend: null });
-      const bob = this.realm.create<Person>("Person", { name: "Bob", age: 7, bestFriend: alice });
-      const charlie = this.realm.create<Person>("Person", {
+    this.barq.write(() => {
+      const alice = this.barq.create<Person>("Person", { name: "Alice", age: 21, bestFriend: null });
+      const bob = this.barq.create<Person>("Person", { name: "Bob", age: 7, bestFriend: alice });
+      const charlie = this.barq.create<Person>("Person", {
         name: "Charlie",
         age: 42,
         bestFriend: bob,
@@ -48,7 +49,7 @@ describe("Milestone #4", () => {
 
   describe("Result#filtered", () => {
     it("filters on inline strings", function (this: BarqContext) {
-      const results = this.realm.objects<Person>("Person").filtered("name == 'Alice'");
+      const results = this.barq.objects<Person>("Person").filtered("name == 'Alice'");
       expect(results).instanceOf(Results);
       expect(results.length).equals(1);
       const [person] = results;
@@ -56,7 +57,7 @@ describe("Milestone #4", () => {
     });
 
     it("filters on placeholder strings", function (this: BarqContext) {
-      const results = this.realm.objects<Person>("Person").filtered("name == $0", "Alice");
+      const results = this.barq.objects<Person>("Person").filtered("name == $0", "Alice");
       expect(results).instanceOf(Results);
       expect(results.length).equals(1);
       const [person] = results;
@@ -64,7 +65,7 @@ describe("Milestone #4", () => {
     });
 
     it("filters on placeholder ints", function (this: BarqContext) {
-      const results = this.realm.objects<Person>("Person").filtered("age > $0", 10);
+      const results = this.barq.objects<Person>("Person").filtered("age > $0", 10);
       expect(results).instanceOf(Results);
       expect(results.length).equals(2);
       // Expect Alice and Charlie to be in the results
@@ -73,13 +74,13 @@ describe("Milestone #4", () => {
     });
 
     it("filters and sorts", function (this: BarqContext) {
-      const results = this.realm.objects<Person>("Person").filtered("age > $0", 10).sorted("age");
+      const results = this.barq.objects<Person>("Person").filtered("age > $0", 10).sorted("age");
       const names = results.map((p) => p.name);
       expect(names).deep.equals(["Alice", "Charlie"]);
     });
 
     it("filters and sorts through links", function (this: BarqContext) {
-      const results = this.realm
+      const results = this.barq
         .objects<Person>("Person")
         .filtered("bestFriend.age < $0", 30) // Alice and Bob are younger than 30. Bob and Charlie's best friends respectively.
         .sorted("bestFriend.age");
@@ -91,37 +92,37 @@ describe("Milestone #4", () => {
 
   describe("Result#sorted", () => {
     it("sorts on strings", function (this: BarqContext) {
-      const results = this.realm.objects<Person>("Person").sorted("name");
+      const results = this.barq.objects<Person>("Person").sorted("name");
       const names = results.map((p) => p.name);
       expect(names).deep.equals(["Alice", "Bob", "Charlie"]);
     });
 
     it("sorts reversed on strings", function (this: BarqContext) {
-      const results = this.realm.objects<Person>("Person").sorted("name", true);
+      const results = this.barq.objects<Person>("Person").sorted("name", true);
       const names = results.map((p) => p.name);
       expect(names).deep.equals(["Charlie", "Bob", "Alice"]);
     });
 
     it("sorts on int", function (this: BarqContext) {
-      const results = this.realm.objects<Person>("Person").sorted("age");
+      const results = this.barq.objects<Person>("Person").sorted("age");
       const names = results.map((p) => p.name);
       expect(names).deep.equals(["Bob", "Alice", "Charlie"]);
     });
 
     it("sorts reversed on int", function (this: BarqContext) {
-      const results = this.realm.objects<Person>("Person").sorted("age", true);
+      const results = this.barq.objects<Person>("Person").sorted("age", true);
       const names = results.map((p) => p.name);
       expect(names).deep.equals(["Charlie", "Alice", "Bob"]);
     });
 
     it("sorts and filters", function (this: BarqContext) {
-      const results = this.realm.objects<Person>("Person").sorted("age").filtered("age > $0", 10);
+      const results = this.barq.objects<Person>("Person").sorted("age").filtered("age > $0", 10);
       const names = results.map((p) => p.name);
       expect(names).deep.equals(["Alice", "Charlie"]);
     });
 
     it("sorts and filters, reversed", function (this: BarqContext) {
-      const results = this.realm.objects<Person>("Person").sorted("age", true).filtered("age > $0", 10);
+      const results = this.barq.objects<Person>("Person").sorted("age", true).filtered("age > $0", 10);
       const names = results.map((p) => p.name);
       expect(names).deep.equals(["Charlie", "Alice"]);
     });

@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2023 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,21 +28,21 @@ type UserProgressHook = {
 
 export function createUseProgress(useBarq: UseBarqHook): ({ direction, mode }: UserProgressHook) => number | null {
   return function useProgress({ direction, mode }: UserProgressHook): number | null {
-    const realm = useBarq();
+    const barq = useBarq();
     const [progress, setProgress] = useState<number | null>(null);
 
     useEffect(() => {
-      if (!realm.syncSession) {
+      if (!barq.syncSession) {
         throw new Error("No sync session found.");
       }
       const callback: EstimateProgressNotificationCallback = (estimate) => {
         setProgress(estimate);
       };
 
-      realm.syncSession.addProgressNotification(direction, mode, callback);
+      barq.syncSession.addProgressNotification(direction, mode, callback);
 
-      return () => realm.syncSession?.removeProgressNotification(callback);
-    }, [realm, direction, mode]);
+      return () => barq.syncSession?.removeProgressNotification(callback);
+    }, [barq, direction, mode]);
 
     return progress;
   };

@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2023 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,7 +28,7 @@ const {
   PRIVATE_KEY: privateKey,
   USERNAME: username = "unique_user@domain.com",
   PASSWORD: password = "password",
-  REALM_BASE_URL: baseUrl = "http://localhost:9090",
+  BARQ_BASE_URL: baseUrl = "http://localhost:9090",
 } = process.env;
 
 export { baseUrl };
@@ -70,8 +71,8 @@ export async function importApp(config: AppConfig): Promise<{ appId: string }> {
 }
 
 export function randomBarqPath() {
-  const tempDirPath = fs.mkdtempSync(path.join(os.tmpdir(), "realm-react-tests-"));
-  return path.join(tempDirPath, "test.realm");
+  const tempDirPath = fs.mkdtempSync(path.join(os.tmpdir(), "barq-react-tests-"));
+  return path.join(tempDirPath, "test.barq");
 }
 
 /**

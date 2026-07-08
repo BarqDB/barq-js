@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2016 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,27 +29,27 @@
 
 #include "platform.hpp"
 
-#define REALM_FILE_FILTER ".realm"
-#define REALM_FILE_FILTER_LEN 6
+#define BARQ_FILE_FILTER ".barq"
+#define BARQ_FILE_FILTER_LEN 6
 
 namespace fs = std::filesystem;
 
-static inline bool is_realm_file(const char* str)
+static inline bool is_barq_file(const char* str)
 {
     size_t lenstr = strlen(str);
-    if (REALM_FILE_FILTER_LEN > lenstr)
+    if (BARQ_FILE_FILTER_LEN > lenstr)
         return false;
-    return strncmp(str + lenstr - REALM_FILE_FILTER_LEN, REALM_FILE_FILTER, REALM_FILE_FILTER_LEN) == 0;
+    return strncmp(str + lenstr - BARQ_FILE_FILTER_LEN, BARQ_FILE_FILTER, BARQ_FILE_FILTER_LEN) == 0;
 }
 
 static AAssetManager* s_asset_manager;
-static std::string s_default_realm_directory;
+static std::string s_default_barq_directory;
 
-namespace realm {
+namespace barq {
 
-void JsPlatformHelpers::set_default_realm_file_directory(std::string dir)
+void JsPlatformHelpers::set_default_barq_file_directory(std::string dir)
 {
-    s_default_realm_directory = dir;
+    s_default_barq_directory = dir;
 }
 
 void set_asset_manager(AAssetManager* asset_manager)
@@ -56,9 +57,9 @@ void set_asset_manager(AAssetManager* asset_manager)
     s_asset_manager = asset_manager;
 }
 
-std::string JsPlatformHelpers::default_realm_file_directory()
+std::string JsPlatformHelpers::default_barq_file_directory()
 {
-    return s_default_realm_directory;
+    return s_default_barq_directory;
 }
 
 void JsPlatformHelpers::ensure_directory_exists_for_file(const std::string& file)
@@ -67,19 +68,19 @@ void JsPlatformHelpers::ensure_directory_exists_for_file(const std::string& file
     fs::create_directories(parent_path);
 }
 
-void JsPlatformHelpers::copy_bundled_realm_files()
+void JsPlatformHelpers::copy_bundled_barq_files()
 {
     AAssetDir* assetDir = AAssetManager_openDir(s_asset_manager, "");
     const char* filename = nullptr;
 
     while ((filename = AAssetDir_getNextFileName(assetDir)) != nullptr) {
-        if (is_realm_file(filename)) {
+        if (is_barq_file(filename)) {
             AAsset* asset = AAssetManager_open(s_asset_manager, filename, AASSET_MODE_STREAMING);
 
             char buf[BUFSIZ];
             int nb_read = 0;
 
-            auto dest_filename = s_default_realm_directory + '/' + filename;
+            auto dest_filename = s_default_barq_directory + '/' + filename;
             if (access(dest_filename.c_str(), F_OK) == -1) {
                 // file doesn't exist, copy
                 FILE* out = fopen(dest_filename.c_str(), "w");
@@ -94,14 +95,14 @@ void JsPlatformHelpers::copy_bundled_realm_files()
     AAssetDir_close(assetDir);
 }
 
-void JsPlatformHelpers::remove_realm_files_from_directory(const std::string& directory)
+void JsPlatformHelpers::remove_barq_files_from_directory(const std::string& directory)
 {
     std::vector<fs::path> files_to_delete;
     // Collect the files to delete (as deleting while iterating gives undefined behaviour)
     for (const auto& entry : fs::directory_iterator(directory)) {
         if (entry.is_regular_file()) {
             const auto& path = entry.path();
-            if (path.extension() == ".realm" || path.extension() == ".realm.lock") {
+            if (path.extension() == ".barq" || path.extension() == ".barq.lock") {
                 files_to_delete.push_back(path);
             }
         }
@@ -151,4 +152,4 @@ std::string JsPlatformHelpers::get_cpu_arch()
 #endif
 }
 
-} // namespace realm
+} // namespace barq

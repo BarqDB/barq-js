@@ -1,7 +1,7 @@
 {
 	"expo": {
-		"name": "RealmTemplateTs",
-		"slug": "realm-template-ts",
+		"name": "BarqTemplateTs",
+		"slug": "barq-template-ts",
 		"version": "1.0.0",
 		"assetBundlePatterns": [
 			"**/*"

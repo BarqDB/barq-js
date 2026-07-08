@@ -14,7 +14,7 @@ npm-debug.log*
 yarn-debug.log*
 build/
 web-build/
-RealmTemplateTs.xcworkspace
+BarqTemplateTs.xcworkspace
 Podfile.lock
 ios/Pods
 android/.build

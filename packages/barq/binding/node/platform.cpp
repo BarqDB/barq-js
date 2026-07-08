@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2016 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,9 +25,9 @@
 
 #include "../platform.hpp"
 
-static std::string s_default_realm_directory;
+static std::string s_default_barq_directory;
 
-namespace realm {
+namespace barq {
 
 class UVException : public std::runtime_error {
 public:
@@ -46,16 +47,16 @@ struct FileSystemRequest : uv_fs_t {
     }
 };
 
-void JsPlatformHelpers::set_default_realm_file_directory(std::string dir)
+void JsPlatformHelpers::set_default_barq_file_directory(std::string dir)
 {
-    s_default_realm_directory = dir;
+    s_default_barq_directory = dir;
 }
 
 // taken from Node.js: function Cwd in node.cc
-std::string JsPlatformHelpers::default_realm_file_directory()
+std::string JsPlatformHelpers::default_barq_file_directory()
 {
-    if (!s_default_realm_directory.empty()) {
-        return s_default_realm_directory;
+    if (!s_default_barq_directory.empty()) {
+        return s_default_barq_directory;
     }
 
 #ifdef _WIN32
@@ -93,9 +94,9 @@ void JsPlatformHelpers::ensure_directory_exists_for_file(const std::string& file
     }
 }
 
-void JsPlatformHelpers::copy_bundled_realm_files()
+void JsPlatformHelpers::copy_bundled_barq_files()
 {
-    throw std::runtime_error("Realm for Node does not support this method.");
+    throw std::runtime_error("Barq for Node does not support this method.");
 }
 
 inline bool ends_with(const std::string& str, const std::string& suffix)
@@ -103,7 +104,7 @@ inline bool ends_with(const std::string& str, const std::string& suffix)
     return str.size() > suffix.size() && str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
 }
 
-void JsPlatformHelpers::remove_realm_files_from_directory(const std::string& dir_path)
+void JsPlatformHelpers::remove_barq_files_from_directory(const std::string& dir_path)
 {
     FileSystemRequest scandir_req;
     if (uv_fs_scandir(uv_default_loop(), &scandir_req, dir_path.c_str(), 0, nullptr) < 0) {
@@ -115,8 +116,8 @@ void JsPlatformHelpers::remove_realm_files_from_directory(const std::string& dir
         std::string path(dir_path + '/' + entry.name);
 
         if (entry.type == UV_DIRENT_DIR) {
-            static std::string realm_management_extension(".realm.management");
-            if (ends_with(path, realm_management_extension)) {
+            static std::string barq_management_extension(".barq.management");
+            if (ends_with(path, barq_management_extension)) {
                 uv_dirent_t management_entry;
                 FileSystemRequest management_scandir_req;
                 if (uv_fs_scandir(uv_default_loop(), &management_scandir_req, path.c_str(), 0, nullptr) < 0) {
@@ -138,15 +139,15 @@ void JsPlatformHelpers::remove_realm_files_from_directory(const std::string& dir
             }
         }
         else {
-            static std::string realm_extension(".realm");
-            static std::string realm_note_extension(".realm.note");
-            static std::string realm_lock_extension(".realm.lock");
-            static std::string realm_log_extension(".realm.log");
-            static std::string realm_log_a_extension(".realm.log_a"); // legacy
-            static std::string realm_log_b_extension(".realm.log_b"); // legacy
-            if (ends_with(path, realm_extension) || ends_with(path, realm_note_extension) ||
-                ends_with(path, realm_lock_extension) || ends_with(path, realm_log_extension) ||
-                ends_with(path, realm_log_a_extension) || ends_with(path, realm_log_b_extension)) {
+            static std::string barq_extension(".barq");
+            static std::string barq_note_extension(".barq.note");
+            static std::string barq_lock_extension(".barq.lock");
+            static std::string barq_log_extension(".barq.log");
+            static std::string barq_log_a_extension(".barq.log_a"); // legacy
+            static std::string barq_log_b_extension(".barq.log_b"); // legacy
+            if (ends_with(path, barq_extension) || ends_with(path, barq_note_extension) ||
+                ends_with(path, barq_lock_extension) || ends_with(path, barq_log_extension) ||
+                ends_with(path, barq_log_a_extension) || ends_with(path, barq_log_b_extension)) {
                 FileSystemRequest delete_req;
                 if (uv_fs_unlink(uv_default_loop(), &delete_req, path.c_str(), nullptr) != 0) {
                     throw UVException(static_cast<uv_errno_t>(delete_req.result));
@@ -230,4 +231,4 @@ std::string JsPlatformHelpers::get_cpu_arch()
     return "unknown";
 }
 
-} // namespace realm
+} // namespace barq

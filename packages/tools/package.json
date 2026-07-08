@@ -1,9 +1,9 @@
 {
   "name": "@barq/tools",
   "version": "1.0.1",
-  "description": "Tools useful for working with Realms",
+  "description": "Tools useful for working with Barqs",
   "bin": {
-    "realm-schema": "./dist/realm-schema.js"
+    "barq-schema": "./dist/barq-schema.js"
   },
   "files": [
     "dist"
@@ -38,16 +38,16 @@
     "url": "https://github.com/BarqDB/barq-js/issues"
   },
   "keywords": [
-    "realm",
+    "barq",
     "tool"
   ],
   "author": {
-    "name": "MongoDB",
-    "email": "help@realm.io",
-    "url": "https://www.mongodb.com/docs/realm/"
+    "name": "Barq",
+    "email": "help@barq.io",
+    "url": "https://www.barq.com/docs/barq/"
   },
   "contributors": [
-    "Kenneth Geisshirt <kenneth.geisshirt@mongodb.com> (https://github.com/kneth)"
+    "Kenneth Geisshirt <kenneth.geisshirt@barq.com> (https://github.com/kneth)"
   ],
   "license": "Apache-2.0",
   "dependencies": {

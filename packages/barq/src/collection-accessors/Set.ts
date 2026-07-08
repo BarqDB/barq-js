@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,7 +31,7 @@ export type SetAccessor<T = unknown> = {
 };
 
 type SetAccessorFactoryOptions<T> = {
-  realm: Barq;
+  barq: Barq;
   typeHelpers: TypeHelpers<T>;
   itemType: binding.PropertyType;
 };
@@ -43,7 +44,7 @@ export function createSetAccessor<T>(options: SetAccessorFactoryOptions<T>): Set
 }
 
 function createSetAccessorForMixed<T>({
-  realm,
+  barq,
   typeHelpers,
 }: Omit<SetAccessorFactoryOptions<T>, "itemType">): SetAccessor<T> {
   const { fromBinding, toBinding } = typeHelpers;
@@ -55,7 +56,7 @@ function createSetAccessorForMixed<T>({
     // Directly setting by "index" to a Set is a no-op.
     set: () => {},
     insert(set, value) {
-      assert.inTransaction(realm);
+      assert.inTransaction(barq);
 
       try {
         set.insertAny(toBinding(value));
@@ -68,7 +69,7 @@ function createSetAccessorForMixed<T>({
 }
 
 function createSetAccessorForKnownType<T>({
-  realm,
+  barq,
   typeHelpers,
   itemType,
 }: SetAccessorFactoryOptions<T>): SetAccessor<T> {
@@ -78,7 +79,7 @@ function createSetAccessorForKnownType<T>({
     // Directly setting by "index" to a Set is a no-op.
     set: () => {},
     insert(set, value) {
-      assert.inTransaction(realm);
+      assert.inTransaction(barq);
 
       try {
         set.insertAny(toBinding(value));

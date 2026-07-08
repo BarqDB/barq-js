@@ -8,10 +8,10 @@ Licensed under the Apache License, Version 2.0. See LICENSE and NOTICE.
 Barq is an offline-first object database for JavaScript and React Native, with
 optional synchronization powered by [barq-core](https://github.com/BarqDB/barq-core).
 
-Barq JS is a modified fork of the [Realm JavaScript SDK](https://github.com/realm/realm-js).
+Barq JS is a modified fork of the [Barq JavaScript SDK](https://github.com/barq/barq-js).
 It keeps the fast, reactive local database and reshapes synchronization around
-**barq-core's token-based sync users** — there is no Atlas, no MongoDB client,
-and no bundled BSON dependency. See [NOTICE](./NOTICE) for fork attribution.
+**barq-core's token-based sync users** — there is no Barq, no Barq client,
+and no bundled Types dependency. See [NOTICE](./NOTICE) for fork attribution.
 
 ## Packages
 
@@ -87,7 +87,7 @@ under `Barq.Types` — see [`packages/barq/src/types`](./packages/barq/src/types
 
 ## Data types
 
-Barq ships its own value types (no third-party BSON dependency):
+Barq ships its own value types (no third-party Types dependency):
 
 - `Barq.Types.ObjectId`
 - `Barq.Types.UUID`

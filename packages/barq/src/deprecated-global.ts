@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2024 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +25,7 @@ import * as ns from "./namespace";
 let warnedAboutGlobalBarqUse = false;
 Object.defineProperty(safeGlobalThis, "Barq", {
   get() {
-    if (flags.THROW_ON_GLOBAL_REALM) {
+    if (flags.THROW_ON_GLOBAL_BARQ) {
       throw new Error(
         "Accessed global Barq, please update your code to ensure you import Barq:\nimport Barq from '@barq/barq';",
       );
@@ -36,7 +37,7 @@ Object.defineProperty(safeGlobalThis, "Barq", {
         'const Barq = require("@barq/barq"); // For CommonJS\n\n',
         "To determine where, put this in the top of your index file:\n",
         `import Barq from "@barq/barq";\n`,
-        `Barq.flags.THROW_ON_GLOBAL_REALM = true`,
+        `Barq.flags.THROW_ON_GLOBAL_BARQ = true`,
       );
       warnedAboutGlobalBarqUse = true;
     }

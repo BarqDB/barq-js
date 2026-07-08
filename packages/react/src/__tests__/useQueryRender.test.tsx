@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2021 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -55,11 +56,11 @@ class Tag extends Barq.Object {
 }
 
 // TODO: It would be better not to have to rely on this, but at the moment I see no other alternatives
-function forceSynchronousNotifications(realm: Barq) {
+function forceSynchronousNotifications(barq: Barq) {
   // Starting a transaction will force all listeners to advance to the latest version
   // and deliver notifications. We don't need to commit the transaction for this to work.
-  realm.beginTransaction();
-  realm.cancelTransaction();
+  barq.beginTransaction();
+  barq.cancelTransaction();
 }
 
 const testCollection = [...new Array(30)].map((_, index) => ({ id: index, name: `${index}` }));
@@ -97,15 +98,15 @@ const App = ({ queryType = QueryType.normal, useUseObject = false }) => {
 };
 
 const SetupComponent = ({ children }: { children: JSX.Element }): JSX.Element | null => {
-  const realm = useBarq();
+  const barq = useBarq();
   const [setupComplete, setSetupComplete] = useState(false);
   useEffect(() => {
-    realm.write(() => {
-      realm.deleteAll();
-      testCollection.forEach((object) => new Item(realm, object));
+    barq.write(() => {
+      barq.deleteAll();
+      testCollection.forEach((object) => new Item(barq, object));
     });
     setSetupComplete(true);
-  }, [realm]);
+  }, [barq]);
 
   if (!setupComplete) {
     return null;
@@ -128,7 +129,7 @@ const tagKeyExtractor = (item: Tag) => `tag-${item.id}`;
 
 const ItemComponent: React.FC<{ item: Item | (Item & Barq.Object) }> = React.memo(({ item }) => {
   itemRenderCounter();
-  const realm = useBarq();
+  const barq = useBarq();
 
   return (
     <View testID={`result${item.id}`}>
@@ -139,7 +140,7 @@ const ItemComponent: React.FC<{ item: Item | (Item & Barq.Object) }> = React.mem
         testID={`input${item.id}`}
         value={item.name}
         onChangeText={(text) => {
-          realm.write(() => {
+          barq.write(() => {
             item.name = text;
           });
         }}
@@ -147,8 +148,8 @@ const ItemComponent: React.FC<{ item: Item | (Item & Barq.Object) }> = React.mem
       <TouchableHighlight
         testID={`deleteButton${item.id}`}
         onPress={() => {
-          realm.write(() => {
-            realm.delete(item);
+          barq.write(() => {
+            barq.delete(item);
           });
         }}
       >
@@ -442,7 +443,7 @@ describe.each`
     expect(queryObjectChangeCounter).toHaveBeenCalledTimes(1);
   });
 
-  it("will rerender when the realm database is cleared", async () => {
+  it("will rerender when the barq database is cleared", async () => {
     await setupTest({ queryType });
 
     const initialCount = 1;

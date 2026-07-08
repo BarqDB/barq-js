@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -55,12 +56,12 @@ export class List<T = unknown>
   private declare isEmbedded: boolean;
 
   /** @internal */
-  constructor(realm: Barq, internal: binding.List, accessor: ListAccessor<T>, typeHelpers: TypeHelpers<T>) {
+  constructor(barq: Barq, internal: binding.List, accessor: ListAccessor<T>, typeHelpers: TypeHelpers<T>) {
     if (arguments.length === 0 || !(internal instanceof binding.List)) {
       throw new IllegalConstructorError("List");
     }
     const results = internal.asResults();
-    super(realm, results, accessor, typeHelpers);
+    super(barq, results, accessor, typeHelpers);
 
     // Getting the `objectSchema` off the internal will throw if base type isn't object
     const isEmbedded =
@@ -119,7 +120,7 @@ export class List<T = unknown>
    * @returns The last value or undefined if the list is empty.
    */
   pop(): T | undefined {
-    assert.inTransaction(this.realm);
+    assert.inTransaction(this.barq);
     const { internal } = this;
     const lastIndex = internal.size - 1;
     if (lastIndex >= 0) {
@@ -138,7 +139,7 @@ export class List<T = unknown>
    * @returns The new length of the list after adding the values.
    */
   push(...items: T[]): number {
-    assert.inTransaction(this.realm);
+    assert.inTransaction(this.barq);
     const { internal } = this;
     const start = internal.size;
     for (const [offset, item] of items.entries()) {
@@ -154,7 +155,7 @@ export class List<T = unknown>
    * @returns The first value or `undefined` if the list is empty.
    */
   shift(): T | undefined {
-    assert.inTransaction(this.realm);
+    assert.inTransaction(this.barq);
     const { internal } = this;
     if (internal.size > 0) {
       const result = this.get(0);
@@ -172,7 +173,7 @@ export class List<T = unknown>
    * @returns The new length of the list after adding the values.
    */
   unshift(...items: T[]): number {
-    assert.inTransaction(this.realm);
+    assert.inTransaction(this.barq);
     const { internal } = this;
     const { insert } = this[ACCESSOR];
     for (const [index, item] of items.entries()) {
@@ -223,7 +224,7 @@ export class List<T = unknown>
    */
   splice(start: number, deleteCount?: number, ...items: T[]): T[] {
     // Comments in the code below is copied from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
-    assert.inTransaction(this.realm);
+    assert.inTransaction(this.barq);
     assert.number(start, "start");
     const { internal } = this;
     // If negative, it will begin that many elements from the end of the array.
@@ -263,7 +264,7 @@ export class List<T = unknown>
    * or greater than or equal to the size of the list.
    */
   remove(index: number): void {
-    assert.inTransaction(this.realm);
+    assert.inTransaction(this.barq);
     assert.number(index, "index");
 
     assert(index >= 0, "Index cannot be smaller than 0");
@@ -280,7 +281,7 @@ export class List<T = unknown>
    * is less than 0 or greater than or equal to the size of the list.
    */
   move(from: number, to: number): void {
-    assert.inTransaction(this.realm);
+    assert.inTransaction(this.barq);
     assert.number(from, "from");
     assert.number(to, "to");
 
@@ -299,7 +300,7 @@ export class List<T = unknown>
    * is less than 0 or greater than or equal to the size of the list.
    */
   swap(index1: number, index2: number): void {
-    assert.inTransaction(this.realm);
+    assert.inTransaction(this.barq);
     assert.number(index1, "index1");
     assert.number(index2, "index2");
 

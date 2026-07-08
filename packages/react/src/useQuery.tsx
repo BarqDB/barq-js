@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2021 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -81,7 +82,7 @@ export function createUseQuery(useBarq: () => Barq): UseQueryHook {
     { type, query = identity, keyPaths }: QueryHookOptions<T>,
     deps: DependencyList = [],
   ): Barq.Results<T> {
-    const realm = useBarq();
+    const barq = useBarq();
 
     // We need to add the type to the deps, so that if the type changes, the query will be re-run.
     // This will be saved in an array which will be spread into the provided deps.
@@ -106,8 +107,8 @@ export function createUseQuery(useBarq: () => Barq): UseQueryHook {
     }
 
     const queryResult = useMemo(() => {
-      return queryCallback(getObjects(realm, type));
-    }, [type, realm, queryCallback]);
+      return queryCallback(getObjects(barq, type));
+    }, [type, barq, queryCallback]);
 
     const memoizedKeyPaths = useMemo(
       () => (typeof keyPaths === "string" ? [keyPaths] : keyPaths),
@@ -115,16 +116,16 @@ export function createUseQuery(useBarq: () => Barq): UseQueryHook {
       [JSON.stringify(keyPaths)],
     );
 
-    // Wrap the cachedObject in useMemo, so we only replace it with a new instance if `realm` or `queryResult` change
+    // Wrap the cachedObject in useMemo, so we only replace it with a new instance if `barq` or `queryResult` change
     const { collection, tearDown } = useMemo(() => {
       return createCachedCollection<T>({
         collection: queryResult,
-        realm,
+        barq,
         updateCallback: forceRerender,
         updatedRef,
         keyPaths: memoizedKeyPaths,
       });
-    }, [realm, queryResult, memoizedKeyPaths]);
+    }, [barq, queryResult, memoizedKeyPaths]);
 
     // Invoke the tearDown of the cachedCollection when useQuery is unmounted
     useEffect(() => {

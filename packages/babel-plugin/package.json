@@ -1,7 +1,7 @@
 {
   "name": "@barq/babel-plugin",
   "version": "1.2.0",
-  "description": "Babel plugin making it easier to declare your Realm schema",
+  "description": "Babel plugin making it easier to declare your Barq schema",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
@@ -28,13 +28,13 @@
     }
   },
   "keywords": [
-    "realm",
+    "barq",
     "babel"
   ],
   "author": {
-    "name": "MongoDB",
-    "email": "help@realm.io",
-    "url": "https://www.mongodb.com/docs/realm/"
+    "name": "Barq",
+    "email": "help@barq.io",
+    "url": "https://www.barq.com/docs/barq/"
   },
   "license": "apache-2.0",
   "devDependencies": {

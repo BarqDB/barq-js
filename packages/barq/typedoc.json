@@ -6,7 +6,7 @@
   "excludeReferences": true,
   "customCss": "../../typedoc/style.css",
   "media": "../../media",
-  "name": "Realm JavaScript",
+  "name": "Barq JavaScript",
   "includeVersion": true,
   "sourceLinkTemplate": "https://github.com/BarqDB/barq-js/blob/{gitRevision}/{path}#L{line}",
   "plugin": ["typedoc-plugin-rename-defaults"]

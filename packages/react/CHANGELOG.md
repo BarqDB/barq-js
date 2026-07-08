@@ -1,13 +1,13 @@
 ## vNext (TBD)
 
 ### Breaking changes
-* Removed all features related to [the deprecated](https://github.com/BarqDB/barq-js/blob/main/DEPRECATION.md) Atlas Device Sync. ([PR-6879](https://github.com/BarqDB/barq-js/pull/6879))
+* Removed all features related to [the deprecated](https://github.com/BarqDB/barq-js/blob/main/DEPRECATION.md) Barq sync. ([PR-6879](https://github.com/BarqDB/barq-js/pull/6879))
 
 ### Compatibility
 * Barq JS >= v20
 * React Native >= v0.71.4
 * Barq Studio v15.0.0.
-* File format: generates Realms with format v24 (reads and upgrades file format v10).
+* File format: generates Barqs with format v24 (reads and upgrades file format v10).
 
 ### Internal
 <!-- * Either mention core version or upgrade -->
@@ -25,24 +25,24 @@
 ### Compatibility
 * React Native >= v0.71.4
 * Barq Studio v15.0.0.
-* File format: generates Realms with format v24 (reads and upgrades file format v10).
+* File format: generates Barqs with format v24 (reads and upgrades file format v10).
 
 ## 0.10.1 (2024-08-28)
 
 ### Fixed
-* Fixing the `RealmProvider` component when context is created without passing neither a `Barq` instance nor a `Barq.Configuration` to avoid unnecessary recreation of the provider, which was causing "Cannot access realm that has been closed" errors. ([#6842](https://github.com/BarqDB/barq-js/issues/6842), since v0.8.0)
+* Fixing the `BarqProvider` component when context is created without passing neither a `Barq` instance nor a `Barq.Configuration` to avoid unnecessary recreation of the provider, which was causing "Cannot access barq that has been closed" errors. ([#6842](https://github.com/BarqDB/barq-js/issues/6842), since v0.8.0)
 
 ### Compatibility
 * React Native >= v0.71.4
 * Barq Studio v15.0.0.
-* File format: generates Realms with format v24 (reads and upgrades file format v10).
+* File format: generates Barqs with format v24 (reads and upgrades file format v10).
 
 ## 0.10.0 (2024-08-15)
 
 ### Enhancements
-* Added `useProgress` hook which provides a convenient way to access Barq's progress information. It works in a similar way as `realm.addProgressNotification`. ([#6797](https://github.com/BarqDB/barq-js/issues/6797))
+* Added `useProgress` hook which provides a convenient way to access Barq's progress information. It works in a similar way as `barq.addProgressNotification`. ([#6797](https://github.com/BarqDB/barq-js/issues/6797))
 ```tsx
-import { RealmProvider, ProgressDirection, ProgressMode } from "@barq/react";
+import { BarqProvider, ProgressDirection, ProgressMode } from "@barq/react";
 
 const ProgressText = () => {
 	const progress = useProgress({ direction: ProgressDirection.Download, mode: ProgressMode.ReportIndefinitely });
@@ -52,25 +52,25 @@ const ProgressText = () => {
 
 const MyApp() = () => {
   return (
-    <RealmProvider sync={...}> 
+    <BarqProvider sync={...}> 
       <ProgressText />
-    </RealmProvider>
+    </BarqProvider>
   );
 }
 ```
-* Added the ability to get `progress` information in `fallback` component of `RealmProvider` when opening a synced Barq. ([#6785](https://github.com/BarqDB/barq-js/issues/6785))
+* Added the ability to get `progress` information in `fallback` component of `BarqProvider` when opening a synced Barq. ([#6785](https://github.com/BarqDB/barq-js/issues/6785))
 ```tsx
-import { RealmProvider, RealmProviderFallback } from "@barq/react";
+import { BarqProvider, BarqProviderFallback } from "@barq/react";
 
-const Fallback: RealmProviderFallback = ({ progress }) => {
+const Fallback: BarqProviderFallback = ({ progress }) => {
 	return <Text>Loading:{(100 * progress).toFixed()}%</Text>;
 }
 
 const MyApp() = () => {
   return (
-    <RealmProvider sync={...} fallback={Fallback}> 
+    <BarqProvider sync={...} fallback={Fallback}> 
       ...
-    </RealmProvider>
+    </BarqProvider>
   );
 }
 ```
@@ -79,7 +79,7 @@ const MyApp() = () => {
 * **Barq JavaScript >= v12.12.0**.
 * React Native >= v0.71.4
 * Barq Studio v15.0.0.
-* File format: generates Realms with format v24 (reads and upgrades file format v10).
+* File format: generates Barqs with format v24 (reads and upgrades file format v10).
 
 
 ## 0.9.0 (2024-07-17)
@@ -102,7 +102,7 @@ function MyApp() {
 
 ### Fixed
 * Fixed listener that was not being removed during unmounting of `useObject` and `useQuery` if the listener was added in a write transaction. ([#6552](https://github.com/BarqDB/barq-js/pull/6552)) Thanks [@bimusiek](https://github.com/bimusiek)!
-* The `app` prop in `AppProvider` meant for `LocalAppConfiguration` was not being used by Atlas Device Sync and has been removed. `app` is now only used to pass an existing `Barq.App` to the provider. ([#6785](https://github.com/BarqDB/barq-js/pull/6785))
+* The `app` prop in `AppProvider` meant for `LocalAppConfiguration` was not being used by Barq sync and has been removed. `app` is now only used to pass an existing `Barq.App` to the provider. ([#6785](https://github.com/BarqDB/barq-js/pull/6785))
 
 ### Compatibility
 * React Native >= v0.71.4
@@ -111,35 +111,35 @@ function MyApp() {
 ## 0.8.0 (2024-06-18)
 
 ### Enhancements
-* Added the ability to use an existing Barq instance in `RealmProvider` and `createRealmContext`. ([#6714](https://github.com/BarqDB/barq-js/pull/6714))
+* Added the ability to use an existing Barq instance in `BarqProvider` and `createBarqContext`. ([#6714](https://github.com/BarqDB/barq-js/pull/6714))
 ```jsx
-// Using RealmProvider
-import { RealmProvider } from "@barq/react";
+// Using BarqProvider
+import { BarqProvider } from "@barq/react";
 
-const realm = new Barq(...);
+const barq = new Barq(...);
 
 function MyApp() {
   return (
-    <RealmProvider realm={realm}> 
+    <BarqProvider barq={barq}> 
       ...
-    </RealmProvider>
+    </BarqProvider>
   );
 }
 
-// Using createRealmContext
-import { createRealmContext } from "@barq/react";
+// Using createBarqContext
+import { createBarqContext } from "@barq/react";
 
-const realm = new Barq(...);
-const { RealmProvider, useRealm } = createRealmContext(realm);
+const barq = new Barq(...);
+const { BarqProvider, useBarq } = createBarqContext(barq);
 
 function MyApp() {
   return (
     <>
-      <RealmProvider> 
+      <BarqProvider> 
         ...
-      </RealmProvider>
+      </BarqProvider>
       <AnotherComponent>
-        {/* Note: The hooks returned from `createRealmContext` using an existing Barq can be used outside of the scope of the provider! */}
+        {/* Note: The hooks returned from `createBarqContext` using an existing Barq can be used outside of the scope of the provider! */}
       </AnotherComponent>
     </>
   );
@@ -168,7 +168,7 @@ function MyApp() {
 
 ### Fixed
 * Removed race condition in `useObject`. ([#6291](https://github.com/BarqDB/barq-js/issues/6291)) Thanks [@bimusiek](https://github.com/bimusiek)!
-* Fixed flickering of the `RealmProvider`'s `fallback` component and its `children` when offline. ([#6333](https://github.com/BarqDB/barq-js/issues/6333))
+* Fixed flickering of the `BarqProvider`'s `fallback` component and its `children` when offline. ([#6333](https://github.com/BarqDB/barq-js/issues/6333))
 
 ### Compatibility
 * React Native >= v0.71.4
@@ -201,7 +201,7 @@ function MyApp() {
 ## 0.6.0 (2023-08-23)
 
 ### Enhancements
-* Add flag to keep realm open on unmount of `RealmProvider`. ([#6023](https://github.com/BarqDB/barq-js/issues/6023))
+* Add flag to keep barq open on unmount of `BarqProvider`. ([#6023](https://github.com/BarqDB/barq-js/issues/6023))
 
 ### Fixed
 * Fix for `useObject` not updating when using previously used primary key. ([#5620](https://github.com/BarqDB/barq-js/issues/5620), since v0.4.2. Thanks @RS1-Project)
@@ -220,7 +220,7 @@ function MyApp() {
 ### Compatibility
 * React Native >= v0.71.4
 * Barq Studio v14.0.0.
-* File format: generates Realms with format v23 (reads and upgrades file format v5 or later for non-synced Barq, upgrades file format v10 or later for synced Realms).
+* File format: generates Barqs with format v23 (reads and upgrades file format v5 or later for non-synced Barq, upgrades file format v10 or later for synced Barqs).
 
 ## 0.5.1 (2023-06-21)
 
@@ -251,17 +251,17 @@ function MyApp() {
 	    );
 	};
 	```
-* Create a default context so the `RealmProvider`, `useQuery`, `useRealm`, and `useObject` can be directly imported from `@barq/react` ([#5292](https://github.com/BarqDB/barq-js/issue/5292))
+* Create a default context so the `BarqProvider`, `useQuery`, `useBarq`, and `useObject` can be directly imported from `@barq/react` ([#5292](https://github.com/BarqDB/barq-js/issue/5292))
 
   Example:
 	```tsx
-	// These imports are now available without calling `createRealmContext`
-	import {RealmProvider, useQuery} from '@barq/react'
+	// These imports are now available without calling `createBarqContext`
+	import {BarqProvider, useQuery} from '@barq/react'
 	//...
-	// Provider your schema models directly to the realm provider
-	<RealmProvider schema={[Item]}>
+	// Provider your schema models directly to the barq provider
+	<BarqProvider schema={[Item]}>
 		<SomeComponent/>
-	</RealmProvider>
+	</BarqProvider>
 
 	const SomeComponent = () => {
 		const items = useQuery(Item)
@@ -269,7 +269,7 @@ function MyApp() {
 		//...
 	}
 	```
-	>NOTE: If your app is using multiple Realms, then you should continue using `createRealmContext`
+	>NOTE: If your app is using multiple Barqs, then you should continue using `createBarqContext`
 
 ### Fixed
 * `useUser` is now typed to never returned `null` [#4973](https://github.com/BarqDB/barq-js/issues/4973)
@@ -284,9 +284,9 @@ function MyApp() {
 
 ### Compatibility
 * React Native >= v0.70.0
-* Atlas App Services.
+* Barq.
 * Barq Studio v13.0.0.
-* File format: generates Realms with format v23 (reads and upgrades file format v5 or later for non-synced Barq, upgrades file format v10 or later for synced Realms).
+* File format: generates Barqs with format v23 (reads and upgrades file format v5 or later for non-synced Barq, upgrades file format v10 or later for synced Barqs).
 
 ## 0.4.3 (2023-01-24)
 
@@ -299,7 +299,7 @@ function MyApp() {
 ## 0.4.2 (2023-1-11)
 
 ### Enhancements
-* Immediately bind local Barq in the RealmProvider ([#5074](https://github.com/BarqDB/barq-js/issues/5074))
+* Immediately bind local Barq in the BarqProvider ([#5074](https://github.com/BarqDB/barq-js/issues/5074))
 
 ### Fixed
 * Prime any list properties with an cachedCollection so that updates fire correctly ([#5185](https://github.com/BarqDB/barq-js/issues/5185))
@@ -307,7 +307,7 @@ function MyApp() {
 * Create a listener on the collection if the object doesn't exist, and rerender when it is created ([#4514](https://github.com/BarqDB/barq-js/issues/4514))
 
 ### Compatibility
-* File format: generates Realms with format v22 (reads and upgrades file format v5 or later for non-synced Barq, upgrades file format v10 or later for synced Realms).
+* File format: generates Barqs with format v22 (reads and upgrades file format v5 or later for non-synced Barq, upgrades file format v10 or later for synced Barqs).
 
 ## 0.4.1 (2022-11-3)
 
@@ -332,7 +332,7 @@ function MyApp() {
 ## 0.4.0-rc.0 (2022-09-14)
 
 ### Fixed
-* Fix realm collection and object typing to reflect changes to Class Based Models introduced in Barq `11.0.0` ([#4905](https://github.com/BarqDB/barq-js/issues/4905))
+* Fix barq collection and object typing to reflect changes to Class Based Models introduced in Barq `11.0.0` ([#4905](https://github.com/BarqDB/barq-js/issues/4905))
 
 ### Internal
 * Upgrade dev dependency of React Native to 0.70.0 and any relevant packages effected by this upgrade
@@ -349,7 +349,7 @@ function MyApp() {
 ## 0.3.1 (2022-05-31)
 
 ### Enhancements
-* Add realmRef property to `RealmProvider` to access the configured realm outside of the provider component ([#4571](https://github.com/BarqDB/barq-js/issues/4571))
+* Add barqRef property to `BarqProvider` to access the configured barq outside of the provider component ([#4571](https://github.com/BarqDB/barq-js/issues/4571))
   * Additionally appRef on `AppProvider` was added to provide access to `Barq.App` from outside the provider component
 
 ### Fixed
@@ -364,13 +364,13 @@ function MyApp() {
 ```
 import {AppProvider, UserProvider} from '@barq/react'
 //...
-// Wrap your RealmProvider with the AppProvider and provide an appId
+// Wrap your BarqProvider with the AppProvider and provide an appId
 <AppProvider id={appId}>
 	<UserProvider fallback={LoginComponent}>
-		{/* After login, user will be automatically populated in realm configuration */}
-		<RealmProvider sync={{flexible: true}}>
+		{/* After login, user will be automatically populated in barq configuration */}
+		<BarqProvider sync={{flexible: true}}>
 		//...
-		</RealmProvider>
+		</BarqProvider>
 	</UserProvider>
 </AppProvider>
 
@@ -389,11 +389,11 @@ const SomeComponent = () => {
 ```
 import {AppProvider} from '@barq/react'
 //...
-// Wrap your RealmProvider with the AppProvider and provide an appId
+// Wrap your BarqProvider with the AppProvider and provide an appId
 <AppProvider id={appId}>
-	<RealmProvider sync={{user, flexible: true}}>
+	<BarqProvider sync={{user, flexible: true}}>
 	//...
-	</RealmProvider>
+	</BarqProvider>
 </AppProvider>
 
 // Access the app instance using the useApp hook
@@ -423,8 +423,8 @@ const SomeComponent = () => {
 
 ### Enhancements
 
-* Allow `createRealmContext` to be called without an initial configuration
-* Add a `fallback` property to `RealmProvider` that is shown while realm is opening
+* Allow `createBarqContext` to be called without an initial configuration
+* Add a `fallback` property to `BarqProvider` that is shown while barq is opening
 
 ### Fixed
 

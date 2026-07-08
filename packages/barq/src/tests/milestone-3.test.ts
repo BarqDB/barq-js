@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,7 +28,7 @@ import { closeBarq, generateTempBarqPath } from "./utils";
 describe("Milestone #3", () => {
   describe("Register a listener on an object and get notified of changes", () => {
     beforeEach(function (this: BarqContext) {
-      this.realm = new Barq({
+      this.barq = new Barq({
         path: generateTempBarqPath(),
         inMemory: true,
         schema: [{ name: "Person", properties: { name: "string" } }],
@@ -36,7 +37,7 @@ describe("Milestone #3", () => {
     afterEach(closeBarq);
 
     it("fires initially", async function (this: BarqContext) {
-      const alice = this.realm.write(() => this.realm.create("Person", { name: "Alice" }));
+      const alice = this.barq.write(() => this.barq.create("Person", { name: "Alice" }));
       await new Promise<void>((resolve) => {
         alice.addListener((object, changes) => {
           expect(object).deep.equals(alice);
@@ -48,7 +49,7 @@ describe("Milestone #3", () => {
     });
 
     it("fires on change", async function (this: BarqContext) {
-      const alice = this.realm.write(() => this.realm.create("Person", { name: "Alice" }));
+      const alice = this.barq.write(() => this.barq.create("Person", { name: "Alice" }));
       let calls = 0;
       await new Promise<void>((resolve) => {
         alice.addListener((object, changes) => {
@@ -58,7 +59,7 @@ describe("Milestone #3", () => {
             expect(changes.deleted).equals(false);
             expect(changes.changedProperties.length).equals(0);
             // Update the name to trigger another event
-            this.realm.write(() => (alice.name = "Alison"));
+            this.barq.write(() => (alice.name = "Alison"));
           } else if (calls === 1) {
             calls++;
             expect(object).deep.equals(alice);
@@ -74,7 +75,7 @@ describe("Milestone #3", () => {
     });
 
     it("fires on deletion", async function (this: BarqContext) {
-      const alice = this.realm.write(() => this.realm.create("Person", { name: "Alice" }));
+      const alice = this.barq.write(() => this.barq.create("Person", { name: "Alice" }));
       let calls = 0;
       await new Promise<void>((resolve) => {
         alice.addListener((object, changes) => {
@@ -84,7 +85,7 @@ describe("Milestone #3", () => {
             expect(changes.deleted).equals(false);
             expect(changes.changedProperties.length).equals(0);
             // Delete the object to trigger another event
-            this.realm.write(() => this.realm.delete(alice));
+            this.barq.write(() => this.barq.delete(alice));
           } else if (calls === 1) {
             calls++;
             expect(object.isValid()).equals(false);
@@ -100,8 +101,8 @@ describe("Milestone #3", () => {
     });
 
     it("doesn't fire if removed", async function (this: BarqContext) {
-      const { realm } = this;
-      const alice = realm.write(() => realm.create("Person", { name: "Alice" }));
+      const { barq } = this;
+      const alice = barq.write(() => barq.create("Person", { name: "Alice" }));
       let calls = 0;
       await new Promise<void>((resolve, reject) => {
         function callback(object: typeof alice, changes: ObjectChangeSet<unknown>) {
@@ -114,7 +115,7 @@ describe("Milestone #3", () => {
             // Remove the listener
             alice.removeListener(callback);
             // Update the name to trigger another event
-            realm.write(() => (alice.name = "Alison"));
+            barq.write(() => (alice.name = "Alison"));
             // Wait a bit to allow for an async update to trigger a rejection first
             setTimeout(resolve);
           } else {
@@ -127,8 +128,8 @@ describe("Milestone #3", () => {
     });
 
     it("doesn't fire if all are removed", async function (this: BarqContext) {
-      const { realm } = this;
-      const alice = realm.write(() => realm.create("Person", { name: "Alice" }));
+      const { barq } = this;
+      const alice = barq.write(() => barq.create("Person", { name: "Alice" }));
       let fooCalls = 0;
       let barCalls = 0;
       await Promise.all([
@@ -138,7 +139,7 @@ describe("Milestone #3", () => {
             // Remove the listener
             alice.removeListener(foo);
             // Update the name to trigger another event
-            realm.write(() => (alice.name = "Alison"));
+            barq.write(() => (alice.name = "Alison"));
             resolve();
           }
           alice.addListener(foo);
@@ -158,15 +159,15 @@ describe("Milestone #3", () => {
       expect(fooCalls).equals(1);
       expect(barCalls).equals(2);
       // Trigger another change and expect no more calls
-      realm.write(() => (alice.name = "Alice"));
+      barq.write(() => (alice.name = "Alice"));
       await new Promise((resolve) => setTimeout(resolve));
       expect(fooCalls).equals(1);
       expect(barCalls).equals(2);
     });
 
     it("adds only once", async function (this: BarqContext) {
-      const { realm } = this;
-      const alice = realm.write(() => realm.create("Person", { name: "Alice" }));
+      const { barq } = this;
+      const alice = barq.write(() => barq.create("Person", { name: "Alice" }));
       let fooCalls = 0;
       function foo() {
         fooCalls++;
@@ -176,24 +177,24 @@ describe("Milestone #3", () => {
         alice.addListener(foo);
       }).throws("Remove callback before adding it again");
       // Make a change to fire the listener
-      realm.write(() => (alice.name = "Alison"));
+      barq.write(() => (alice.name = "Alison"));
       // Begin a new write transaction to ensure the read transaction gets advanced
-      realm.beginTransaction();
-      realm.cancelTransaction();
+      barq.beginTransaction();
+      barq.cancelTransaction();
       // Expect initial event + change
       expect(fooCalls).equals(2);
       // Make another change to fire the listener
-      realm.write(() => (alice.name = "Alison!"));
+      barq.write(() => (alice.name = "Alison!"));
       // Begin a new write transaction to ensure the read transaction gets advanced
-      realm.beginTransaction();
-      realm.cancelTransaction();
+      barq.beginTransaction();
+      barq.cancelTransaction();
       // Expect initial event + 2 * change
       expect(fooCalls).equals(3);
     });
 
     it("handles double removals", async function (this: BarqContext) {
-      const { realm } = this;
-      const alice = realm.write(() => realm.create("Person", { name: "Alice" }));
+      const { barq } = this;
+      const alice = barq.write(() => barq.create("Person", { name: "Alice" }));
       function foo() {
         /* ... */
       }
@@ -203,8 +204,8 @@ describe("Milestone #3", () => {
     });
 
     it("handles removal before adding", async function (this: BarqContext) {
-      const { realm } = this;
-      const alice = realm.write(() => realm.create("Person", { name: "Alice" }));
+      const { barq } = this;
+      const alice = barq.write(() => barq.create("Person", { name: "Alice" }));
       function foo() {
         /* ... */
       }
@@ -217,7 +218,7 @@ describe("Milestone #3", () => {
   // FIXME: Update all tests in this suite to use a collection, instead of an object
   describe("Register a listener on a collection of objects and get notified of changes", () => {
     beforeEach(function (this: BarqContext) {
-      this.realm = new Barq({
+      this.barq = new Barq({
         path: generateTempBarqPath(),
         inMemory: true,
         schema: [{ name: "Person", properties: { name: "string" } }],
@@ -226,8 +227,8 @@ describe("Milestone #3", () => {
     afterEach(closeBarq);
 
     it("fires initially", async function (this: BarqContext) {
-      this.realm.write(() => this.realm.create("Person", { name: "Alice" }));
-      const persons = this.realm.objects("Person");
+      this.barq.write(() => this.barq.create("Person", { name: "Alice" }));
+      const persons = this.barq.objects("Person");
       await new Promise<void>((resolve) => {
         persons.addListener((collection, changes) => {
           expect(collection).instanceOf(Results);
@@ -241,8 +242,8 @@ describe("Milestone #3", () => {
     });
 
     it("fires on change", async function (this: BarqContext) {
-      const alice = this.realm.write(() => this.realm.create("Person", { name: "Alice" }));
-      const persons = this.realm.objects("Person");
+      const alice = this.barq.write(() => this.barq.create("Person", { name: "Alice" }));
+      const persons = this.barq.objects("Person");
       let calls = 0;
       await new Promise<void>((resolve) => {
         persons.addListener((collection, changes) => {
@@ -250,7 +251,7 @@ describe("Milestone #3", () => {
             calls++;
             expect(collection).deep.equals(persons);
             // Update the name to trigger another event
-            this.realm.write(() => (alice.name = "Alison"));
+            this.barq.write(() => (alice.name = "Alison"));
           } else if (calls === 1) {
             calls++;
             expect(collection).deep.equals(persons);
@@ -267,8 +268,8 @@ describe("Milestone #3", () => {
     });
 
     it("fires on deletion", async function (this: BarqContext) {
-      const alice = this.realm.write(() => this.realm.create("Person", { name: "Alice" }));
-      const persons = this.realm.objects("Person");
+      const alice = this.barq.write(() => this.barq.create("Person", { name: "Alice" }));
+      const persons = this.barq.objects("Person");
       let calls = 0;
       await new Promise<void>((resolve) => {
         persons.addListener((collection, changes) => {
@@ -276,7 +277,7 @@ describe("Milestone #3", () => {
             calls++;
             expect(collection).deep.equals(persons);
             // Delete the object to trigger another event
-            this.realm.write(() => this.realm.delete(alice));
+            this.barq.write(() => this.barq.delete(alice));
           } else if (calls === 1) {
             calls++;
             expect(alice.isValid()).equals(false);
@@ -293,9 +294,9 @@ describe("Milestone #3", () => {
     });
 
     it("doesn't fire if removed", async function (this: BarqContext) {
-      const { realm } = this;
-      const alice = realm.write(() => realm.create("Person", { name: "Alice" }));
-      const persons = this.realm.objects("Person");
+      const { barq } = this;
+      const alice = barq.write(() => barq.create("Person", { name: "Alice" }));
+      const persons = this.barq.objects("Person");
       let calls = 0;
       await new Promise<void>((resolve, reject) => {
         function callback(collection: typeof persons) {
@@ -306,7 +307,7 @@ describe("Milestone #3", () => {
             // Remove the listener
             persons.removeListener(callback);
             // Update the name to trigger another event
-            realm.write(() => (alice.name = "Alison"));
+            barq.write(() => (alice.name = "Alison"));
             // Wait a bit to allow for an async update to trigger a rejection first
             setTimeout(resolve);
           } else {
@@ -319,9 +320,9 @@ describe("Milestone #3", () => {
     });
 
     it("doesn't fire if all are removed", async function (this: BarqContext) {
-      const { realm } = this;
-      const alice = realm.write(() => realm.create("Person", { name: "Alice" }));
-      const persons = this.realm.objects("Person");
+      const { barq } = this;
+      const alice = barq.write(() => barq.create("Person", { name: "Alice" }));
+      const persons = this.barq.objects("Person");
       let fooCalls = 0;
       let barCalls = 0;
       await Promise.all([
@@ -331,7 +332,7 @@ describe("Milestone #3", () => {
             // Remove the listener
             persons.removeListener(foo);
             // Update the name to trigger another event
-            realm.write(() => (alice.name = "Alison"));
+            barq.write(() => (alice.name = "Alison"));
             resolve();
           }
           persons.addListener(foo);
@@ -351,16 +352,16 @@ describe("Milestone #3", () => {
       expect(fooCalls).equals(1);
       expect(barCalls).equals(2);
       // Trigger another change and expect no more calls
-      realm.write(() => (alice.name = "Alice"));
+      barq.write(() => (alice.name = "Alice"));
       await new Promise((resolve) => setTimeout(resolve));
       expect(fooCalls).equals(1);
       expect(barCalls).equals(2);
     });
 
     it("adds only once", async function (this: BarqContext) {
-      const { realm } = this;
-      const alice = realm.write(() => realm.create("Person", { name: "Alice" }));
-      const persons = this.realm.objects("Person");
+      const { barq } = this;
+      const alice = barq.write(() => barq.create("Person", { name: "Alice" }));
+      const persons = this.barq.objects("Person");
       let fooCalls = 0;
       function foo() {
         fooCalls++;
@@ -370,24 +371,24 @@ describe("Milestone #3", () => {
         persons.addListener(foo);
       }).throws("Remove callback before adding it again");
       // Make a change to fire the listener
-      realm.write(() => (alice.name = "Alison"));
+      barq.write(() => (alice.name = "Alison"));
       // Begin a new write transaction to ensure the read transaction gets advanced
-      realm.beginTransaction();
-      realm.cancelTransaction();
+      barq.beginTransaction();
+      barq.cancelTransaction();
       // Expect initial event + change
       expect(fooCalls).equals(2);
       // Make another change to fire the listener
-      realm.write(() => (alice.name = "Alison!"));
+      barq.write(() => (alice.name = "Alison!"));
       // Begin a new write transaction to ensure the read transaction gets advanced
-      realm.beginTransaction();
-      realm.cancelTransaction();
+      barq.beginTransaction();
+      barq.cancelTransaction();
       // Expect initial event + 2 * change
       expect(fooCalls).equals(3);
     });
 
     it("handles double removals", async function (this: BarqContext) {
-      const { realm } = this;
-      const persons = realm.objects("Person");
+      const { barq } = this;
+      const persons = barq.objects("Person");
       function foo() {
         /* ... */
       }
@@ -397,8 +398,8 @@ describe("Milestone #3", () => {
     });
 
     it("handles removal before adding", async function (this: BarqContext) {
-      const { realm } = this;
-      const persons = realm.objects("Person");
+      const { barq } = this;
+      const persons = barq.objects("Person");
       function foo() {
         /* ... */
       }

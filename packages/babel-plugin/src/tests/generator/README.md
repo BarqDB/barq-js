@@ -49,7 +49,7 @@ nodePropertyCode -->|<code>transformProperty</code>: Wraps property source code 
 
 subgraph Verify
   nodeTransformedCode["
-    <code>import Barq, { Object, ... } from #quot;realm#quot;;
+    <code>import Barq, { Object, ... } from #quot;barq#quot;;
     class Foo {
     #nbsp;#nbsp;static schema = { ... };
     }

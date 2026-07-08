@@ -11,14 +11,14 @@
 *.d
 *.libdeps
 *.zip
-*.realm
-*.realm.lock
-*.realm.fresh.lock
-*.realm.note
+*.barq
+*.barq.lock
+*.barq.fresh.lock
+*.barq.note
 *.management/
-*.realm.backup-log
+*.barq.backup-log
 
-vendor/realm-*
+vendor/barq-*
 !vendor/barq-core
 
 # extracted changelog
@@ -59,12 +59,12 @@ compile_commands.json
 
 # Tests
 object-server-for-testing/
-realm-object-server-data/
-tests/realm-object-server/
+barq-object-server-data/
+tests/barq-object-server/
 tests/barq-sync/
 packager_out.txt
 build.log.*
-realm-object-server/
+barq-object-server/
 tests/ReactTestApp/ios/out.txt
 tests/ReactTestApp/ios/Podfile.lock
 *.iml
@@ -88,13 +88,13 @@ integration-tests/**/.lock
 coverage/
 .nyc_output/
 
-# Realm App Importer artifacts
+# Barq App Importer artifacts
 **/imported-apps/
-**/realm-config
+**/barq-config
 
 /build-tmp*/
 /cmakebuild/
-/realm*.tgz
+/barq*.tgz
 
 # Ignore template package-lock.json files
 /templates/*/package-lock.json
@@ -112,7 +112,7 @@ coverage/
 /packages/barq/binding/android/build/
 /packages/barq/binding/node/build/
 /packages/barq/prebuilds/
-/packages/barq/binding/android/src/main/java/io/realm/react/Version.java
+/packages/barq/binding/android/src/main/java/io/barq/react/Version.java
 /packages/barq/binding/android/src/main/jniLibs/
 /packages/barq/binding/apple/*.xcframework
 

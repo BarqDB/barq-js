@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -154,10 +155,10 @@ export type BaseConfiguration = {
   /**
    * The function called when opening a Barq for the first time. The function can populate the Barq
    * prior to opening it. When calling the callback, the Barq will be in a write transaction.
-   * @param realm - The newly created Barq.
+   * @param barq - The newly created Barq.
    * @since 10.14.0
    */
-  onFirstOpen?: (realm: Barq) => void;
+  onFirstOpen?: (barq: Barq) => void;
   migrationOptions?: MigrationOptions;
   /**
    * Specifies if this Barq should be excluded from iCloud backup.
@@ -182,7 +183,7 @@ export type Configuration = ConfigurationWithSync | ConfigurationWithoutSync;
  * @internal
  */
 export function validateConfiguration(config: unknown): asserts config is Configuration {
-  assert.object(config, "realm configuration", { allowArrays: false });
+  assert.object(config, "barq configuration", { allowArrays: false });
   const {
     path,
     schema,
@@ -201,38 +202,38 @@ export function validateConfiguration(config: unknown): asserts config is Config
   } = config;
 
   if (path !== undefined) {
-    assert.string(path, "'path' on realm configuration");
+    assert.string(path, "'path' on barq configuration");
     assert(path.length > 0, "The path cannot be empty. Provide a path or remove the field.");
   }
   if (schema !== undefined) {
     validateBarqSchema(schema);
   }
   if (schemaVersion !== undefined) {
-    assert.number(schemaVersion, "'schemaVersion' on realm configuration");
+    assert.number(schemaVersion, "'schemaVersion' on barq configuration");
     assert(
       schemaVersion >= 0 && Number.isInteger(schemaVersion),
-      "'schemaVersion' on realm configuration must be 0 or a positive integer.",
+      "'schemaVersion' on barq configuration must be 0 or a positive integer.",
     );
   }
   if (inMemory !== undefined) {
-    assert.boolean(inMemory, "'inMemory' on realm configuration");
+    assert.boolean(inMemory, "'inMemory' on barq configuration");
   }
   if (readOnly !== undefined) {
-    assert.boolean(readOnly, "'readOnly' on realm configuration");
+    assert.boolean(readOnly, "'readOnly' on barq configuration");
   }
   if (fifoFilesFallbackPath !== undefined) {
-    assert.string(fifoFilesFallbackPath, "'fifoFilesFallbackPath' on realm configuration");
+    assert.string(fifoFilesFallbackPath, "'fifoFilesFallbackPath' on barq configuration");
   }
   if (onMigration !== undefined) {
-    assert.function(onMigration, "'onMigration' on realm configuration");
+    assert.function(onMigration, "'onMigration' on barq configuration");
   }
   if (sync !== undefined) {
-    assert(!onMigration, "The realm configuration options 'onMigration' and 'sync' cannot both be defined.");
-    assert(!migrationOptions, "The realm configuration options 'migrationOptions' and 'sync' cannot both be defined.");
-    assert(inMemory === undefined, "The realm configuration options 'inMemory' and 'sync' cannot both be defined.");
+    assert(!onMigration, "The barq configuration options 'onMigration' and 'sync' cannot both be defined.");
+    assert(!migrationOptions, "The barq configuration options 'migrationOptions' and 'sync' cannot both be defined.");
+    assert(inMemory === undefined, "The barq configuration options 'inMemory' and 'sync' cannot both be defined.");
     assert(
       deleteBarqIfMigrationNeeded === undefined,
-      "The realm configuration options 'deleteBarqIfMigrationNeeded' and 'sync' cannot both be defined.",
+      "The barq configuration options 'deleteBarqIfMigrationNeeded' and 'sync' cannot both be defined.",
     );
     validateSyncConfiguration(sync);
   }
@@ -240,22 +241,22 @@ export function validateConfiguration(config: unknown): asserts config is Config
     // Internal use
     assert(
       openSyncedBarqLocally === true,
-      "'openSyncedBarqLocally' on realm configuration is only used internally and must be true if defined.",
+      "'openSyncedBarqLocally' on barq configuration is only used internally and must be true if defined.",
     );
   }
   if (shouldCompact !== undefined) {
-    assert.function(shouldCompact, "'shouldCompact' on realm configuration");
+    assert.function(shouldCompact, "'shouldCompact' on barq configuration");
   }
   if (deleteBarqIfMigrationNeeded !== undefined) {
-    assert.boolean(deleteBarqIfMigrationNeeded, "'deleteBarqIfMigrationNeeded' on realm configuration");
+    assert.boolean(deleteBarqIfMigrationNeeded, "'deleteBarqIfMigrationNeeded' on barq configuration");
   }
   if (disableFormatUpgrade !== undefined) {
-    assert.boolean(disableFormatUpgrade, "'disableFormatUpgrade' on realm configuration");
+    assert.boolean(disableFormatUpgrade, "'disableFormatUpgrade' on barq configuration");
   }
   if (encryptionKey !== undefined) {
     assert(
       encryptionKey instanceof ArrayBuffer || ArrayBuffer.isView(encryptionKey) || encryptionKey instanceof Int8Array,
-      `Expected 'encryptionKey' on realm configuration to be an ArrayBuffer, ArrayBufferView (Uint8Array), or Int8Array, got ${TypeAssertionError.deriveType(
+      `Expected 'encryptionKey' on barq configuration to be an ArrayBuffer, ArrayBufferView (Uint8Array), or Int8Array, got ${TypeAssertionError.deriveType(
         encryptionKey,
       )}.`,
     );

@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2020 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,19 +22,19 @@
 #include <memory>
 #include <queue>
 
-#include <realm/util/logger.hpp>
-#include <realm/object-store/sync/sync_manager.hpp> // SyncLoggerFactory
-#include <realm/object-store/util/scheduler.hpp>    // realm::util::Scheduler
+#include <barq/util/logger.hpp>
+#include <barq/object-store/sync/sync_manager.hpp> // SyncLoggerFactory
+#include <barq/object-store/util/scheduler.hpp>    // barq::util::Scheduler
 
-#if REALM_ANDROID
+#if BARQ_ANDROID
 #include <android/log.h>
 #endif
 
-namespace realm {
+namespace barq {
 namespace common {
 namespace logger {
 
-using LoggerLevel = realm::util::Logger::Level;
+using LoggerLevel = barq::util::Logger::Level;
 
 // TODO we are coupling core with JS Land here, change to string.
 using Entry = std::pair<LoggerLevel, std::string>;
@@ -46,7 +47,7 @@ using Delegated = std::function<void(int, std::string)>;
  *
  */
 
-#if REALM_ANDROID
+#if BARQ_ANDROID
 class AndroidLogger {
     std::map<LoggerLevel, android_LogPriority> map_android_log_level{
         {LoggerLevel::all, ANDROID_LOG_VERBOSE},    {LoggerLevel::info, ANDROID_LOG_INFO},
@@ -59,7 +60,7 @@ class AndroidLogger {
     void print(Entry& entry)
     {
         auto android_log_level = map_android_log_level[entry.first];
-        __android_log_print(android_log_level, "realm", "%s", entry.second.c_str());
+        __android_log_print(android_log_level, "barq", "%s", entry.second.c_str());
     }
 };
 #endif
@@ -116,7 +117,7 @@ private:
     // make this class non-static.
     /*
        Log levels available.
-       More info in (barq-core) realm/util/logger.hpp
+       More info in (barq-core) barq/util/logger.hpp
 
        [ all, trace, debug, detail, info, warn, error, fatal, off ]
     */
@@ -139,7 +140,7 @@ public:
 
     static SyncClientConfig::LoggerFactory build_sync_logger(Delegated&& log_fn)
     {
-        return [captured_logger = std::move(log_fn)](realm::util::Logger::Level level) mutable {
+        return [captured_logger = std::move(log_fn)](barq::util::Logger::Level level) mutable {
             auto logger = std::make_unique<SyncLoggerDelegator>(std::move(captured_logger));
             logger->set_level_threshold(level);
             logger->delegate();
@@ -150,4 +151,4 @@ public:
 
 } // namespace logger
 } // namespace common
-} // namespace realm
+} // namespace barq

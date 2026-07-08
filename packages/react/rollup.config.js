@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2023 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,6 +39,6 @@ export default [
       },
     ],
     plugins: [nodeResolve(), commonjs(), typescript({ noEmitOnError: true })],
-    external: ["realm", "react", "@barq/common"],
+    external: ["barq", "react", "@barq/common"],
   },
 ];

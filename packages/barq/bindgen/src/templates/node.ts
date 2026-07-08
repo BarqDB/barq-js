@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2022 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -79,7 +80,7 @@ class NodeAddon extends CppClass {
   injectables = ["Float", "UUID", "ObjectId", "Decimal128", "EJSON_parse", "EJSON_stringify"];
 
   constructor() {
-    super("RealmAddon");
+    super("BarqAddon");
     this.withCrtpBase("Napi::Addon");
 
     this.members.push(new CppVar("std::deque<std::string>", "m_string_bufs"));
@@ -226,10 +227,6 @@ function convertPrimToNode(addon: NodeAddon, type: string, expr: string): string
     case "EJsonArray":
       return `${addon.accessCtor("EJSON_parse")}.Call({${convertPrimToNode(addon, "std::string", expr)}})`;
 
-    case "bson::BsonArray":
-    case "bson::BsonDocument":
-      return convertPrimToNode(addon, "EJsonObj", `bson::Bson(${expr}).to_string()`);
-
     case "AppError":
       // This matches old JS SDK. The C++ type will be changing as part of the unify error handleing project.
       return `([&] (const app::AppError& err) {
@@ -334,10 +331,6 @@ function convertPrimFromNode(addon: NodeAddon, type: string, expr: string): stri
     case "EJsonArray":
       return convertPrimFromNode(addon, "std::string", `${addon.accessCtor("EJSON_stringify")}.Call({${expr}})`);
 
-    case "bson::BsonArray":
-    case "bson::BsonDocument":
-      return `${type}(bson::parse(${convertPrimFromNode(addon, "EJsonObj", expr)}))`;
-
     case "AppError":
       assert.fail("Cannot convert AppError to C++, only from C++.");
   }
@@ -352,7 +345,7 @@ function convertToNode(addon: NodeAddon, type: Type, expr: string): string {
     case "Pointer":
       return `[&] (const auto& ptr){
           if constexpr(requires{ bool(ptr); }) { // support claiming that always-valid iterators are pointers.
-              REALM_ASSERT(bool(ptr) && "Must mark nullable pointers with Nullable<> in spec");
+              BARQ_ASSERT(bool(ptr) && "Must mark nullable pointers with Nullable<> in spec");
           }
           return ${c(type.type, "*ptr")};
       } (${expr})`;
@@ -431,7 +424,7 @@ function convertToNode(addon: NodeAddon, type: Type, expr: string): string {
       return `
             [&] (auto&& cb) -> Napi::Value {
                 if constexpr(std::is_constructible_v<bool, decltype(cb)>) {
-                    REALM_ASSERT(bool(cb) && "Must mark nullable callbacks with Nullable<> in spec");
+                    BARQ_ASSERT(bool(cb) && "Must mark nullable callbacks with Nullable<> in spec");
                 }
                 return Napi::Function::New(${env}, [cb = FWD(cb)] (const Napi::CallbackInfo& info) {
                     auto ${env} = info.Env();
@@ -476,7 +469,7 @@ function convertFromNode(addon: NodeAddon, type: Type, expr: string): string {
       // and B) other things may use lambdas which cause compile failures with our `auto(expr)`
       // emulation until C++20.
       const inner = c(type.type, expr);
-      return type.type.kind == "Class" ? `REALM_DECAY_COPY(${inner})` : inner;
+      return type.type.kind == "Class" ? `BARQ_DECAY_COPY(${inner})` : inner;
     }
 
     case "Template":
@@ -796,7 +789,7 @@ class NodeCppDecls extends CppDecls {
       );
 
       const nullCheck = cls.sharedPtrWrapped
-        ? 'REALM_ASSERT(bool(val) && "Must mark nullable pointers with Nullable<> in spec");'
+        ? 'BARQ_ASSERT(bool(val) && "Must mark nullable pointers with Nullable<> in spec");'
         : "";
 
       if (!cls.abstract) {
@@ -843,16 +836,16 @@ class NodeCppDecls extends CppDecls {
           // We are returning sentinel values for lists and dictionaries in the
           // form of Symbol singletons. This is due to not being able to construct
           // the actual list or dictionary in the current context.
-          case realm::type_List:
-            return Napi::Symbol::For(napi_env_var_ForBindGen, "Realm.List");
+          case barq::type_List:
+            return Napi::Symbol::For(napi_env_var_ForBindGen, "Barq.List");
 
-          case realm::type_Dictionary:
-            return Napi::Symbol::For(napi_env_var_ForBindGen, "Realm.Dictionary");
+          case barq::type_Dictionary:
+            return Napi::Symbol::For(napi_env_var_ForBindGen, "Barq.Dictionary");
 
           // The remaining cases are never stored in a Mixed.
           ${spec.mixedInfo.unusedDataTypes.map((t) => `case DataType::Type::${t}: break;`).join("\n")}
           }
-          REALM_UNREACHABLE();
+          BARQ_UNREACHABLE();
         `,
       }),
       new CppFunc("NODE_TO_Mixed", "Mixed", [new CppVar("Napi::Env", env), new CppVar("Napi::Value", "val")], {
@@ -908,7 +901,7 @@ class NodeCppDecls extends CppDecls {
             .map((t) => `case napi_${t}: throw Napi::TypeError::New(${env}, "Can't convert ${t} to Mixed");`)
             .join("\n")}
           }
-          REALM_UNREACHABLE();
+          BARQ_UNREACHABLE();
         `,
       }),
     );
@@ -918,7 +911,7 @@ class NodeCppDecls extends CppDecls {
 
   outputDefsTo(out: (...parts: string[]) => void) {
     super.outputDefsTo(out);
-    out(`\nNODE_API_NAMED_ADDON(realm_cpp, ${this.addon.name})`);
+    out(`\nNODE_API_NAMED_ADDON(barq_cpp, ${this.addon.name})`);
   }
 }
 
@@ -934,10 +927,10 @@ export function generate({ rawSpec, spec, file: makeFile }: TemplateContext): vo
 
   out(`
       #include <napi.h>
-      #include <realm_helpers.h>
-      #include <realm_js_node_helpers.h>
+      #include <barq_helpers.h>
+      #include <barq_js_node_helpers.h>
 
-      namespace realm::js::node {
+      namespace barq::js::node {
       namespace {
     `);
 
@@ -945,6 +938,6 @@ export function generate({ rawSpec, spec, file: makeFile }: TemplateContext): vo
 
   out(`
         } // namespace
-        } // namespace realm::js::node
+        } // namespace barq::js::node
     `);
 }

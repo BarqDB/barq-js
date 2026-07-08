@@ -9,7 +9,7 @@ app_path = File.expand_path('../..', __dir__)
 # Therefore we make an assumption on the location of the Podfile and check if it contains "use_frameworks!" ...
 podfile_path = File.expand_path('ios/Podfile', app_path)
 
-if !ENV['REALM_USE_FRAMEWORKS'].present?
+if !ENV['BARQ_USE_FRAMEWORKS'].present?
   begin
     podfile = File.read(podfile_path)
     uses_frameworks = podfile.scan(/\n\s*use_frameworks!\n/).any?
@@ -17,10 +17,10 @@ if !ENV['REALM_USE_FRAMEWORKS'].present?
     uses_frameworks = false
   end
 else
-  uses_frameworks = ENV['REALM_USE_FRAMEWORKS'] == 'true' ? true : false
+  uses_frameworks = ENV['BARQ_USE_FRAMEWORKS'] == 'true' ? true : false
 end
 
-if ENV['DEBUG_REALM_JS_PODSPEC'].present?
+if ENV['DEBUG_BARQ_JS_PODSPEC'].present?
   puts "BarqJS thinks the Podfile #{uses_frameworks ? "is" : "is not"} calling use_frameworks!"
 end
 
@@ -66,8 +66,8 @@ Pod::Spec.new do |s|
                                 # since we build Core with private symbols by default on Apple platforms.
                                 # See https://github.com/BarqDB/barq-core/blob/cf3b76ebd38b220d604fd438bcc51175c83eeb76/CMakeLists.txt#L45
                                 'GCC_SYMBOLS_PRIVATE_EXTERN' => 'YES',
-                                # Signaling to headers that Realm was compiled with Sync enabled
-                                'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) REALM_ENABLE_SYNC=1',
+                                # Signaling to headers that Barq was compiled with Sync enabled
+                                'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) BARQ_ENABLE_SYNC=1',
                                 # Header search paths are prefixes to the path specified in #include macros
                                 'HEADER_SEARCH_PATHS' => [
                                   # Platform independent helpers

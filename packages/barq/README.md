@@ -10,7 +10,7 @@ and TypeScript — an offline-first object database for Node.js, Electron and
 React Native, with optional synchronization powered by
 [barq-core](https://github.com/BarqDB/barq-core).
 
-`@barq/barq` is a modified fork of the `realm` package from the Realm JavaScript
+`@barq/barq` is a modified fork of the `barq` package from the Barq JavaScript
 SDK. See the top-level [NOTICE](../../NOTICE) for fork attribution.
 
 ## Install

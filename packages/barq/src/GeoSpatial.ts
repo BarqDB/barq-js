@@ -1,6 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Copyright 2023 Realm Inc.
+// Copyright (c) 2026 the Barq authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -67,7 +68,7 @@ export type GeoPoint =
  *   center: [20, 40],
  *   distance: 0.05,
  * };
- * realm.objects(Restaurant).filtered("location geoWithin $0", circle)
+ * barq.objects(Restaurant).filtered("location geoWithin $0", circle)
  */
 export type GeoCircle = {
   /** The center of the circle. */
@@ -97,7 +98,7 @@ export type GeoCircle = {
  *   [-2, -2],
  *  ],
  * };
- * realm.objects(Restaurant).filtered("location geoWithin $0", polygon)
+ * barq.objects(Restaurant).filtered("location geoWithin $0", polygon)
  */
 export type GeoPolygon =
   | {
@@ -114,7 +115,7 @@ export type GeoPolygon =
  *   bottomLeft: [-1, -1],
  *   topRight: [1, 1],
  * };
- * realm.objects(Restaurant).filtered("location geoWithin $0", box)
+ * barq.objects(Restaurant).filtered("location geoWithin $0", box)
  */
 export type GeoBox = {
   /** The bottom left point of the box. */

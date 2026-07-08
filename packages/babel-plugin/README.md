@@ -32,8 +32,8 @@ class Task extends Barq.Object<Task, "description"> {
     },
   };
 
-  constructor(realm, description: string) {
-    super(realm, {
+  constructor(barq, description: string) {
+    super(barq, {
       _id: new Barq.Types.ObjectId(),
       description,
     });
@@ -53,8 +53,8 @@ class Task extends Barq.Object<Task, "description"> {
 
   static primaryKey = "_id";
 
-  constructor(realm, description: string) {
-    super(realm, { description });
+  constructor(barq, description: string) {
+    super(barq, { description });
   }
 }
 ```
@@ -131,7 +131,7 @@ export class Task extends Barq.Object<Task, "name" | "description"> {
 }
 ```
 
-You can also import `Object` and `Types` directly from `realm`:
+You can also import `Object` and `Types` directly from `barq`:
 
 ```ts
 import { Object, Types, Types } from "@barq/barq";
@@ -153,7 +153,7 @@ As a rule, we recommend using TypeScript types where possible, and using `Barq.T
 
 Types which are provided by Barq (e.g. `Barq.List`) are exported from both the top-level `Barq` namespace, and from `Barq.Types` - you can use either variant in your models.
 
-The supported types are shown in the table below. See [the Barq documentation](https://www.mongodb.com/docs/atlas/device-sdks/sdk/react-native/model-data/data-types/property-types/) for more details on each type.
+The supported types are shown in the table below. See [the Barq documentation](https://github.com/BarqDB/barq-js) for more details on each type.
 
 | Barq.Types type                             | Barq schema type | TypeScript type | Barq type              | Notes                                                                                  |
 | -------------------------------------------- | ----------------- | --------------- | ----------------------- | -------------------------------------------------------------------------------------- |
@@ -175,7 +175,7 @@ The supported types are shown in the table below. See [the Barq documentation](h
 
 ### Specifying schema properties as `static`s
 
-Additional schema properties can be specified by adding `static` properties to your class, as shown in the table below. See [the Barq documentation](https://www.mongodb.com/docs/atlas/device-sdks/sdk/react-native/model-data/define-a-realm-object-model/) for more details.
+Additional schema properties can be specified by adding `static` properties to your class, as shown in the table below. See [the Barq documentation](https://github.com/BarqDB/barq-js) for more details.
 
 | Static property | Type      | Notes                                                                      |
 | --------------- | --------- | -------------------------------------------------------------------------- |
@@ -200,7 +200,7 @@ export class Task extends Barq.Object<Task, "description"> {
 
 ### Using decorators to index and remap properties
 
-The `@barq/babel-plugin` package exports decorators to allow you to specify certain properties should be indexed (using the `@index` decorators) or should remap to a Barq schema property with a different name (using the `@mapTo` decorator). To learn more about this functionality, see [the documentation](https://www.mongodb.com/docs/atlas/device-sdks/sdk/react-native/model-data/define-a-realm-object-model/#index-a-property).
+The `@barq/babel-plugin` package exports decorators to allow you to specify certain properties should be indexed (using the `@index` decorators) or should remap to a Barq schema property with a different name (using the `@mapTo` decorator). To learn more about this functionality, see [the documentation](https://github.com/BarqDB/barq-js).
 
 Note that use of decorators requires using the `@babel/plugin-proposal-decorators` plugin and for `experimentalDecorators` to be enabled in your `tsconfig.json`. There is currently no way to specifying properties to be indexed or remapped without using decorators.
 
@@ -209,7 +209,7 @@ This table shows the available decorators:
 | Decorator | Parameters                    | Notes                                                                                                                                                                           |
 |-----------|-------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `index`   | none or `("full-text")`       | Specifies that the decorated property should be indexed by Barq. Providing the string "full-text" specifies that the property should be indexed for full-text search by Barq. |
-| `mapTo`   | `(realmPropertyName: string)` | Specifies that the decorated property should be stored as `realmPropertyName` in the Barq database.                                                                            |
+| `mapTo`   | `(barqPropertyName: string)` | Specifies that the decorated property should be stored as `barqPropertyName` in the Barq database.                                                                            |
 
 The example below shows both decorators in use:
 
