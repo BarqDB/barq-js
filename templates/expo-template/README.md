@@ -62,4 +62,4 @@ See https://github.com/BarqDB/barq-js/blob/master/templates/docs/sync-setup.md f
 - [React Hooks](https://reactjs.org/docs/hooks-intro.html)
 - [Setting Up Realm Sync](https://docs.mongodb.com/realm/sdk/react-native/quick-start/)
 - [Realm JS Documentation](https://docs.mongodb.com/realm/sdk/react-native/)
-- [@barq/react Readme](https://github.com/BarqDB/barq-js/tree/master/packages/realm-react#readme)
+- [@barq/react Readme](https://github.com/BarqDB/barq-js/tree/master/packages/react#readme)

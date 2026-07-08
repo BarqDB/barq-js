@@ -91,7 +91,7 @@ We can see that it in turn uses two other configurations: `Node: Attach to proce
 
 This shows that the launch type is `lldb` provided by the CodeLLDB extension, and it is using the `node` command to invoke the `mocha` test framework with our test entry point file `src/index.ts`. The `${input:integrationTestFilter}` will prompt us for a string to use as filter to avoid running all tests every time.
 
-We will soon run a test that will create a Barq object, so let's put a breakpoint in Core's `Table::create_object` method (`packages/realm/bindgen/vendor/barq-core/src/realm/table.cpp`) by clicking to the left of the desired line number (see the :red_circle: circle below):
+We will soon run a test that will create a Barq object, so let's put a breakpoint in Core's `Table::create_object` method (`packages/barq/bindgen/vendor/barq-core/src/realm/table.cpp`) by clicking to the left of the desired line number (see the :red_circle: circle below):
 
 ![Breakpoint in Code](./assets/core-breakpoint.png)
 
@@ -141,7 +141,7 @@ This configuration will run the [integration tests](https://github.com/BarqDB/ba
 
 ### Configuration: LLDB & Node: @barq/react
 
-This configuration will run the [@barq/react tests](https://github.com/BarqDB/barq-js/tree/main/packages/realm-react/src/__tests__) with `lldb` attached. This option is the combination of the configurations `Node: Attach to process` and `LLDB: Barq React Tests`, enabling you to switch between their stack traces and placing breakpoints in C++ files.
+This configuration will run the [@barq/react tests](https://github.com/BarqDB/barq-js/tree/main/packages/react/src/__tests__) with `lldb` attached. This option is the combination of the configurations `Node: Attach to process` and `LLDB: Barq React Tests`, enabling you to switch between their stack traces and placing breakpoints in C++ files.
 
 ### Configuration: LLDB: Node REPL
 
@@ -218,8 +218,8 @@ You can also open the Node source directory in VS Code and use the launch config
 To debug Barq C++ in an iOS app using Xcode:
 
 1. Ensure you are using a debug version of the Barq `xcframework`.
-2. In your Xcode project, go to `File` > `Add files to <project name>` and select your `barq-js/packages/realm/src` directory (it must be the same directory you used to build the `xcframework` as the paths are absolute). Ensure "Copy items" is not ticked, and "Create folder references" is selected, then press `Add`.
-3. Repeat step 2, for your `barq-js/packages/realm/bindgen/vendor/barq-core/src` directory.
+2. In your Xcode project, go to `File` > `Add files to <project name>` and select your `barq-js/packages/barq/src` directory (it must be the same directory you used to build the `xcframework` as the paths are absolute). Ensure "Copy items" is not ticked, and "Create folder references" is selected, then press `Add`.
+3. Repeat step 2, for your `barq-js/packages/barq/bindgen/vendor/barq-core/src` directory.
 4. Build and run the app in debug mode:
 
 ```sh
@@ -246,8 +246,8 @@ To debug Barq C++ in an Android app using Android Studio (the integration test i
    // Add the Barq source files to the Android Studio project so that we can add breakpoints
    // in debug mode. These will not be compiled, it will still use the .so library.
    sourceSets {
-      main.java.srcDirs += '<path to barq-js/packages/realm/src>'
-      main.java.srcDirs += '<path to barq-js/packages/realm/bindgen/vendor/barq-core/src>'
+      main.java.srcDirs += '<path to barq-js/packages/barq/src>'
+      main.java.srcDirs += '<path to barq-js/packages/barq/bindgen/vendor/barq-core/src>'
    }
    ```
 4. In Android Studio, go to `Run` > `Edit Configurations...` and in the `Debugger` tab, select a `Debug type` of `Native Only`

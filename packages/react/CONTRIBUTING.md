@@ -50,7 +50,7 @@ npx lerna bootstrap --scope @barq/react --include-dependencies
 
 * navigate to `@realm-react` and run the tests
 ```
-cd packages/realm-react
+cd packages/react
 npm run test
 ```
 

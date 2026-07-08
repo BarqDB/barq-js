@@ -22,7 +22,7 @@ Barq JS is forked from the Realm JavaScript SDK at tag `realm-react-v0.20.0`.
 - **Token-based sync.** Synchronization is provided by
   [barq-core](https://github.com/BarqDB/barq-core). A sync user is created from
   a signed access token via `Barq.User.fromToken(...)` — there is no built-in
-  login flow. See [SYNC.md](./SYNC.md).
+  login flow.
 - **No BSON dependency.** The `bson` package has been removed. Value types
   (`ObjectId`, `UUID`, `Decimal128`, `Binary`, `EJSON`) are now Barq's own
   implementations, exposed under `Barq.Types`.

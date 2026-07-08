@@ -39,7 +39,6 @@ const barq = await Barq.open({ schema: [Task] });
 ```
 
 - Value types (`ObjectId`, `UUID`, `Decimal128`, `Binary`) live under `Barq.Types`.
-- For synchronization with barq-core, see [SYNC.md](../../SYNC.md).
 
 ## License
 

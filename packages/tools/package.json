@@ -17,8 +17,8 @@
     "build": {
       "command": "tsc -p tsconfig.build.json",
       "dependencies": [
-        "../realm:build:ts",
-        "../realm:build:node"
+        "../barq:build:ts",
+        "../barq:build:node"
       ],
       "files": [
         "tsconfig.build.json",

@@ -220,7 +220,7 @@ npm run prebuild-apple --workspace realm
 npm run bindgen:jsi  --workspace realm
 ```
 
-The resulting prebuilt binary is stored in `packages/realm/prebuilds/apple`.
+The resulting prebuilt binary is stored in `packages/barq/prebuilds/apple`.
 
 ### Building for Android
 
@@ -233,7 +233,7 @@ npm run prebuild-android --workspace realm
 npm run bindgen:jsi  --workspace realm
 ```
 
-The resulting prebuilt binary is stored in `packages/realm/prebuilds/android`.
+The resulting prebuilt binary is stored in `packages/barq/prebuilds/android`.
 
 ### Building for Node.js
 
@@ -243,7 +243,7 @@ You can build the native prebuilt binary for Node.js by running the following co
 npm run build:node --workspace realm
 ```
 
-The resulting prebuilt binary is the `packages/realm/prebuilds/node/realm.node` file.
+The resulting prebuilt binary is the `packages/barq/prebuilds/node/realm.node` file.
 
 If you want to produce a prebuild (a OS +arch specific archive meant for distribution alongside the NPM archive):
 
@@ -251,7 +251,7 @@ If you want to produce a prebuild (a OS +arch specific archive meant for distrib
 npm run prebuild-node --workspace realm
 ```
 
-The resulting prebuilt binary is stored in a `packages/realm/prebuilds/realm-*.tar.gz` file.
+The resulting prebuilt binary is stored in a `packages/barq/prebuilds/realm-*.tar.gz` file.
 
 #### Additional steps for Windows
 
@@ -316,7 +316,7 @@ Finally, you can use Barq JS in your example project `MyProject`:
 ```sh
 cd MyProject
 npm init -y  # skip this if you've already initialised your project
-npm install path/to/barq-js/packages/realm
+npm install path/to/barq-js/packages/barq
 ```
 
 > [!TIP]
@@ -338,7 +338,7 @@ API documentation is written using [TypeDoc](https://typedoc.org/). To generate 
 npm run docs --workspace realm
 ```
 
-The generated docs can be found in `packages/realm/docs/index.html`.
+The generated docs can be found in `packages/barq/docs/index.html`.
 
 ## Running the tests
 
@@ -410,7 +410,7 @@ The relevant snippet is:
 
 ## Updating the Android JNI headers
 
-If you add a new JNI method to [`RealmReactModule.java`](https://github.com/BarqDB/barq-js/blob/main/packages/realm/react-native/android/src/main/java/io/realm/react/RealmReactModule.java), you will need to regenerate the auto-generated [header file](https://github.com/BarqDB/barq-js/blob/main/packages/realm/src/android/io_realm_react_RealmReactModule.h).
+If you add a new JNI method to [`RealmReactModule.java`](https://github.com/BarqDB/barq-js/blob/main/packages/barq/react-native/android/src/main/java/io/realm/react/RealmReactModule.java), you will need to regenerate the auto-generated [header file](https://github.com/BarqDB/barq-js/blob/main/packages/barq/src/android/io_realm_react_RealmReactModule.h).
 
 1. First you need to find some classpaths required to generate the header. In a terminal, `cd ~/.gradle/caches` and then run:
     1. `find "$(pwd -P)" -name "jetified-react-native-0.69.1-debug" -exec find {} -name "classes.jar" \;`

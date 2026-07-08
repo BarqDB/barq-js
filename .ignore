@@ -10,13 +10,13 @@
 !/packages/bindgen/generated/
 
 # Only want to see generated sources in build dir
-!/packages/realm/bindgen/build
-/packages/realm/bindgen/build/*
-!/packages/realm/bindgen/build/*.cpp
+!/packages/barq/bindgen/build
+/packages/barq/bindgen/build/*
+!/packages/barq/bindgen/build/*.cpp
 
 # We also generate extracted .d.ts files into realm/generated/types,
 # but those are redundant with the source files so we don't need to see them.
-!/packages/realm/generated
-/packages/realm/generated/*
-!/packages/realm/generated/ts
-/packages/realm/generated/ts/realm.node
+!/packages/barq/generated
+/packages/barq/generated/*
+!/packages/barq/generated/ts
+/packages/barq/generated/ts/realm.node

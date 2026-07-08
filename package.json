@@ -15,11 +15,11 @@
   "wireit": {
     "build": {
       "dependencies": [
-        "./packages/realm:build:ts",
+        "./packages/barq:build:ts",
         "./packages/babel-plugin:bundle",
         "./packages/mocha-reporter:bundle",
-        "./packages/realm-react:bundle",
-        "./packages/realm-tools:build"
+        "./packages/react:bundle",
+        "./packages/tools:build"
       ]
     },
     "lint": {
@@ -44,13 +44,13 @@
     "url": "https://github.com/BarqDB/barq-js"
   },
   "workspaces": [
-    "packages/realm/bindgen/",
+    "packages/barq/bindgen/",
     "packages/babel-plugin",
     "packages/fetch",
-    "packages/realm",
-    "packages/realm-common",
-    "packages/realm-react",
-    "packages/realm-tools",
+    "packages/barq",
+    "packages/common",
+    "packages/react",
+    "packages/tools",
     "packages/mocha-reporter"
   ],
   "dependencies": {

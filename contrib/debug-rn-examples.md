@@ -8,8 +8,8 @@ For example, to add `rn-todo-list` one would add it to the root `package.json` f
 ...
 "workspaces": [
 	"examples/rn-todo-list/frontend/",
-	"packages/realm/bindgen/",
-	"packages/realm/bindgen/vendor/barq-core/",
+	"packages/barq/bindgen/",
+	"packages/barq/bindgen/vendor/barq-core/",
 	"packages/babel-plugin",
 ...
 ```
@@ -101,7 +101,7 @@ Since we want to keep the simplicity for our users, changes made in order to deb
 
 ### Android or iOS doesn't find Barq.
 
-Make sure to build binaries for Android and iOS in packages/realm by running:
+Make sure to build binaries for Android and iOS in packages/barq by running:
 
 ```sh
 # Android

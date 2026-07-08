@@ -16,7 +16,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-// Our use of `exports` in `packages/realm/package.json` is not enabled by
+// Our use of `exports` in `packages/barq/package.json` is not enabled by
 // default when using Metro and RN. In these cases, modules imported from
 // "realm/experimental" will search for the file in the same path, rather
 // than what is pointed to under `exports`. Thus, we use this .js file to

@@ -18,8 +18,8 @@
     "bundle": {
       "command": "rollup --config && tsc -p tsconfig.types.json",
       "dependencies": [
-        "../realm:build:ts",
-        "../realm-common:bundle"
+        "../barq:build:ts",
+        "../common:bundle"
       ],
       "files": [
         "rollup.config.js",
@@ -33,10 +33,9 @@
     "test": {
       "command": "jest --forceExit",
       "dependencies": [
-        "../realm:build:ts",
-        "../realm:build:node",
-        "../realm-common:bundle",
-        "../realm-app-importer:type-check"
+        "../barq:build:ts",
+        "../barq:build:node",
+        "../common:bundle"
       ]
     },
     "docs": {
@@ -97,9 +96,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/BarqDB/barq-js.git",
-    "directory": "packages/realm-react"
+    "directory": "packages/react"
   },
-  "homepage": "https://github.com/BarqDB/barq-js/tree/main/packages/realm-react#readme",
+  "homepage": "https://github.com/BarqDB/barq-js/tree/main/packages/react#readme",
   "bugs": {
     "url": "https://github.com/BarqDB/barq-js/issues"
   },

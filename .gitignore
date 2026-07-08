@@ -47,7 +47,7 @@ yarn.lock
 
 # Android/IJ
 /android
-/packages/realm/binding/android/.cxx/
+/packages/barq/binding/android/.cxx/
 .idea
 .gradle
 local.properties
@@ -101,20 +101,20 @@ coverage/
 /templats/*/template/package-lock.json
 
 # Generated artifacts
-/packages/realm/bindgen/vendor/bindgen-lib/generated/
-/packages/realm/generated/
-/packages/realm/binding/jsi/jsi_init.cpp
-/packages/realm/src/**/*.generated.ts
+/packages/barq/bindgen/vendor/bindgen-lib/generated/
+/packages/barq/generated/
+/packages/barq/binding/jsi/jsi_init.cpp
+/packages/barq/src/**/*.generated.ts
 
 # Build artifacts
-/packages/realm/dist/
-/packages/realm/binding/build/
-/packages/realm/binding/android/build/
-/packages/realm/binding/node/build/
-/packages/realm/prebuilds/
-/packages/realm/binding/android/src/main/java/io/realm/react/Version.java
-/packages/realm/binding/android/src/main/jniLibs/
-/packages/realm/binding/apple/*.xcframework
+/packages/barq/dist/
+/packages/barq/binding/build/
+/packages/barq/binding/android/build/
+/packages/barq/binding/node/build/
+/packages/barq/prebuilds/
+/packages/barq/binding/android/src/main/java/io/realm/react/Version.java
+/packages/barq/binding/android/src/main/jniLibs/
+/packages/barq/binding/apple/*.xcframework
 
 # Wireit repo caches
 .wireit
@@ -129,6 +129,5 @@ coverage/
 .cocoapods/
 
 # Generated docs
-/packages/realm/docs/
-/packages/realm-react/docs/
-/packages/realm-web/docs/
+/packages/barq/docs/
+/packages/react/docs/

@@ -17,12 +17,12 @@ and no bundled BSON dependency. See [NOTICE](./NOTICE) for fork attribution.
 
 | npm package            | Path                       | Description                                   |
 | ---------------------- | -------------------------- | --------------------------------------------- |
-| `@barq/barq`           | `packages/realm`           | The core database SDK (native, binds barq-core) |
-| `@barq/react`          | `packages/realm-react`     | React / React Native hooks and providers      |
+| `@barq/barq`           | `packages/barq`           | The core database SDK (native, binds barq-core) |
+| `@barq/react`          | `packages/react`     | React / React Native hooks and providers      |
 | `@barq/babel-plugin`   | `packages/babel-plugin`    | Babel plugin for schema-from-class syntax     |
-| `@barq/common`         | `packages/realm-common`    | Cross-package shared utilities                |
+| `@barq/common`         | `packages/common`    | Cross-package shared utilities                |
 | `@barq/fetch`          | `packages/fetch`           | Minimal fetch abstraction                     |
-| `@barq/tools`          | `packages/realm-tools`     | Developer tooling                             |
+| `@barq/tools`          | `packages/tools`     | Developer tooling                             |
 | `@barq/mocha-reporter` | `packages/mocha-reporter`  | Mocha reporter used by the test suites        |
 
 ## Install
@@ -83,7 +83,7 @@ await barq.subscriptions.update((mutable) => {
 ```
 
 Value types (`ObjectId`, `UUID`, `Decimal128`, `Binary`) are provided by Barq
-under `Barq.Types` — see [`packages/realm/src/types`](./packages/realm/src/types).
+under `Barq.Types` — see [`packages/barq/src/types`](./packages/barq/src/types).
 
 ## Data types
 
@@ -95,12 +95,6 @@ Barq ships its own value types (no third-party BSON dependency):
 - `Barq.Types.Binary`
 - `Barq.Types.EJSON`
 
-## Building the native module
-
-The `@barq/barq` native module is generated from and linked against
-[barq-core](https://github.com/BarqDB/barq-core), vendored as a submodule at
-`packages/realm/bindgen/vendor/barq-core`. See [SYNC.md](./SYNC.md) for how the
-JavaScript layer binds to barq-core's sync engine.
 
 ## License
 

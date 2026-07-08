@@ -238,7 +238,7 @@ function MyApp() {
 
 ### Enhancements
 * Add authentication hooks, `useAuth` and `useEmailPasswordAuth`
-	[Usage example](https://github.com/BarqDB/barq-js/blob/main/packages/realm-react/README.md#authentication-hooks)
+	[Usage example](https://github.com/BarqDB/barq-js/blob/main/packages/react/README.md#authentication-hooks)
 * Allow `useQuery` to be passed a `query` function where `sorted` and `filtered` methods can be called ([#5471](https://github.com/BarqDB/barq-js/issues/5471)) Thanks for the contribution [@levipro](https://github.com/levipro)!
 
   Example:
@@ -318,7 +318,7 @@ function MyApp() {
 ## 0.4.0 (2022-10-18)
 
 ### Enhancements
-* Added a [contribution guide](https://github.com/BarqDB/barq-js/blob/main/packages/realm-react/CONTRIBUTING.md) to assist in contributions from the community.
+* Added a [contribution guide](https://github.com/BarqDB/barq-js/blob/main/packages/react/CONTRIBUTING.md) to assist in contributions from the community.
 
 ### Internal
 * Update devDependencies for testing:
