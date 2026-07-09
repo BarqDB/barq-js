@@ -180,3 +180,55 @@ jobs:
           $f = Get-ChildItem -Recurse -Path packages/barq -Filter barq.node -ErrorAction SilentlyContinue | Select-Object -First 1
           if (-not $f) { throw "barq.node not found" }
           "Built: $($f.FullName) ($([math]::Round($f.Length/1MB,1)) MB)"
+
+  # Builds the native addon on macOS — arm64 natively and x64 cross-compiled —
+  # both on the arm64 macos-14 runner (Intel macos-13 runners are scarce). This
+  # validates the exact cross-compile the release uses, incl. that the x64 slice
+  # really is x86_64.
+  napi-macos:
+    name: Native addon (macOS ${{ matrix.arch }})
+    runs-on: macos-14
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { arch: arm64, osx_arch: arm64 }
+          - { arch: x64, osx_arch: x86_64 }
+    steps:
+      - name: Checkout (with barq-core submodule)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install build tools
+        run: brew install cmake ninja
+
+      - name: Install npm dependencies
+        run: npm install --legacy-peer-deps --ignore-scripts --no-audit --no-fund
+
+      - name: Generate the binding (wrapper + jsi)
+        run: |
+          npm run bindgen:wrapper --workspace @barqdb/barq
+          npm run bindgen:jsi --workspace @barqdb/barq
+
+      - name: Build the native addon (arch=${{ matrix.arch }})
+        working-directory: packages/barq
+        run: |
+          npx prebuild --runtime napi --target 6 --arch ${{ matrix.arch }} --backend cmake-js \
+            -- --directory binding/node --CDCMAKE_OSX_ARCHITECTURES=${{ matrix.osx_arch }}
+
+      - name: Verify barq.node arch is ${{ matrix.osx_arch }}
+        run: |
+          set -euo pipefail
+          node_file="$(find packages/barq -name 'barq.node' | head -1)"
+          test -n "$node_file"
+          echo "Built: $node_file"
+          file "$node_file"
+          file "$node_file" | grep -q "${{ matrix.osx_arch }}"
+          echo "Arch OK: ${{ matrix.osx_arch }}"

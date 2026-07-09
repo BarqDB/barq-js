@@ -49,8 +49,8 @@ jobs:
       matrix:
         include:
           - { os: ubuntu-latest, name: linux-x64 }
-          - { os: macos-13, name: darwin-x64 }
-          - { os: macos-14, name: darwin-arm64 }
+          - { os: macos-14, name: darwin-x64, arch: x64, osx_arch: x86_64 }
+          - { os: macos-14, name: darwin-arm64, arch: arm64, osx_arch: arm64 }
           - { os: windows-latest, name: win32-x64 }
     steps:
       - name: Checkout (with barq-core submodule)
@@ -81,14 +81,25 @@ jobs:
           npm run bindgen:wrapper --workspace @barqdb/barq
           npm run bindgen:jsi --workspace @barqdb/barq
 
-      - name: Build and upload the native prebuild (Unix)
-        if: runner.os != 'Windows'
+      - name: Build and upload the native prebuild (Linux)
+        if: runner.os == 'Linux'
         working-directory: packages/barq
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           npx prebuild --runtime napi --target 6 --backend cmake-js -u "$GITHUB_TOKEN" \
             -- --directory binding/node --CDBARQ_USE_SYSTEM_OPENSSL=ON
+
+      # darwin-x64 is cross-compiled on the arm64 macos-14 runner (Intel macos-13
+      # runners are scarce); matrix.osx_arch pins the target slice.
+      - name: Build and upload the native prebuild (macOS)
+        if: runner.os == 'macOS'
+        working-directory: packages/barq
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npx prebuild --runtime napi --target 6 --arch ${{ matrix.arch }} --backend cmake-js -u "$GITHUB_TOKEN" \
+            -- --directory binding/node --CDCMAKE_OSX_ARCHITECTURES=${{ matrix.osx_arch }}
 
       # Windows uses pwsh and the barq-core dependency prebuilts for OpenSSL/zlib
       # (no system-openssl flag), matching the proven build.yml Windows job.
