@@ -18,7 +18,6 @@
 ////////////////////////////////////////////////////////////////////////////
 
 import { binding } from "../binding";
-import { assert } from "../assert";
 import { type LogLevel, type Logger, fromBindingLoggerLevelToNumericLogLevel, toBindingLoggerLevel } from "../Logger";
 import type { Barq } from "../Barq";
 import { SyncSession } from "./SyncSession";
@@ -28,30 +27,33 @@ import {
   OpenBarqBehaviorType,
   OpenBarqTimeOutBehavior,
   type PartitionValue,
-  toBindingSyncConfig,
+  pathForSyncConfig,
   validateSyncConfiguration,
 } from "./SyncConfiguration";
 
 export class Sync {
   /** @deprecated Will be removed in v13.0.0. Please use {@link Barq.setLogLevel}. */
   static setLogLevel(app: User, level: LogLevel) {
-    const numericLevel = toBindingLoggerLevel(level);
-    app.internal.syncManager.setLogLevel(numericLevel);
+    // Barq exposes no per-user sync manager to the SDK; set the global log level
+    // instead (equivalent to the recommended {@link Barq.setLogLevel}).
+    binding.LogCategoryRef.getCategory("Barq").setDefaultLevelThreshold(toBindingLoggerLevel(level));
   }
 
   /** @deprecated Will be removed in v13.0.0. Please use {@link Barq.setLogger}. */
   static setLogger(app: User, logger: Logger) {
-    const factory = binding.Helpers.makeLoggerFactory((_, level, message) => {
-      logger(fromBindingLoggerLevelToNumericLogLevel(level), message);
-    });
-    app.internal.syncManager.setLoggerFactory(factory);
+    // Route to the global default logger (equivalent to {@link Barq.setLogger}).
+    binding.Logger.setDefaultLogger(
+      binding.Helpers.makeLogger((_category, level, message) => {
+        logger(fromBindingLoggerLevelToNumericLogLevel(level), message);
+      }),
+    );
   }
   /**
    * Get all sync sessions for a particular user.
    * @since 10.0.0
    */
   static getAllSyncSessions(user: User): SyncSession[] {
-    return user.internal.app.syncManager.getAllSessionsFor(user.internal).map((session) => new SyncSession(session));
+    return binding.JsTokenUser.getAllSessionsFor(user.internal).map((session) => new SyncSession(session));
   }
   /**
    * Get the session associated with a particular user and partition value.
@@ -59,9 +61,8 @@ export class Sync {
    */
   static getSyncSession(user: User, partitionValue: PartitionValue): SyncSession | null {
     validateSyncConfiguration({ user, partitionValue });
-    const config = toBindingSyncConfig({ user, partitionValue });
-    const path = user.internal.pathForBarq(config, undefined);
-    const session = user.internal.app.syncManager.getExistingActiveSession(path);
+    const path = pathForSyncConfig(user, { partitionValue });
+    const session = binding.JsTokenUser.getExistingActiveSession(user.internal, path);
     if (session) {
       return new SyncSession(session);
     } else {
@@ -78,7 +79,7 @@ export class Sync {
    * can no longer be changed.
    */
   static setUserAgent(app: User, userAgent: string) {
-    app.internal.syncManager.setUserAgent(userAgent);
+    binding.JsTokenUser.setUserAgent(app.internal, userAgent);
   }
   // TODO: Consider breaking the API, turning this into an instance method
   /**
@@ -90,7 +91,7 @@ export class Sync {
    * and you know you are using many sync sessions.
    */
   static enableSessionMultiplexing(app: User) {
-    app.internal.syncManager.setSessionMultiplexing(true);
+    binding.JsTokenUser.setSessionMultiplexing(app.internal, true);
   }
 
   // TODO: Consider breaking the API, turning this into an instance method
@@ -134,9 +135,9 @@ export class Sync {
    * }
    */
   static initiateClientReset(app: User, path: string) {
-    const success = app.internal.immediatelyRunFileActions(path);
-    // TODO: Consider a better error message
-    assert(success, `Barq was not configured correctly. Client Reset could not be run for Barq at: ${path}`);
+    // barq-core does not expose the file-action API used for a manual client
+    // reset. Recover by closing and deleting the local Barq file, then re-opening.
+    throw new Error(`Client reset is not supported in Barq's token sync model (requested for Barq at: ${path}).`);
   }
   // TODO: Consider breaking the API, turning this into an instance method
   /**
@@ -146,13 +147,13 @@ export class Sync {
    * @internal
    */
   static _hasExistingSessions(app: User) {
-    return app.internal.syncManager.hasExistingSessions;
+    return binding.JsTokenUser.hasExistingSessions(app.internal);
   }
   /**
    * @deprecated
    */
   static reconnect(app: User) {
-    app.internal.syncManager.reconnect();
+    binding.JsTokenUser.reconnect(app.internal);
   }
 
   /**

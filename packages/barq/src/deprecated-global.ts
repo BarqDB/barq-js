@@ -171,7 +171,6 @@ declare global {
     export import UpdateMode = ns.UpdateMode;
     export import User = ns.User;
     export import UserChangeCallback = ns.UserChangeCallback;
-    export import UserIdentity = ns.UserIdentity;
     export import UserState = ns.UserState;
     export import WaitForSync = ns.WaitForSync;
 

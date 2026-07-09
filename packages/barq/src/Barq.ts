@@ -44,7 +44,7 @@ import {
 import type { ClassHelpers } from "./ClassHelpers";
 import { ClassMap } from "./ClassMap";
 import { type Configuration, type MigrationCallback, validateConfiguration } from "./Configuration";
-import { type InitialSubscriptions, toBindingSyncConfig } from "./sync/SyncConfiguration";
+import { type InitialSubscriptions, pathForSyncConfig, toBindingSyncConfig } from "./sync/SyncConfiguration";
 import {
   LOG_CATEGORIES,
   type LogCategory,
@@ -168,7 +168,6 @@ export class Barq {
     }
     Barq.internals.clear();
     binding.BarqCoordinator.clearAllCaches();
-    binding.App.clearCachedApps();
     ProgressBarqPromise.cancelAll();
 
     binding.Logger.setDefaultLogger(null);
@@ -378,8 +377,11 @@ export class Barq {
       if (config.path && fs.isAbsolutePath(config.path)) {
         return Barq.normalizePath(config.path);
       } else {
-        const bindingSyncConfig = toBindingSyncConfig(config.sync);
-        return config.sync.user.internal.pathForBarq(bindingSyncConfig, config.path);
+        return pathForSyncConfig(
+          config.sync.user,
+          { flexible: !!config.sync.flexible, partitionValue: config.sync.partitionValue },
+          config.path,
+        );
       }
     } else {
       return Barq.normalizePath(config.path);
@@ -1349,7 +1351,6 @@ export namespace Barq {
   export import UpdateMode = ns.UpdateMode;
   export import User = ns.User;
   export import UserChangeCallback = ns.UserChangeCallback;
-  export import UserIdentity = ns.UserIdentity;
   export import UserState = ns.UserState;
   export import UserTypeName = ns.UserTypeName;
   export import WaitForSync = ns.WaitForSync;

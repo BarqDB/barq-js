@@ -19,7 +19,7 @@
 
 import { Platform } from "react-native";
 
-import { config, version } from "@barqdb/barq/package.json";
+import { version } from "@barqdb/barq/package.json";
 
 import { inject } from "../device-info";
 import { binding } from "../binding";

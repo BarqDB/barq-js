@@ -2,8 +2,33 @@
 
 headers:
   - "platform.hpp"
+  - "token_user.hpp"
 
 classes:
+  # Token-based sync user API. barq-core wraps users as a base `SyncUser`, but the
+  # token operations live on the concrete `TokenSyncUser`; these static helpers
+  # downcast internally (see binding/token_user.hpp) so a single `SyncUser`
+  # binding class stays sufficient everywhere else.
+  JsTokenUser:
+    abstract: true
+    staticMethods:
+      from_token: '(tenant_id: std::string, user_id: std::string, access_token: std::string) -> SharedSyncUser'
+      tenant_id: '(user: SharedSyncUser) -> std::string'
+      user_id: '(user: SharedSyncUser) -> std::string'
+      access_token: '(user: SharedSyncUser) -> std::string'
+      refresh_token: '(user: SharedSyncUser) -> std::string'
+      state: '(user: SharedSyncUser) -> SyncUserState'
+      set_route: '(user: SharedSyncUser, route: std::string, verified: bool)'
+      set_access_token: '(user: SharedSyncUser, access_token: std::string)'
+      mark_access_token_refresh_required: '(user: SharedSyncUser)'
+      log_out: '(user: SharedSyncUser)'
+      set_user_agent: '(user: SharedSyncUser, user_agent: std::string)'
+      set_session_multiplexing: '(user: SharedSyncUser, allowed: bool)'
+      reconnect: '(user: SharedSyncUser)'
+      has_existing_sessions: '(user: SharedSyncUser) -> bool'
+      get_all_sessions_for: '(user: SharedSyncUser) -> std::vector<SharedSyncSession>'
+      get_existing_active_session: '(user: SharedSyncUser, path: std::string) -> Nullable<SharedSyncSession>'
+
   JsPlatformHelpers:
     abstract: true
     staticMethods:

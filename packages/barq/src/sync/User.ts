@@ -19,16 +19,15 @@
 // Modifications Copyright (c) 2026 the Barq authors
 // Part of Barq (https://github.com/BarqDB/barq-js), a modified fork of Barq JS.
 // Reshaped from an Barq user into Barq's token-based sync user
-// (see barq-core `barq_sync_user_*`). Licensed under the Apache License,
-// Version 2.0. See the top-level NOTICE file for fork attribution and
-// trademark notices.
+// (see barq-core `barq_sync_user_*` / `TokenSyncUser`). Licensed under the
+// Apache License, Version 2.0. See the top-level NOTICE file for fork
+// attribution and trademark notices.
 //
 ////////////////////////////////////////////////////////////////////////////
 
 import { binding } from "../binding";
 import { assert } from "../assert";
 import { injectIndirect } from "../indirect";
-import { Listeners } from "../Listeners";
 
 export type UserChangeCallback = () => void;
 
@@ -47,8 +46,6 @@ export enum UserState {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyUser = User;
 
-type UserListenerToken = binding.UserSubscriptionToken;
-
 /**
  * Options accepted when constructing a Barq sync {@link User} from a token.
  */
@@ -63,49 +60,48 @@ export type UserTokenOptions = {
    * server. Defaults to `true`.
    */
   routeVerified?: boolean;
-  /**
-   * The refresh token, when the issuer provides one alongside the access token.
-   */
-  refreshToken?: string;
 };
 
 /**
  * Representation of a synchronizing user of a Barq server.
  *
- * Unlike Barq, Barq does not perform authentication itself: your
- * application obtains a signed access token from your own identity provider and
- * hands it to Barq via {@link User.fromToken}. Barq validates the token's
- * signature and claims (tenant/owner) on the server and scopes all synced data
- * to it.
+ * Unlike Barq, Barq does not perform authentication itself: your application
+ * obtains a signed access token from your own identity provider and hands it to
+ * Barq via {@link User.fromToken}, together with the tenant and user id the token
+ * is scoped to. Barq validates the token's signature and claims on the server and
+ * scopes all synced data to it.
  */
 export class User {
   /** @internal */
   public readonly internal: binding.SyncUser;
 
-  /** @internal */
-  private readonly listeners = new Listeners<UserChangeCallback, UserListenerToken>({
-    add: (callback: () => void): UserListenerToken => {
-      return this.internal.subscribe(callback);
-    },
-    remove: (token) => {
-      this.internal.unsubscribe(token);
-    },
-  });
+  /**
+   * @internal
+   * JS-side change listeners. barq-core emits no user-change events, so these are
+   * invoked by the SDK itself whenever it mutates the user (token/route/logout).
+   */
+  private readonly changeListeners = new Set<UserChangeCallback>();
 
   /**
    * Create a Barq sync user from a signed access token.
    *
-   * The token is not inspected on the client beyond extracting its identity; it
-   * is validated by the Barq server on connect. Wraps barq-core
-   * `barq_sync_user_new_from_token`.
+   * The token is not inspected on the client beyond what your identity provider
+   * embeds; it is validated by the Barq server on connect. Wraps barq-core
+   * `barq_sync_user_new_from_token` / `TokenSyncUser::create`.
+   * @param tenantId - The tenant (owner) the token is scoped to.
+   * @param userId - The stable identifier of the user the token represents.
    * @param accessToken - A signed access token issued by your identity provider.
-   * @param options - Optional route and refresh-token configuration.
+   * @param options - Optional route configuration.
    * @returns A {@link User} that can be passed to a sync configuration.
    */
-  static fromToken(accessToken: string, options: UserTokenOptions = {}): User {
+  static fromToken(tenantId: string, userId: string, accessToken: string, options: UserTokenOptions = {}): User {
+    assert.string(tenantId, "tenantId");
+    assert(tenantId.length, "Please provide a non-empty tenant ID.");
+    assert.string(userId, "userId");
+    assert(userId.length, "Please provide a non-empty user ID.");
     assert.string(accessToken, "accessToken");
     assert(accessToken.length, "Please provide a non-empty access token.");
-    const internal = binding.SyncUser.fromToken(accessToken, options.refreshToken ?? "");
+    const internal = binding.JsTokenUser.fromToken(tenantId, userId, accessToken);
     const user = new User(internal);
     if (options.route) {
       user.setRoute(options.route, options.routeVerified ?? true);
@@ -123,7 +119,7 @@ export class User {
   constructor(internal: binding.SyncUser) {
     this.internal = internal;
 
-    Object.defineProperty(this, "listeners", {
+    Object.defineProperty(this, "changeListeners", {
       enumerable: false,
       configurable: false,
       writable: false,
@@ -140,7 +136,7 @@ export class User {
    * @returns The tenant ID as a string.
    */
   get tenantId(): string {
-    return this.internal.tenantId;
+    return binding.JsTokenUser.tenantId(this.internal);
   }
 
   /**
@@ -148,7 +144,7 @@ export class User {
    * @returns The user ID as a string.
    */
   get id(): string {
-    return this.internal.userId;
+    return binding.JsTokenUser.userId(this.internal);
   }
 
   /**
@@ -156,7 +152,7 @@ export class User {
    * @returns The state as an enumerated string.
    */
   get state(): UserState {
-    const state = this.internal.state;
+    const state = binding.JsTokenUser.state(this.internal);
     switch (state) {
       case binding.SyncUserState.LoggedIn:
         return UserState.LoggedIn;
@@ -179,18 +175,20 @@ export class User {
 
   /**
    * The current access token used to authenticate sync requests.
-   * @returns The access token as a string or `null`.
+   * @returns The access token as a string, or `null` if none is set.
    */
   get accessToken(): string | null {
-    return this.internal.accessToken;
+    const token = binding.JsTokenUser.accessToken(this.internal);
+    return token.length ? token : null;
   }
 
   /**
    * The refresh token, if one was supplied when the user was created.
-   * @returns The refresh token as a string or `null`.
+   * @returns The refresh token as a string, or `null` if none is set.
    */
   get refreshToken(): string | null {
-    return this.internal.refreshToken;
+    const token = binding.JsTokenUser.refreshToken(this.internal);
+    return token.length ? token : null;
   }
 
   /**
@@ -201,7 +199,8 @@ export class User {
    */
   setRoute(route: string, verified = true): void {
     assert.string(route, "route");
-    this.internal.setRoute(route, verified);
+    binding.JsTokenUser.setRoute(this.internal, route, verified);
+    this.emitChange();
   }
 
   /**
@@ -212,7 +211,8 @@ export class User {
   setAccessToken(accessToken: string): void {
     assert.string(accessToken, "accessToken");
     assert(accessToken.length, "Please provide a non-empty access token.");
-    this.internal.setAccessToken(accessToken);
+    binding.JsTokenUser.setAccessToken(this.internal, accessToken);
+    this.emitChange();
   }
 
   /**
@@ -221,7 +221,8 @@ export class User {
    * `barq_sync_user_mark_access_token_refresh_required`.
    */
   markAccessTokenRefreshRequired(): void {
-    this.internal.markAccessTokenRefreshRequired();
+    binding.JsTokenUser.markAccessTokenRefreshRequired(this.internal);
+    this.emitChange();
   }
 
   /**
@@ -230,7 +231,8 @@ export class User {
    * @returns A promise that resolves once the user has been logged out.
    */
   async logOut(): Promise<void> {
-    await this.internal.logOut();
+    binding.JsTokenUser.logOut(this.internal);
+    this.emitChange();
   }
 
   /**
@@ -239,7 +241,7 @@ export class User {
    * @param callback - The callback to be fired when the event occurs.
    */
   addListener(callback: UserChangeCallback): void {
-    this.listeners.add(callback);
+    this.changeListeners.add(callback);
   }
 
   /**
@@ -247,14 +249,21 @@ export class User {
    * @param callback - The callback to be removed.
    */
   removeListener(callback: UserChangeCallback): void {
-    this.listeners.remove(callback);
+    this.changeListeners.delete(callback);
   }
 
   /**
    * Removes all event listeners previously added via {@link User.addListener}.
    */
   removeAllListeners(): void {
-    this.listeners.removeAll();
+    this.changeListeners.clear();
+  }
+
+  /** @internal Fire change listeners after an SDK-driven token/state change. */
+  private emitChange(): void {
+    for (const callback of this.changeListeners) {
+      callback();
+    }
   }
 }
 

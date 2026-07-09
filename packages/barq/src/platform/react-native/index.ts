@@ -28,7 +28,6 @@ import { binding } from "../binding";
 
 // Clear the internal state to prevent crashes when reloading the app
 binding.BarqCoordinator.clearAllCaches();
-binding.App.clearCachedApps();
 
 export = Barq;
 

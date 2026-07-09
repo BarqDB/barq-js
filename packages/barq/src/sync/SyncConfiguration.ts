@@ -23,7 +23,7 @@ import { ObjectId, UUID, EJSON } from "../types";
 import type { ClientResetError, SyncError } from "../errors";
 import { TypeAssertionError } from "../errors";
 import type { Barq } from "../Barq";
-import { syncProxyConfig } from "../platform";
+import { fs, syncProxyConfig } from "../platform";
 import { type AnyUser, User } from "./User";
 import type { MutableSubscriptionSet } from "./MutableSubscriptionSet";
 import type { SubscriptionSet } from "./SubscriptionSet";
@@ -319,6 +319,38 @@ export type PartitionSyncConfiguration = BaseSyncConfiguration & {
 
 export type SyncConfiguration = FlexibleSyncConfiguration | PartitionSyncConfiguration;
 
+/**
+ * Compute the on-disk location of a synchronized Barq.
+ *
+ * barq-core keeps its path builder private to `SyncFileManager`, so the SDK
+ * derives a stable, per-user path here instead. The layout is
+ * `<default dir>/barq-sync/<tenant>/<user>/<partition|flx>.barq`, or the given
+ * relative `customPath` under the default directory. The exact same computation
+ * is used when opening a synced Barq ({@link Barq}) and when looking one up by
+ * {@link Barq.Sync.getSyncSession}, so the two always agree.
+ * @internal
+ */
+export function pathForSyncConfig(
+  user: AnyUser,
+  options: { flexible?: boolean; partitionValue?: PartitionValue },
+  customPath?: string,
+): string {
+  const withSuffix = (name: string) => (name.endsWith(".barq") ? name : `${name}.barq`);
+  if (customPath) {
+    return fs.joinPaths(fs.getDefaultDirectoryPath(), withSuffix(customPath));
+  }
+  // Keep every path segment filesystem-safe and non-empty.
+  const sanitize = (value: string) => value.replace(/[^a-zA-Z0-9._-]/g, "_") || "_";
+  const leaf = options.flexible ? "flx" : sanitize(EJSON.stringify(options.partitionValue));
+  return fs.joinPaths(
+    fs.getDefaultDirectoryPath(),
+    "barq-sync",
+    sanitize(user.tenantId),
+    sanitize(user.id),
+    withSuffix(leaf),
+  );
+}
+
 /** @internal */
 export function toBindingSyncConfig(config: SyncConfiguration): binding.SyncConfig_Relaxed {
   const {
@@ -334,7 +366,8 @@ export function toBindingSyncConfig(config: SyncConfiguration): binding.SyncConf
     proxyConfig,
   } = config;
 
-  const syncUser = binding.Helpers.appUserAsSyncUser(user.internal);
+  // `user.internal` is already a token `SyncUser`; no App-user bridge is needed.
+  const syncUser = user.internal;
   assert(syncUser);
 
   return {

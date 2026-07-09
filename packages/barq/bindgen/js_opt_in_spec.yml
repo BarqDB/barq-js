@@ -151,6 +151,24 @@ records:
       - ident
       - salt
 classes:
+  JsTokenUser:
+    methods:
+      - from_token
+      - tenant_id
+      - user_id
+      - access_token
+      - refresh_token
+      - state
+      - set_route
+      - set_access_token
+      - mark_access_token_refresh_required
+      - log_out
+      - set_user_agent
+      - set_session_multiplexing
+      - reconnect
+      - has_existing_sessions
+      - get_all_sessions_for
+      - get_existing_active_session
   JsPlatformHelpers:
     methods:
       - default_barq_file_directory

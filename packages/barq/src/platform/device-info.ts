@@ -17,10 +17,26 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-import type { binding } from "./binding";
+/**
+ * Local device metadata describing the current SDK/runtime. Barq does not send
+ * this to a server (it is not part of the token-based sync protocol); it is kept
+ * for platform diagnostics and to mirror the per-platform injection points.
+ */
+export type DeviceInfo = {
+  sdk: string;
+  sdkVersion: string;
+  platform: string;
+  platformVersion: string;
+  deviceName: string;
+  deviceVersion: string;
+  cpuArch: string;
+  frameworkName: string;
+  frameworkVersion: string;
+  bundleId: string;
+};
 
 type DeviceInfoType = {
-  create(): binding.DeviceInfo;
+  create(): DeviceInfo;
 };
 
 /** @internal */

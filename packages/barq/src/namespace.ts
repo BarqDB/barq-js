@@ -35,7 +35,7 @@ export * from "./Set";
 export * from "./Dictionary";
 export * from "./Counter";
 
-export * from "./Types";
+export * from "./TypesNamespace";
 export * from "./GeoSpatial";
 export * from "./Logger";
 

@@ -352,7 +352,9 @@ export class SyncSession {
    */
   get config(): SyncConfiguration {
     return this.withInternal((internal) => {
-      const appUser = binding.Helpers.syncUserAsAppUser(internal.user);
+      // In Barq every sync user is a token user, so the session's user is
+      // already a `SyncUser`; no App-user bridge is needed.
+      const appUser = internal.user;
       if (!appUser) {
         throw new Error("User is null");
       }
@@ -400,7 +402,7 @@ export class SyncSession {
    * Gets the User that this session was created with.
    */
   get user() {
-    const appUser = this.withInternal((internal) => binding.Helpers.syncUserAsAppUser(internal.user));
+    const appUser = this.withInternal((internal) => internal.user);
     if (!appUser) {
       throw new Error("User is null");
     }
