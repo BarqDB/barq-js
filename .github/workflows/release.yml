@@ -189,7 +189,21 @@ jobs:
               ( cd "$dir" && npm publish --access public --dry-run )
             else
               echo "Publishing $name@$version"
-              ( cd "$dir" && npm publish --access public --provenance )
+              # npm returns 409 ("Failed to save packument") when several brand-new
+              # scoped packages are published back-to-back, before the registry has
+              # finished registering the previous one. Retry with backoff.
+              attempt=0
+              until ( cd "$dir" && npm publish --access public --provenance ); do
+                attempt=$((attempt + 1))
+                if [ "$attempt" -ge 6 ]; then
+                  echo "::error::Failed to publish $name@$version after $attempt attempts"
+                  exit 1
+                fi
+                echo "Publish of $name@$version failed (attempt $attempt); waiting 30s for the registry to settle before retrying..."
+                sleep 30
+              done
+              # Space out new-package creation so the next one does not 409.
+              sleep 20
             fi
             published=$((published + 1))
           done
