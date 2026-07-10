@@ -17,8 +17,8 @@
 ////////////////////////////////////////////////////////////////////////////
 //
 // Modifications Copyright (c) 2026 the Barq authors
-// Part of Barq (https://github.com/BarqDB/barq-js), a modified fork of Barq JS.
-// Reshaped from an Barq user into Barq's token-based sync user
+// Part of Barq (https://github.com/BarqDB/barq-js), a modified fork of Realm JS.
+// Reshaped from a Realm App user into Barq's token-based sync user
 // (see barq-core `barq_sync_user_*` / `TokenSyncUser`). Licensed under the
 // Apache License, Version 2.0. See the top-level NOTICE file for fork
 // attribution and trademark notices.
