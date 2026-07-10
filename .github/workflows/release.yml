@@ -53,6 +53,13 @@ jobs:
           - { os: macos-14, name: darwin-arm64, arch: arm64, osx_arch: arm64 }
           - { os: windows-latest, name: win32-x64 }
     steps:
+      # barq-core is a submodule with deep source paths; on Windows, enable
+      # long-path support before checkout so the recursive fetch cannot trip
+      # MAX_PATH.
+      - name: Enable Git long paths (Windows)
+        if: runner.os == 'Windows'
+        run: git config --global core.longpaths true
+
       - name: Checkout (with barq-core submodule)
         uses: actions/checkout@v4
         with:

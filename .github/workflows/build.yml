@@ -149,6 +149,11 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 120
     steps:
+      # barq-core is a submodule with deep source paths; enable long-path
+      # support before checkout so the recursive fetch cannot trip MAX_PATH.
+      - name: Enable Git long paths
+        run: git config --global core.longpaths true
+
       - name: Checkout (with barq-core submodule)
         uses: actions/checkout@v4
         with:
