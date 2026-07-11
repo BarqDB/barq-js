@@ -102,6 +102,63 @@ export type CanonicalObjectSchemaProperty = CanonicalPropertySchema;
 export type IndexedType = boolean | "full-text";
 
 /**
+ * The distance metric used by a vector (knn) index.
+ * - `"cosine"` (default) — cosine similarity; the usual choice for text/image embeddings.
+ * - `"l2"` — squared euclidean distance.
+ * - `"inner-product"` — dot product; expects vectors normalized upstream.
+ */
+export type VectorMetricName = "inner-product" | "l2" | "cosine";
+
+/**
+ * How a vector index stores its copy of the vectors.
+ * - `"float32"` (default) — full precision, 4 bytes per dimension.
+ * - `"sq8"` — scalar-quantized to 1 byte per dimension (~4x smaller), with exact
+ *   re-rank on read so recall stays close to full precision.
+ */
+export type VectorEncodingName = "float32" | "sq8";
+
+/**
+ * Options for a vector (knn) index on a list-of-float property. Declaring this
+ * builds a persisted HNSW index so the property can be searched with
+ * {@link Results.knn}. The index is local — it is never written to sync changesets.
+ */
+export type VectorIndexOptions = {
+  /** The fixed length of every stored vector. Required and enforced. */
+  dimensions: number;
+  /** Distance metric. Default: `"cosine"`. */
+  metric?: VectorMetricName;
+  /** Vector storage encoding. Default: `"float32"`. */
+  encoding?: VectorEncodingName;
+};
+
+/** The normalized form of {@link VectorIndexOptions} with all defaults resolved. */
+export type CanonicalVectorIndex = {
+  dimensions: number;
+  metric: VectorMetricName;
+  encoding: VectorEncodingName;
+};
+
+/**
+ * Options for a k-nearest-neighbour (knn) search — see `Results.knn`.
+ * A search is either approximate (the default, optionally tuned with `ef`) or
+ * `exact`; `ef` is ignored when `exact` is `true`.
+ */
+export type KnnOptions = {
+  /** How many nearest neighbours to return. */
+  k: number;
+  /**
+   * Approximate-search beam width. Higher trades speed for recall. Omit (or use
+   * `0`) to let the index pick a width that scales with how many vectors it holds.
+   */
+  ef?: number;
+  /**
+   * Run an exact brute-force search for the true neighbours (no recall loss, but
+   * slower). Overrides `ef`.
+   */
+  exact?: boolean;
+};
+
+/**
  * The canonical representation of the schema of a specific property.
  */
 export type CanonicalPropertySchema = {
@@ -111,6 +168,8 @@ export type CanonicalPropertySchema = {
   presentation?: PresentationPropertyTypeName;
   optional: boolean;
   indexed: IndexedType;
+  /** A vector (knn) index on this property, if declared. */
+  vector?: CanonicalVectorIndex;
   mapTo: string; // TODO: Make this optional and leave it out when it equals the name
   property?: string;
   default?: unknown;
@@ -273,6 +332,14 @@ export type PropertySchema = {
    */
   indexed?: IndexedType;
   /**
+   * Options for a vector (knn) index on this list-of-float property. When set, a
+   * persisted HNSW index is built so the property can be searched with
+   * {@link Results.knn}. The property must be a list of floats.
+   * @example
+   * { type: "list", objectType: "float", vector: { dimensions: 96, metric: "l2" } }
+   */
+  vector?: VectorIndexOptions;
+  /**
    * The name to be persisted in the Barq file if it differs from the already-defined
    * JavaScript/TypeScript (JS/TS) property name. This is useful for allowing different
    * naming conventions than what is persisted in the Barq file. Reading and writing
@@ -292,6 +359,7 @@ export type PropertySchema = {
 export type PropertySchemaCommon = {
   presentation: never;
   indexed?: IndexedType;
+  vector?: VectorIndexOptions;
   mapTo?: string;
   default?: unknown;
 };

@@ -29,11 +29,14 @@ import { type AnyBarqObject, BarqObject } from "./Object";
 import { type AnyResults, Results } from "./Results";
 import {
   type CanonicalObjectSchema,
+  type CanonicalVectorIndex,
   type Constructor,
   type DefaultObject,
   type ObjectSchema,
   type PresentationPropertyTypeName,
   type BarqObjectConstructor,
+  type VectorEncodingName,
+  type VectorMetricName,
   fromBindingBarqSchema,
   normalizeObjectSchema,
   normalizeBarqSchema,
@@ -76,8 +79,45 @@ type ObjectSchemaExtra = {
   constructor?: BarqObjectConstructor;
   defaults: Record<string, unknown>;
   presentations: Record<string, PresentationPropertyTypeName | undefined>;
+  // Vector (knn) indexes declared on this object's properties. Kept SDK-side
+  // because the core Property carries no vector info; used to build the local
+  // index after the schema is applied (see reconcileVectorIndexes).
+  vectorIndexes: { propertyName: string; persistedName: string; config: CanonicalVectorIndex }[];
   // objectTypes: Record<string, unknown>;
 };
+
+// Maps between the SDK's string metric/encoding names and the generated binding
+// enums (binding.Vector*, emitted by the bindgen wrapper from the core spec).
+const VECTOR_METRIC_TO_BINDING: Record<VectorMetricName, binding.VectorMetric> = {
+  "inner-product": binding.VectorMetric.InnerProduct,
+  l2: binding.VectorMetric.L2,
+  cosine: binding.VectorMetric.Cosine,
+};
+const VECTOR_METRIC_FROM_BINDING: Record<number, VectorMetricName> = {
+  [binding.VectorMetric.InnerProduct]: "inner-product",
+  [binding.VectorMetric.L2]: "l2",
+  [binding.VectorMetric.Cosine]: "cosine",
+};
+const VECTOR_ENCODING_TO_BINDING: Record<VectorEncodingName, binding.VectorEncoding> = {
+  float32: binding.VectorEncoding.Float32,
+  sq8: binding.VectorEncoding.SQ8,
+};
+const VECTOR_ENCODING_FROM_BINDING: Record<number, VectorEncodingName> = {
+  [binding.VectorEncoding.Float32]: "float32",
+  [binding.VectorEncoding.SQ8]: "sq8",
+};
+
+/** Build a binding vector-index config from the SDK's canonical form. */
+function toBindingVectorConfig(config: CanonicalVectorIndex): binding.VectorIndexConfig {
+  return {
+    metric: VECTOR_METRIC_TO_BINDING[config.metric],
+    encoding: VECTOR_ENCODING_TO_BINDING[config.encoding],
+    dimensions: config.dimensions,
+    m: 16,
+    efConstruction: 200,
+    efSearch: 0,
+  };
+}
 
 export type BarqEventName = "change" | "schema" | "beforenotify";
 
@@ -409,13 +449,17 @@ export class Barq {
   private static extractObjectSchemaExtras(schema: CanonicalObjectSchema): ObjectSchemaExtra {
     const defaults: Record<string, unknown> = {};
     const presentations: Record<string, PresentationPropertyTypeName | undefined> = {};
+    const vectorIndexes: ObjectSchemaExtra["vectorIndexes"] = [];
 
     for (const [name, propertySchema] of Object.entries(schema.properties)) {
       defaults[name] = propertySchema.default;
       presentations[name] = propertySchema.presentation;
+      if (propertySchema.vector) {
+        vectorIndexes.push({ propertyName: name, persistedName: propertySchema.mapTo, config: propertySchema.vector });
+      }
     }
 
-    return { constructor: schema.ctor, defaults, presentations };
+    return { constructor: schema.ctor, defaults, presentations, vectorIndexes };
   }
 
   /** @internal */
@@ -605,6 +649,11 @@ export class Barq {
 
     this.classes = new ClassMap(this, this.internal.schema, this.schema);
 
+    if (arg !== null) {
+      // Build any declared vector (knn) indexes now that the schema is applied.
+      this.reconcileVectorIndexes();
+    }
+
     const syncSession = this.internal.syncSession;
     this.syncSession = syncSession ? new SyncSession(syncSession) : null;
 
@@ -612,6 +661,72 @@ export class Barq {
     if (initialSubscriptions && !config.openSyncedBarqLocally) {
       // Do not call `Barq.exists()` here in case the barq has been opened by this point in time.
       this.handleInitialSubscriptions(initialSubscriptions, barqExists);
+    }
+  }
+
+  /**
+   * Build any declared vector (knn) indexes that are not yet present in the file.
+   *
+   * Vector indexes are local, derived structures — the core schema-apply path does
+   * not create them, so the SDK builds them here, once, right after opening. This
+   * mirrors the reconcile the C++/Kotlin SDKs do.
+   *
+   * - A read-only/immutable open is skipped (it cannot write; knn will report a
+   *   missing index if the file was never built with one).
+   * - An index that already exists with a different dimensions/metric/encoding is
+   *   reported rather than silently left in place.
+   * @internal
+   */
+  private reconcileVectorIndexes(): void {
+    if (this.isReadOnly) {
+      return;
+    }
+
+    // Read pass: find the indexes that still need building, and verify that any
+    // already-built index still matches what the schema declares. ColKey/TableKey
+    // are stable values, so it is safe to reuse them inside the write below.
+    const toCreate: { tableKey: binding.TableKey; columnKey: binding.ColKey; config: binding.VectorIndexConfig }[] = [];
+    for (const objectSchema of this.internal.schema) {
+      const vectorIndexes = this.schemaExtras[objectSchema.name]?.vectorIndexes;
+      if (!vectorIndexes || vectorIndexes.length === 0) {
+        continue;
+      }
+      const table = binding.Helpers.getTable(this.internal, objectSchema.tableKey);
+      for (const { propertyName, persistedName, config } of vectorIndexes) {
+        const columnKey = table.getColumnKey(persistedName);
+        if (table.hasVectorIndex(columnKey)) {
+          // Already built — make sure it still matches what the schema declares.
+          const existing = binding.Helpers.getVectorIndexConfig(table, columnKey);
+          if (
+            Number(existing.dimensions) !== config.dimensions ||
+            VECTOR_METRIC_FROM_BINDING[existing.metric] !== config.metric ||
+            VECTOR_ENCODING_FROM_BINDING[existing.encoding] !== config.encoding
+          ) {
+            throw new Error(
+              `The vector index on '${objectSchema.name}.${propertyName}' already exists with a different ` +
+                "configuration (dimensions/metric/encoding). Remove the existing index or delete the Barq file " +
+                "before changing it.",
+            );
+          }
+        } else {
+          toCreate.push({ tableKey: objectSchema.tableKey, columnKey, config: toBindingVectorConfig(config) });
+        }
+      }
+    }
+
+    if (toCreate.length === 0) {
+      return;
+    }
+
+    this.internal.beginTransaction();
+    try {
+      for (const { tableKey, columnKey, config } of toCreate) {
+        binding.Helpers.getTable(this.internal, tableKey).addVectorIndex(columnKey, config);
+      }
+      this.internal.commitTransaction();
+    } catch (err) {
+      this.internal.cancelTransaction();
+      throw err;
     }
   }
 
@@ -671,6 +786,11 @@ export class Barq {
       for (const property of Object.values(objectSchema.properties)) {
         property.default = extras ? extras.defaults[property.name] : undefined;
         property.presentation = extras ? extras.presentations[property.name] : undefined;
+        // Re-attach the vector config (the binding schema doesn't carry it).
+        const vectorConfig = extras?.vectorIndexes.find((v) => v.propertyName === property.name)?.config;
+        if (vectorConfig) {
+          property.vector = vectorConfig;
+        }
       }
     }
     return schemas;

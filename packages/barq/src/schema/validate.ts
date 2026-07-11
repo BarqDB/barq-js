@@ -54,6 +54,7 @@ const PROPERTY_SCHEMA_KEYS = new Set<keyof CanonicalPropertySchema>([
   "default",
   "optional",
   "indexed",
+  "vector",
   "mapTo",
   // Not part of `PropertySchema`
   "name",
@@ -151,7 +152,7 @@ export function validatePropertySchema(
 ): asserts propertySchema is PropertySchema {
   try {
     assert.object(propertySchema, `'${propertyName}' on '${objectName}'`, { allowArrays: false });
-    const { type, objectType, presentation, optional, property, indexed, mapTo } = propertySchema;
+    const { type, objectType, presentation, optional, property, indexed, vector, mapTo } = propertySchema;
     assert.string(type, `'${propertyName}.type' on '${objectName}'`);
     if (objectType !== undefined) {
       assert.string(objectType, `'${propertyName}.objectType' on '${objectName}'`);
@@ -170,6 +171,26 @@ export function validatePropertySchema(
         typeof indexed === "boolean" || indexed === "full-text",
         `Expected '${propertyName}.indexed' on '${objectName}' to be a boolean or 'full-text'.`,
       );
+    }
+    if (vector !== undefined) {
+      assert.object(vector, `'${propertyName}.vector' on '${objectName}'`, { allowArrays: false });
+      const { dimensions, metric, encoding } = vector as Record<string, unknown>;
+      assert(
+        typeof dimensions === "number" && Number.isInteger(dimensions) && dimensions > 0,
+        `Expected '${propertyName}.vector.dimensions' on '${objectName}' to be a positive integer.`,
+      );
+      if (metric !== undefined) {
+        assert(
+          metric === "inner-product" || metric === "l2" || metric === "cosine",
+          `Expected '${propertyName}.vector.metric' on '${objectName}' to be 'inner-product', 'l2', or 'cosine'.`,
+        );
+      }
+      if (encoding !== undefined) {
+        assert(
+          encoding === "float32" || encoding === "sq8",
+          `Expected '${propertyName}.vector.encoding' on '${objectName}' to be 'float32' or 'sq8'.`,
+        );
+      }
     }
     if (mapTo !== undefined) {
       assert.string(mapTo, `'${propertyName}.mapTo' on '${objectName}'`);

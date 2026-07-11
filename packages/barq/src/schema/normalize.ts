@@ -23,6 +23,7 @@ import { ObjectSchemaParseError, PropertySchemaParseError, SchemaParseError } fr
 import type {
   CanonicalObjectSchema,
   CanonicalPropertySchema,
+  CanonicalVectorIndex,
   CollectionPropertyTypeName,
   ObjectSchema,
   PresentationPropertyTypeName,
@@ -33,6 +34,7 @@ import type {
   PropertyTypeName,
   BarqObjectConstructor,
   UserTypeName,
+  VectorIndexOptions,
 } from "../schema";
 
 type PropertyInfo = {
@@ -298,7 +300,7 @@ function normalizePropertySchemaShorthand(info: PropertyInfoUsingShorthand): Can
  */
 function normalizePropertySchemaObject(info: PropertyInfoUsingObject): CanonicalPropertySchema {
   const { propertySchema } = info;
-  const { type, objectType, presentation, property, default: defaultValue } = propertySchema;
+  const { type, objectType, presentation, property, vector, default: defaultValue } = propertySchema;
   let { optional, indexed } = propertySchema;
 
   assert(type.length > 0, propError(info, "'type' must be specified."));
@@ -359,6 +361,18 @@ function normalizePropertySchemaObject(info: PropertyInfoUsingObject): Canonical
     indexed = true;
   }
 
+  if (vector !== undefined) {
+    assert(
+      type === "list" && objectType === "float",
+      propError(info, "A 'vector' index can only be set on a list-of-float property (type: 'list', objectType: 'float')."),
+    );
+    assert(!info.isPrimaryKey, propError(info, "A vector-indexed property cannot be a primary key."));
+    assert(
+      indexed === undefined || indexed === false,
+      propError(info, "A 'vector' property cannot also set 'indexed'; the vector index is its index."),
+    );
+  }
+
   const normalizedSchema: CanonicalPropertySchema = {
     name: info.propertyName,
     type: type as PropertyTypeName,
@@ -372,8 +386,20 @@ function normalizePropertySchemaObject(info: PropertyInfoUsingObject): Canonical
   if (presentation !== undefined) normalizedSchema.presentation = presentation;
   if (property !== undefined) normalizedSchema.property = property;
   if (defaultValue !== undefined) normalizedSchema.default = defaultValue;
+  if (vector !== undefined) normalizedSchema.vector = normalizeVectorIndex(vector);
 
   return normalizedSchema;
+}
+
+/**
+ * Fill in the defaults (cosine / float32) of a vector index declaration.
+ */
+function normalizeVectorIndex(vector: VectorIndexOptions): CanonicalVectorIndex {
+  return {
+    dimensions: vector.dimensions,
+    metric: vector.metric ?? "cosine",
+    encoding: vector.encoding ?? "float32",
+  };
 }
 
 /**

@@ -23,7 +23,7 @@ import { IllegalConstructorError, TypeAssertionError } from "./errors";
 import { indirect, injectIndirect } from "./indirect";
 import type { ClassHelpers } from "./ClassHelpers";
 import { Collection, COLLECTION_TYPE_HELPERS as TYPE_HELPERS } from "./Collection";
-import type { DefaultObject } from "./schema";
+import type { DefaultObject, KnnOptions } from "./schema";
 import { JSONCacheMap } from "./JSONCacheMap";
 import type { Results } from "./Results";
 import { BarqObject } from "./Object";
@@ -825,6 +825,44 @@ export abstract class OrderedCollection<
     const bindingArgs = args.map((arg) => this.queryArgToBinding(arg));
     const newQuery = parent.query.table.query(queryString, bindingArgs, kpMapping);
     const results = binding.Helpers.resultsAppendQuery(parent, newQuery);
+
+    const itemType = toItemType(results.type);
+    const typeHelpers = this[TYPE_HELPERS];
+    const accessor = createResultsAccessor({ barq, typeHelpers, itemType });
+    return new indirect.Results(barq, results, accessor, typeHelpers);
+  }
+
+  /**
+   * Returns new _Results_ that are the `k` nearest neighbours of `queryVector`,
+   * ranked closest first, over a vector-indexed property.
+   *
+   * The property must have been declared with a `vector` index (see the `vector`
+   * option in {@link PropertySchema}). `knn` composes with {@link filtered}:
+   * filter first, then `knn` ranks only the surviving objects. The returned
+   * _Results_ is live and can be observed like any other.
+   * @param property - The name of the vector-indexed property to search on.
+   * @param queryVector - The query embedding; its length must equal the index's `dimensions`.
+   * @param options - `k` (how many neighbours to return), plus either `ef`
+   *   (approximate-search beam width — higher means better recall but slower) or
+   *   `exact` (a brute-force search for the true neighbours).
+   * @throws An {@link Error} if the property has no vector index, or if this is not a collection of Barq Objects.
+   * @returns The `k` nearest objects, closest first.
+   * @note This is only supported for collections of Barq Objects.
+   * @example
+   * const nearest = barq.objects("Doc").knn("embedding", queryVector, { k: 10 });
+   */
+  knn(property: string, queryVector: number[] | Float32Array, options: KnnOptions): Results<T> {
+    const { results: parent, barq } = this;
+    const objectType = parent.objectType;
+    assert(
+      typeof objectType === "string" && objectType !== "",
+      "knn search is only supported on collections of Barq Objects.",
+    );
+    const { columnKey } = barq.getClassHelpers(objectType).properties.get(property);
+    const { k, ef = 0, exact = false } = options;
+    assert(typeof k === "number" && Number.isInteger(k) && k > 0, "'k' must be a positive integer.");
+    const queryData = Array.from(queryVector);
+    const results = parent.knnSearch(columnKey, queryData, k, ef, exact);
 
     const itemType = toItemType(results.type);
     const typeHelpers = this[TYPE_HELPERS];
