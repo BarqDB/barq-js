@@ -150,6 +150,14 @@ records:
     fields:
       - ident
       - salt
+  VectorIndexConfig:
+    fields:
+      - metric
+      - encoding
+      - dimensions
+      - m
+      - ef_construction
+      - ef_search
 classes:
   JsTokenUser:
     methods:
@@ -204,6 +212,7 @@ classes:
       - get_results_description
       - make_ssl_verify_callback
       - needs_file_format_upgrade
+      - get_vector_index_config
   LogCategoryRef:
     methods:
       - set_default_level_threshold
@@ -220,6 +229,8 @@ classes:
       - try_get_object
       - query
       - find_primary_key
+      - get_column_key
+      - has_vector_index
   TableRef:
     methods:
       - create_object
@@ -227,6 +238,9 @@ classes:
       - get_link_target
       - clear
       - get_primary_key_column
+      - add_vector_index
+      - remove_vector_index
+      - rebuild_vector_index
   Obj:
     methods:
       - is_valid
@@ -269,6 +283,7 @@ classes:
       - get_list
       - get_dictionary
       - sort_by_names
+      - knn_search
       - snapshot
       - max
       - min
