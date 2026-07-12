@@ -174,7 +174,10 @@ export function validatePropertySchema(
     }
     if (vector !== undefined) {
       assert.object(vector, `'${propertyName}.vector' on '${objectName}'`, { allowArrays: false });
-      const { dimensions, metric, encoding } = vector as Record<string, unknown>;
+      const { dimensions, metric, encoding, m, efConstruction, efSearch, buildThreads } = vector as Record<
+        string,
+        unknown
+      >;
       assert(
         typeof dimensions === "number" && Number.isInteger(dimensions) && dimensions > 0,
         `Expected '${propertyName}.vector.dimensions' on '${objectName}' to be a positive integer.`,
@@ -190,6 +193,21 @@ export function validatePropertySchema(
           encoding === "float32" || encoding === "sq8",
           `Expected '${propertyName}.vector.encoding' on '${objectName}' to be 'float32' or 'sq8'.`,
         );
+      }
+      for (const [name, value, allowZero] of [
+        ["m", m, false],
+        ["efConstruction", efConstruction, false],
+        ["efSearch", efSearch, true],
+        ["buildThreads", buildThreads, true],
+      ] as const) {
+        if (value !== undefined) {
+          assert(
+            typeof value === "number" && Number.isInteger(value) && (allowZero ? value >= 0 : value > 0),
+            `Expected '${propertyName}.vector.${name}' on '${objectName}' to be ${
+              allowZero ? "a non-negative" : "a positive"
+            } integer.`,
+          );
+        }
       }
     }
     if (mapTo !== undefined) {

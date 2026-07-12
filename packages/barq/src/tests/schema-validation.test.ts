@@ -161,6 +161,20 @@ describe("validatePropertySchema", () => {
     itValidates("an object with only required fields defined", {
       type: "",
     });
+
+    itValidates("a vector index with every tuning option", {
+      type: "list",
+      objectType: "float",
+      vector: {
+        dimensions: 384,
+        metric: "cosine",
+        encoding: "sq8",
+        m: 32,
+        efConstruction: 400,
+        efSearch: 128,
+        buildThreads: 4,
+      },
+    });
   });
 
   describe("Invalid shape of input", () => {
@@ -238,6 +252,18 @@ describe("validatePropertySchema", () => {
         mapTo: NOT_A_STRING,
       },
       `Expected '${PROPERTY_NAME}.mapTo' on '${OBJECT_NAME}' to be a string, got a number`,
+    );
+
+    itThrowsWhenValidating(
+      "a vector index with a non-positive graph degree",
+      { type: "list", objectType: "float", vector: { dimensions: 4, m: 0 } },
+      `Expected '${PROPERTY_NAME}.vector.m' on '${OBJECT_NAME}' to be a positive integer`,
+    );
+
+    itThrowsWhenValidating(
+      "a vector index with negative build threads",
+      { type: "list", objectType: "float", vector: { dimensions: 4, buildThreads: -1 } },
+      `Expected '${PROPERTY_NAME}.vector.buildThreads' on '${OBJECT_NAME}' to be a non-negative integer`,
     );
 
     itThrowsWhenValidating(

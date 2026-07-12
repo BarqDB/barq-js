@@ -392,13 +392,17 @@ function normalizePropertySchemaObject(info: PropertyInfoUsingObject): Canonical
 }
 
 /**
- * Fill in the defaults (cosine / float32) of a vector index declaration.
+ * Fill in the defaults of a vector index declaration.
  */
 function normalizeVectorIndex(vector: VectorIndexOptions): CanonicalVectorIndex {
   return {
     dimensions: vector.dimensions,
     metric: vector.metric ?? "cosine",
     encoding: vector.encoding ?? "float32",
+    m: vector.m ?? 16,
+    efConstruction: vector.efConstruction ?? 200,
+    efSearch: vector.efSearch ?? 0,
+    buildThreads: vector.buildThreads ?? 0,
   };
 }
 

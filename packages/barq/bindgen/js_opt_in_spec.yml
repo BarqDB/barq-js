@@ -158,6 +158,7 @@ records:
       - m
       - ef_construction
       - ef_search
+      - build_threads
 classes:
   JsTokenUser:
     methods:

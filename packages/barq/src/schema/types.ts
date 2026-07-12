@@ -129,6 +129,14 @@ export type VectorIndexOptions = {
   metric?: VectorMetricName;
   /** Vector storage encoding. Default: `"float32"`. */
   encoding?: VectorEncodingName;
+  /** HNSW graph out-degree. Default: `16`. */
+  m?: number;
+  /** Build-time beam width. Default: `200`. */
+  efConstruction?: number;
+  /** Default query beam width, or `0` for the engine default. */
+  efSearch?: number;
+  /** Full build/rebuild workers, or `0` for one per available core. */
+  buildThreads?: number;
 };
 
 /** The normalized form of {@link VectorIndexOptions} with all defaults resolved. */
@@ -136,6 +144,10 @@ export type CanonicalVectorIndex = {
   dimensions: number;
   metric: VectorMetricName;
   encoding: VectorEncodingName;
+  m: number;
+  efConstruction: number;
+  efSearch: number;
+  buildThreads: number;
 };
 
 /**

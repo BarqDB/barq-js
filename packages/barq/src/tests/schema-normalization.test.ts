@@ -28,6 +28,60 @@ const OBJECT_NAME = "MyObject";
 const PROPERTY_NAME = "prop";
 
 describe("normalizePropertySchema", () => {
+  describe("Vector indexes", () => {
+    itNormalizes(
+      {
+        type: "list",
+        objectType: "float",
+        vector: { dimensions: 96 },
+      },
+      {
+        type: "list",
+        objectType: "float",
+        optional: false,
+        vector: {
+          dimensions: 96,
+          metric: "cosine",
+          encoding: "float32",
+          m: 16,
+          efConstruction: 200,
+          efSearch: 0,
+          buildThreads: 0,
+        },
+      },
+    );
+
+    itNormalizes(
+      {
+        type: "list",
+        objectType: "float",
+        vector: {
+          dimensions: 96,
+          metric: "l2",
+          encoding: "sq8",
+          m: 32,
+          efConstruction: 400,
+          efSearch: 128,
+          buildThreads: 4,
+        },
+      },
+      {
+        type: "list",
+        objectType: "float",
+        optional: false,
+        vector: {
+          dimensions: 96,
+          metric: "l2",
+          encoding: "sq8",
+          m: 32,
+          efConstruction: 400,
+          efSearch: 128,
+          buildThreads: 4,
+        },
+      },
+    );
+  });
+
   describe("Shorthand notation", () => {
     describe("Valid combinations", () => {
       describe("'string' & collection combinations", () => {

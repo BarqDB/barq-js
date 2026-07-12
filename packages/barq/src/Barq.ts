@@ -113,9 +113,10 @@ function toBindingVectorConfig(config: CanonicalVectorIndex): binding.VectorInde
     metric: VECTOR_METRIC_TO_BINDING[config.metric],
     encoding: VECTOR_ENCODING_TO_BINDING[config.encoding],
     dimensions: config.dimensions,
-    m: 16,
-    efConstruction: 200,
-    efSearch: 0,
+    m: config.m,
+    efConstruction: config.efConstruction,
+    efSearch: config.efSearch,
+    buildThreads: config.buildThreads,
   };
 }
 
@@ -700,11 +701,14 @@ export class Barq {
           if (
             Number(existing.dimensions) !== config.dimensions ||
             VECTOR_METRIC_FROM_BINDING[existing.metric] !== config.metric ||
-            VECTOR_ENCODING_FROM_BINDING[existing.encoding] !== config.encoding
+            VECTOR_ENCODING_FROM_BINDING[existing.encoding] !== config.encoding ||
+            Number(existing.m) !== config.m ||
+            Number(existing.efConstruction) !== config.efConstruction ||
+            Number(existing.efSearch) !== config.efSearch
           ) {
             throw new Error(
               `The vector index on '${objectSchema.name}.${propertyName}' already exists with a different ` +
-                "configuration (dimensions/metric/encoding). Remove the existing index or delete the Barq file " +
+                "persisted configuration. Remove the existing index or delete the Barq file " +
                 "before changing it.",
             );
           }
