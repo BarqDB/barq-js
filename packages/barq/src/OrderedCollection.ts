@@ -861,6 +861,9 @@ export abstract class OrderedCollection<
     const { columnKey } = barq.getClassHelpers(objectType).properties.get(property);
     const { k, ef = 0, exact = false } = options;
     assert(typeof k === "number" && Number.isInteger(k) && k > 0, "'k' must be a positive integer.");
+    // A negative or NaN ef would coerce to a huge size_t in the binding and
+    // silently turn the approximate search into an exhaustive scan.
+    assert(typeof ef === "number" && Number.isInteger(ef) && ef >= 0, "'ef' must be a non-negative integer.");
     // The binding types a std::vector<float> arg as Float[], so wrap each element.
     const queryData = Array.from(queryVector, (value) => new binding.Float(value));
     const results = parent.knnSearch(columnKey, queryData, k, ef, exact);

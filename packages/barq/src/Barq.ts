@@ -696,21 +696,26 @@ export class Barq {
       for (const { propertyName, persistedName, config } of vectorIndexes) {
         const columnKey = table.getColumnKey(persistedName);
         if (table.hasVectorIndex(columnKey)) {
-          // Already built — make sure it still matches what the schema declares.
+          // Already built — make sure the graph-shaping settings still match what
+          // the schema declares. efSearch is deliberately not part of the check:
+          // it is a query-time knob (core's compatibility rule excludes it too),
+          // so a drifted value is updated in place below instead of failing open.
           const existing = binding.Helpers.getVectorIndexConfig(table, columnKey);
           if (
             Number(existing.dimensions) !== config.dimensions ||
             VECTOR_METRIC_FROM_BINDING[existing.metric] !== config.metric ||
             VECTOR_ENCODING_FROM_BINDING[existing.encoding] !== config.encoding ||
             Number(existing.m) !== config.m ||
-            Number(existing.efConstruction) !== config.efConstruction ||
-            Number(existing.efSearch) !== config.efSearch
+            Number(existing.efConstruction) !== config.efConstruction
           ) {
             throw new Error(
               `The vector index on '${objectSchema.name}.${propertyName}' already exists with a different ` +
                 "persisted configuration. Remove the existing index or delete the Barq file " +
                 "before changing it.",
             );
+          }
+          if (Number(existing.efSearch) !== config.efSearch) {
+            toCreate.push({ tableKey: objectSchema.tableKey, columnKey, config: toBindingVectorConfig(config) });
           }
         } else {
           toCreate.push({ tableKey: objectSchema.tableKey, columnKey, config: toBindingVectorConfig(config) });
