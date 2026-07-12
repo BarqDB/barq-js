@@ -861,7 +861,8 @@ export abstract class OrderedCollection<
     const { columnKey } = barq.getClassHelpers(objectType).properties.get(property);
     const { k, ef = 0, exact = false } = options;
     assert(typeof k === "number" && Number.isInteger(k) && k > 0, "'k' must be a positive integer.");
-    const queryData = Array.from(queryVector);
+    // The binding types a std::vector<float> arg as Float[], so wrap each element.
+    const queryData = Array.from(queryVector, (value) => new binding.Float(value));
     const results = parent.knnSearch(columnKey, queryData, k, ef, exact);
 
     const itemType = toItemType(results.type);

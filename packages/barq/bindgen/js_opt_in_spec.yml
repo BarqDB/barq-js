@@ -195,6 +195,7 @@ classes:
   Helpers:
     methods:
       - get_table
+      - get_table_by_name
       - get_keypath_mapping
       - results_append_query
       - make_object_notifier

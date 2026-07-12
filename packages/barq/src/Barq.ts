@@ -100,11 +100,11 @@ const VECTOR_METRIC_FROM_BINDING: Record<number, VectorMetricName> = {
 };
 const VECTOR_ENCODING_TO_BINDING: Record<VectorEncodingName, binding.VectorEncoding> = {
   float32: binding.VectorEncoding.Float32,
-  sq8: binding.VectorEncoding.SQ8,
+  sq8: binding.VectorEncoding.Sq8,
 };
 const VECTOR_ENCODING_FROM_BINDING: Record<number, VectorEncodingName> = {
   [binding.VectorEncoding.Float32]: "float32",
-  [binding.VectorEncoding.SQ8]: "sq8",
+  [binding.VectorEncoding.Sq8]: "sq8",
 };
 
 /** Build a binding vector-index config from the SDK's canonical form. */
