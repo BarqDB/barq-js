@@ -858,12 +858,28 @@ export abstract class OrderedCollection<
       typeof objectType === "string" && objectType !== "",
       "knn search is only supported on collections of Barq Objects.",
     );
-    const { columnKey } = barq.getClassHelpers(objectType).properties.get(property);
+    const classHelpers = barq.getClassHelpers(objectType);
+    const { columnKey } = classHelpers.properties.get(property);
     const { k, ef = 0, exact = false } = options;
     assert(typeof k === "number" && Number.isInteger(k) && k > 0, "'k' must be a positive integer.");
     // A negative or NaN ef would coerce to a huge size_t in the binding and
     // silently turn the approximate search into an exhaustive scan.
     assert(typeof ef === "number" && Number.isInteger(ef) && ef >= 0, "'ef' must be a non-negative integer.");
+    // Cosine is undefined for a zero vector (it has no direction), so the engine
+    // rejects it. Reject it eagerly here, like the shape checks above.
+    if (
+      queryVector.length > 0 &&
+      classHelpers.canonicalObjectSchema.properties[property]?.vector?.metric === "cosine"
+    ) {
+      let nonZero = false;
+      for (const value of queryVector) {
+        if (value !== 0) {
+          nonZero = true;
+          break;
+        }
+      }
+      assert(nonZero, "'queryVector' must have a non-zero norm under the cosine metric.");
+    }
     // The binding types a std::vector<float> arg as Float[], so wrap each element.
     const queryData = Array.from(queryVector, (value) => new binding.Float(value));
     const results = parent.knnSearch(columnKey, queryData, k, ef, exact);

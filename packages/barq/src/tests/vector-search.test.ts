@@ -78,6 +78,38 @@ describe("vector search", () => {
     }
   });
 
+  it("rejects a zero-norm query under the cosine metric", function (this: BarqContext) {
+    // A zero vector has no direction, so cosine similarity against it is
+    // undefined. L2 keeps accepting it (it means "nearest to the origin").
+    const all = this.barq.objects("Document");
+    expect(() => all.knn("embedding", [0, 0, 0, 0], { k: 1 })).to.not.throw();
+
+    // An omitted metric means the cosine default — it must be rejected too.
+    const cosine = new Barq({
+      path: generateTempBarqPath(),
+      schema: [
+        {
+          name: "CosineDoc",
+          primaryKey: "id",
+          properties: {
+            id: "int",
+            embedding: { type: "list", objectType: "float", vector: { dimensions: 4 } },
+          },
+        },
+      ],
+    });
+    try {
+      cosine.write(() => {
+        cosine.create("CosineDoc", { id: 1, embedding: [1, 0, 0, 0] });
+      });
+      expect(() => cosine.objects("CosineDoc").knn("embedding", [0, 0, 0, 0], { k: 1 })).to.throw(
+        "'queryVector' must have a non-zero norm under the cosine metric",
+      );
+    } finally {
+      cosine.close();
+    }
+  });
+
   it("adopts an efSearch-only change on reopen instead of throwing", function (this: BarqContext) {
     const path = this.barq.path;
     this.barq.write(() => {
