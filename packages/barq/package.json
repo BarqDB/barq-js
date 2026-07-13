@@ -1,6 +1,6 @@
 {
   "name": "@barqdb/barq",
-  "version": "21.2.0",
+  "version": "21.3.0",
   "description": "Barq is an offline-first database for JavaScript with optional sync powered by barq-core. A modified fork of Realm JS.",
   "license": "apache-2.0",
   "homepage": "https://github.com/BarqDB/barq-js",
