@@ -38,7 +38,11 @@ export namespace Types {
   export import Decimal128 = BarqTypes.Decimal128;
   export import ObjectId = BarqTypes.ObjectId;
   export import UUID = BarqTypes.UUID;
+  export import Binary = BarqTypes.Binary;
   export import Counter = CounterNS.Counter;
+
+  export type EJSONOptions = BarqTypes.EJSONOptions;
+  export const EJSON = BarqTypes.EJSON;
 
   export type Date = GlobalDate;
   export const Date = GlobalDate;

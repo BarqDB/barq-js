@@ -49,7 +49,7 @@ type UserProviderProps = {
  * build a user with `Barq.User.fromToken`, and pass it in.
  * @example
  * ```tsx
- * const user = Barq.User.fromToken(accessToken, { route: "https://sync.example.com" });
+ * const user = Barq.User.fromToken(tenantId, userId, accessToken, { route: "https://sync.example.com" });
  * <UserProvider user={user}>
  *   <BarqProvider sync={{ flexible: true }}>
  *     <App />
