@@ -1,6 +1,6 @@
 export const SYNC_CONFIG = {
   // Set `enabled` to `true` to enable sync.
   enabled: false,
-  // Add your Barq App ID here if sync is enabled.
-  appId: '<Your App ID>',
+  // The URL of your Barq sync server, e.g. 'wss://sync.example.com'.
+  route: '<Your Sync Server URL>',
 };

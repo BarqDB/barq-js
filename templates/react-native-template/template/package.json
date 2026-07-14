@@ -10,16 +10,17 @@
     "test": "jest"
   },
   "dependencies": {
-    "@barqdb/react": "^0.6.0",
+    "@barqdb/react": "^1.20.0",
     "react": "18.2.0",
     "react-native": "0.73.2",
     "react-native-get-random-values": "^1.9.0",
-    "@barqdb/barq": "12.5.1"
+    "@barqdb/barq": "^21.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
+    "@barqdb/babel-plugin": "^1.2.0",
     "@react-native/babel-preset": "0.73.19",
     "@react-native/eslint-config": "0.73.2",
     "@react-native/metro-config": "0.73.3",

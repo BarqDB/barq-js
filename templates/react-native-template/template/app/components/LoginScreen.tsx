@@ -1,80 +1,63 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {View, Text, StyleSheet, TextInput, Pressable} from 'react-native';
 import colors from '../styles/colors';
 import {shadows} from '../styles/shadows';
 import {buttonStyles} from '../styles/button';
-import {AuthOperationName, useAuth, useEmailPasswordAuth} from '@barqdb/react';
 
-export const LoginScreen = () => {
-  const {result, logInWithEmailPassword} = useAuth();
-  const {register} = useEmailPasswordAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export const LoginScreen: React.FC<{
+  onLogIn: (tenantId: string, userId: string, accessToken: string) => void;
+}> = ({onLogIn}) => {
+  const [tenantId, setTenantId] = useState('');
+  const [userId, setUserId] = useState('');
+  const [accessToken, setAccessToken] = useState('');
 
-  // Automatically log in after registration
-  useEffect(() => {
-    if (result.success && result.operation === AuthOperationName.Register) {
-      logInWithEmailPassword({email, password});
-    }
-  }, [result, logInWithEmailPassword, email, password]);
+  const canLogIn = !!tenantId && !!userId && !!accessToken;
 
   return (
     <View style={styles.content}>
+      <Text style={styles.hint}>
+        Barq has no built-in login screen. Paste in the tenant ID, user ID, and
+        access token issued by your own identity provider.
+      </Text>
+
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          value={email}
-          onChangeText={setEmail}
-          autoComplete="email"
-          textContentType="emailAddress"
+          value={tenantId}
+          onChangeText={setTenantId}
           autoCapitalize="none"
           autoCorrect={false}
-          placeholder="Email"
+          placeholder="Tenant ID"
         />
       </View>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          value={password}
-          onChangeText={setPassword}
+          value={userId}
+          onChangeText={setUserId}
+          autoCapitalize="none"
+          autoCorrect={false}
+          placeholder="User ID"
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          value={accessToken}
+          onChangeText={setAccessToken}
+          autoCapitalize="none"
+          autoCorrect={false}
           secureTextEntry
-          autoComplete="password"
-          textContentType="password"
-          placeholder="Password"
+          placeholder="Access Token"
         />
       </View>
 
-      {result?.error?.operation === AuthOperationName.LogInWithEmailPassword && (
-        <Text style={[styles.error]}>
-          There was an error logging in, please try again{' '}
-        </Text>
-      )}
-
-      {result?.error?.operation === AuthOperationName.Register && (
-        <Text style={[styles.error]}>
-          There was an error registering, please try again
-        </Text>
-      )}
-
-      <View style={styles.buttons}>
-        <Pressable
-          onPress={() => logInWithEmailPassword({email, password})}
-          style={[styles.button, result.pending && styles.buttonDisabled]}
-          disabled={result.pending}>
-          <Text style={buttonStyles.text}>Login</Text>
-        </Pressable>
-
-        <Pressable
-          onPress={() => register({email, password})}
-          style={[
-            styles.button,
-            result.pending && styles.buttonDisabled,
-            styles.registerButton,
-          ]}
-          disabled={result.pending}>
-          <Text style={buttonStyles.text}>Register</Text>
-        </Pressable>
-      </View>
+      <Pressable
+        onPress={() => onLogIn(tenantId, userId, accessToken)}
+        style={[styles.button, !canLogIn && styles.buttonDisabled]}
+        disabled={!canLogIn}>
+        <Text style={buttonStyles.text}>Log In</Text>
+      </Pressable>
     </View>
   );
 };
@@ -87,18 +70,18 @@ const styles = StyleSheet.create({
     backgroundColor: colors.darkBlue,
   },
 
+  hint: {
+    textAlign: 'center',
+    marginHorizontal: 20,
+    marginBottom: 10,
+    fontSize: 14,
+    color: colors.white,
+  },
+
   inputContainer: {
     padding: 10,
     alignSelf: 'stretch',
     marginHorizontal: 10,
-  },
-
-  error: {
-    textAlign: 'center',
-    marginTop: 10,
-    marginBottom: 10,
-    fontSize: 14,
-    color: colors.white,
   },
 
   input: {
@@ -112,21 +95,13 @@ const styles = StyleSheet.create({
     ...shadows,
   },
 
-  buttons: {
-    marginTop: 16,
-    flexDirection: 'row',
-  },
-
   button: {
     ...buttonStyles.button,
     ...shadows,
+    marginTop: 16,
   },
 
   buttonDisabled: {
     opacity: 0.5,
-  },
-
-  registerButton: {
-    backgroundColor: colors.purpleDark,
   },
 });

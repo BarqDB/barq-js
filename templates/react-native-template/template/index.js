@@ -11,11 +11,7 @@ import {name as appName} from './app.json';
 import {SYNC_CONFIG} from './sync.config';
 
 const App = () =>
-  SYNC_CONFIG.enabled ? (
-    <AppWrapperSync appId={SYNC_CONFIG.appId} />
-  ) : (
-    <AppWrapperNonSync />
-  );
+  SYNC_CONFIG.enabled ? <AppWrapperSync /> : <AppWrapperNonSync />;
 
 export default App;
 
